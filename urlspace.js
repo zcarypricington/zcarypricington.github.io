@@ -291,12 +291,44 @@
     );
   }
 
+  // ---- Site activation hashes ------------------------------------------------
+  // 100 secret hashes that bypass the edu disguise and fire activateArchive().
+  // Hash is wiped from the address bar immediately after activation.
+  // Add or remove entries freely — lookup is O(1).
+  const ACTIVATION_HASHES = new Set([
+    '#go','#now','#open','#play','#run','#in','#yes','#launch','#start','#enter',
+    '#doom','#doomsday','#archive','#unlock','#access','#inside','#bypass','#ghost',
+    '#shadow','#stealth','#hidden','#dark','#void','#null','#zero','#root','#admin',
+    '#pass','#key','#gate','#door','#portal','#warp','#jump','#skip','#fast','#quick',
+    '#free','#live','#real','#true','#go1','#go2','#go3','#x1','#x2','#x3','#x9',
+    '#abc','#xyz','#qrs','#aaa','#zzz','#111','#420','#1337','#9000','#007','#404',
+    '#yep','#yup','#sure','#ok','#done','#hit','#pop','#bang','#fire','#lit','#raw',
+    '#cold','#clean','#sharp','#cut','#edge','#blade','#axe','#arc','#node','#core',
+    '#base','#home','#hub','#den','#zone','#spot','#drop','#land','#deck','#bay',
+    '#red','#blue','#green','#black','#white','#gray','#gold','#neon','#cyan','#void2',
+  ]);
+
+  function tryActivate(hash) {
+    if (!ACTIVATION_HASHES.has(hash)) return false;
+    history.replaceState(null, '', location.pathname + location.search);
+    if (typeof window.activateArchive === 'function') {
+      window.activateArchive();
+    } else {
+      // activateArchive not yet defined — press 'e' programmatically as fallback
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'e', bubbles: true }));
+    }
+    return true;
+  }
+
   // ---- Hash-based routing on page load ---------------------------------------
   // Fires after the archive is activated (script.js sets activated=true and
   // shows #archive-site). We poll briefly since allGames may not be populated
   // until games.json resolves.
 
   function tryRoute() {
+    // Activation hashes take priority over game slugs
+    if (tryActivate(location.hash)) return true;
+
     const slug = parseHash(location.hash);
     if (!slug) return false;
 
@@ -334,7 +366,14 @@
 
   // Poll until allGames is populated (max 6 seconds)
   function routeOnLoad() {
-    const slug = parseHash(location.hash);
+    const hash = location.hash;
+    if (!hash) return;
+
+    // Activation hashes don't need allGames — fire immediately
+    if (tryActivate(hash)) return;
+
+    // Game slug routes wait for allGames
+    const slug = parseHash(hash);
     if (!slug) return;
 
     let attempts = 0;
@@ -352,6 +391,8 @@
 
   // React to hash changes during the session (back/forward, manual edits)
   window.addEventListener('hashchange', () => {
+    // Activation hashes fire instantly, no slug resolution needed
+    if (tryActivate(location.hash)) return;
     invalidateSlugMap();
     tryRoute();
   });
@@ -431,6 +472,9 @@
 
     // Encode a number to base62
     encode: (n) => toBase62(n, SLUG_LEN),
+
+    // List all valid activation hashes
+    activationHashes: Array.from(ACTIVATION_HASHES),
 
     // Show namespace stats in the console
     stats: function () {
