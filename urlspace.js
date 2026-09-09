@@ -474,7 +474,7 @@
     encode: (n) => toBase62(n, SLUG_LEN),
 
     // List all valid activation hashes
-    activationHashes: Array.from(ACTIVATION_HASHES),
+    get activationHashes() { return Array.from(ACTIVATION_HASHES); },
 
     // Show namespace stats in the console
     stats: function () {
