@@ -1,19 +1,104 @@
 [
-  { "tag": "Arcade",  "name": "Slope",             "file": "./g/slope.html",             "icon": "./g/assets/slope.png" },
-  { "tag": "Shooter", "name": "1v1.LOL",           "file": "./g/1v1.lol.html",           "icon": "./g/assets/1v1.lol.png" },
-  { "tag": "Sports",  "name": "Basket Bros",       "file": "./g/basket-bros.html",       "icon": "./g/assets/basket-bros.png" },
-  { "tag": "Arcade",  "name": "Moto X3M",          "file": "./g/moto-x3m.html",          "icon": "./g/assets/moto-x3m.png" },
-  { "tag": "Puzzle",  "name": "Cookie Clicker",    "file": "./g/cookie-clicker.html",    "icon": "./g/assets/cookie-clicker.png" },
-  { "tag": "Arcade",  "name": "Escape Road City 2", "file": "./g/escape-road-city-2.html", "icon": "./g/assets/escape-road-city-2.png" },
-  { "tag": "Arcade",  "name": "Tomb Of The Mask",  "file": "./g/tomb-of-the-mask.html",  "icon": "./g/assets/tomb-of-the-mask.png" },
-  { "tag": "Sports",  "name": "Retro Bowl",        "file": "https://script.google.com/macros/s/AKfycbxkfMHeNjgt0LuksJhoAGS_T1jAnsQTkGw9GIRRi2VTljTi4t46Q0HIkslBvD7WOyXPHg/exec",        "icon": "./g/assets/retro-bowl.jpg" },
-  { "tag": "Sports",  "name": "Football Bros",     "file": "./g/football-bros.html",     "icon": "./g/assets/football-bros.png" },
-  { "tag": "Sports",  "name": "Baseball Bros",     "file": "./g/baseball-bros.html",     "icon": "./g/assets/baseball-bros.jpg" },
-  { "tag": "Sports",  "name": "Basketball Stars",  "file": "https://script.google.com/macros/s/AKfycbwzYMDDcdDUAvEP7iO6OdRk-5_oUp6vYvDdyEEz8tTOzWi5y4-Qf3vQ6TBoZuc9UYVcLg/exec",  "icon": "./g/assets/basketball-stars.jpg" },
-  { "tag": "Horror",  "name": "Granny",            "file": "./g/granny.html",            "icon": "./g/assets/granny.jpg" },
-  { "tag": "Horror",  "name": "Granny 2",          "file": "./g/granny-2.html",          "icon": "./g/assets/granny-2.jpg" },
-  { "tag": "Horror",  "name": "FNAF",              "file": "https://script.google.com/macros/s/AKfycbxJNtrKTWPCSIo9tOqq53G2xqoQCIPDTYUsVOT79Eqk8I7C5cQkGdDnj0jzlNHa7bvs3g/exec",              "icon": "./g/assets/fnaf.jpg" },
-  { "tag": "Horror",  "name": "FNAF 2",            "file": "https://jasongamesdev.github.io/fnaf-2/", "icon": "./g/assets/fnaf2.jpg" },
-  { "tag": "Horror",  "name": "FNAF 3",            "file": "https://script.google.com/macros/s/AKfycbyVdPAG4aRGh5tmBwKEZthKmaqO12GTD-h-C1Do6ICbR3ZEj5ic1aJQ2e4Im2pxcWLf/exec",            "icon": "./g/assets/fnaf3.jpg" },
-  { "tag": "Horror",  "name": "FNAF 4",            "file": "./g/fnaf4.html",            "icon": "./g/assets/fnaf4.jpg" }
+  {
+    "tag": "Arcade",
+    "name": "Slope",
+    "file": "./g/slope.html",
+    "icon": "./g/assets/slope.png"
+  },
+  {
+    "tag": "Shooter",
+    "name": "1v1.LOL",
+    "file": "./g/1v1.lol.html",
+    "icon": "./g/assets/1v1.lol.png"
+  },
+  {
+    "tag": "Sports",
+    "name": "Basket Bros",
+    "file": "./g/basket-bros.html",
+    "icon": "./g/assets/basket-bros.png"
+  },
+  {
+    "tag": "Arcade",
+    "name": "Moto X3M",
+    "file": "./g/moto-x3m.html",
+    "icon": "./g/assets/moto-x3m.png"
+  },
+  {
+    "tag": "Puzzle",
+    "name": "Cookie Clicker",
+    "file": "./g/cookie-clicker.html",
+    "icon": "./g/assets/cookie-clicker.png"
+  },
+  {
+    "tag": "Arcade",
+    "name": "Escape Road City 2",
+    "file": "./g/escape-road-city-2.html",
+    "icon": "./g/assets/escape-road-city-2.png"
+  },
+  {
+    "tag": "Arcade",
+    "name": "Tomb Of The Mask",
+    "file": "./g/tomb-of-the-mask.html",
+    "icon": "./g/assets/tomb-of-the-mask.png"
+  },
+  {
+    "tag": "Sports",
+    "name": "Retro Bowl",
+    "file": "https://script.google.com/macros/s/AKfycbxkfMHeNjgt0LuksJhoAGS_T1jAnsQTkGw9GIRRi2VTljTi4t46Q0HIkslBvD7WOyXPHg/exec",
+    "icon": "./g/assets/retro-bowl.jpg"
+  },
+  {
+    "tag": "Sports",
+    "name": "Football Bros",
+    "file": "./g/football-bros.html",
+    "icon": "./g/assets/football-bros.png"
+  },
+  {
+    "tag": "Sports",
+    "name": "Baseball Bros",
+    "file": "./g/baseball-bros.html",
+    "icon": "./g/assets/baseball-bros.jpg"
+  },
+  {
+    "tag": "Sports",
+    "name": "Basketball Stars",
+    "file": "https://script.google.com/macros/s/AKfycbwzYMDDcdDUAvEP7iO6OdRk-5_oUp6vYvDdyEEz8tTOzWi5y4-Qf3vQ6TBoZuc9UYVcLg/exec",
+    "icon": "./g/assets/basketball-stars.jpg"
+  },
+  {
+    "tag": "Horror",
+    "name": "Granny",
+    "file": "./g/granny.html",
+    "icon": "./g/assets/granny.jpg"
+  },
+  {
+    "tag": "Horror",
+    "name": "Granny 2",
+    "file": "./g/granny-2.html",
+    "icon": "./g/assets/granny-2.jpg"
+  },
+  {
+    "tag": "Horror",
+    "name": "FNAF",
+    "file": "https://script.google.com/macros/s/AKfycbxJNtrKTWPCSIo9tOqq53G2xqoQCIPDTYUsVOT79Eqk8I7C5cQkGdDnj0jzlNHa7bvs3g/exec",
+    "icon": "./g/assets/fnaf.jpg"
+  },
+  {
+    "tag": "Horror",
+    "name": "FNAF 2",
+    "file": "https://jasongamesdev.github.io/fnaf-2/",
+    "icon": "./g/assets/fnaf2.jpg"
+  },
+  {
+    "tag": "Horror",
+    "name": "FNAF 3",
+    "file": "https://script.google.com/macros/s/AKfycbyVdPAG4aRGh5tmBwKEZthKmaqO12GTD-h-C1Do6ICbR3ZEj5ic1aJQ2e4Im2pxcWLf/exec",
+    "icon": "./g/assets/fnaf3.jpg"
+  },
+  {
+    "tag": "Horror",
+    "name": "FNAF 4",
+    "file": "./g/fnaf4.html",
+    "icon": "./g/assets/fnaf4.jpg"
+  }
 ]

@@ -1,274 +1,157 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Doomsday</title>
-<link rel="icon" type="image/x-icon" href="https://www.gstatic.com/classroom/logo_square_rounded.svg">
-<link rel="stylesheet" href="./styles.css">
-<link rel="stylesheet" href="./gamepix.css">
-<script src="./urlspace.js" defer></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07070a">
+  <meta name="description" content="Doomsday — a private digital game archive.">
+  <title>Doomsday — Digital Archive</title>
+  <link rel="icon" href="./g/assets/favicon-96x96.png">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
+  <canvas id="fx" aria-hidden="true"></canvas>
 
-<div id="edu-site">
-  <div class="edu-topbar">
-    <span>Doomsday</span>
-    <span>Digital Archive</span>
+  <section id="school-screen" class="school-screen">
+    <div class="school-noise"></div>
+    <header class="school-top">
+      <span>FAIRVIEW UNIFIED</span>
+      <span>DIGITAL LEARNING PORTAL</span>
+    </header>
+    <div class="school-brand">
+      <div class="school-crest">F</div>
+      <div>
+        <div class="eyebrow">STUDENT SERVICES</div>
+        <h1>Doomsday</h1>
+        <p>Digital Learning Portal</p>
+      </div>
+    </div>
+    <nav class="school-nav">
+      <a href="#">Home</a><a href="#">Announcements</a><a href="#">Assignments</a>
+      <a href="#">Library</a><a href="#">Resources</a><a id="school-request" href="#">Request a Game</a>
+      <a href="#">Staff Directory</a><a href="#">Contact</a>
+    </nav>
+    <main class="school-layout">
+      <div>
+        <section class="school-hero">
+          <span class="notice">STUDENT PORTAL</span>
+          <h2>Welcome back, Students</h2>
+          <p>This portal provides access to approved learning materials, subject guides, and district-wide announcements. Please review your assignment calendar and check the resource library for supplemental readings assigned by your instructors this week.</p>
+          <p>Reminder: all devices are subject to the district's acceptable use policy while connected to the school network.</p>
+        </section>
+        <section class="school-cards">
+          <article><b>Mathematics</b><span>Unit 4 practice sets and review guides are now posted.</span></article>
+          <article><b>Language Arts</b><span>Independent reading logs due Friday.</span></article>
+          <article><b>Science</b><span>Lab safety quiz results have been posted.</span></article>
+          <article><b>Social Studies</b><span>Primary source packet is available.</span></article>
+          <article><b>Study Hall</b><span>Quiet workspace scheduling is open.</span></article>
+          <article><b>Counseling</b><span>Schedule changes may be requested through the front office.</span></article>
+        </section>
+      </div>
+      <aside class="school-side">
+        <section><h3>Announcements</h3><ul><li>Early dismissal this Friday at 1:15pm.</li><li>Yearbook photos rescheduled.</li><li>Parent-teacher conferences are open.</li></ul></section>
+        <section><h3>Quick Links</h3><ul><li><a href="#">Assignment Calendar</a></li><li><a href="#">Gradebook Login</a></li><li><a href="#">Library Catalog</a></li><li><a href="#">Bus Route Finder</a></li></ul></section>
+      </aside>
+    </main>
+    <footer class="school-footer">© Fairview Unified School District — Digital Learning Portal.</footer>
+    <div class="school-hint">PRESS E TO CONTINUE</div>
+  </section>
+
+  <div id="transition" class="transition" aria-hidden="true">
+    <div class="transition-mark">DOOMSDAY</div>
+    <div class="transition-line"></div>
+    <div class="transition-sub">opening archive</div>
   </div>
-  <header class="edu-header">
-    <div class="edu-crest"></div>
-    <div>
-      <h1>Doomsday</h1>
-      <p>Every game they blocked. All in one place.</p>
-    </div>
-  </header>
-  <nav class="edu-nav">
-    <a href="#">Home</a>
-    <a href="#">Announcements</a>
-    <a href="#">Assignments</a>
-    <a href="#">Library</a>
-    <a href="#">Resources</a>
-    <a href="#" id="request-btn-disguise">Request a Game</a>
-    <a href="#">Staff Directory</a>
-    <a href="#">Contact</a>
-  </nav>
 
-  <main class="edu-main">
-    <div>
-      <section class="edu-hero">
-        <h2>Welcome back, Students</h2>
-        <p>This portal provides access to approved learning materials, subject guides, and district-wide
-        announcements. Please review your assignment calendar and check the resource library for supplemental
-        readings assigned by your instructors this week.</p>
-        <p>Reminder: all devices are subject to the district's acceptable use policy while connected to the
-        school network.</p>
+  <main id="archive" class="archive hidden">
+    <header class="appbar">
+      <a class="brand" href="#" data-home>
+        <span class="brand-mark">D</span><span>DOOMSDAY</span>
+      </a>
+      <nav>
+        <button class="nav-btn active" data-view="browse">Archive</button>
+        <button class="nav-btn" data-view="settings">Settings</button>
+        <button class="nav-btn" id="music-btn" title="Toggle music">♫</button>
+      </nav>
+    </header>
+
+    <section id="browse-view" class="view">
+      <div class="hero">
+        <div class="hero-copy">
+          <div class="status"><i></i> ARCHIVE ONLINE <span id="game-count"></span></div>
+          <h2>Every game they blocked.<br><em>I added.</em> You're welcome.</h2>
+          <p>A fast, local-first game archive with search, categories, preferences, ambient effects and a request system.</p>
+        </div>
+        <div class="hero-console">
+          <div class="console-top"><span>DOOMSDAY://SEARCH</span><span>⌘ K</span></div>
+          <div class="search-box">
+            <span>⌕</span><input id="search" autocomplete="off" placeholder="Search the archive..." aria-label="Search games"><button id="clear-search">ESC</button>
+          </div>
+          <div class="filters" id="filters"></div>
+        </div>
+      </div>
+
+      <section class="archive-section">
+        <div class="section-head"><div><span class="section-kicker">LIBRARY</span><h3>Games</h3></div><span id="result-count"></span></div>
+        <div id="game-grid" class="game-grid"></div>
+        <div id="empty" class="empty hidden"><div>∅</div><h3>No games found</h3><p>Try a different title or category.</p></div>
       </section>
 
-      <section class="edu-cards">
-        <div class="edu-card">
-          <h3>Mathematics</h3>
-          <p>Unit 4 practice sets and review guides are now posted for all sections.</p>
-        </div>
-        <div class="edu-card">
-          <h3>Language Arts</h3>
-          <p>Independent reading logs due Friday. See your teacher's page for the current list.</p>
-        </div>
-        <div class="edu-card">
-          <h3>Science</h3>
-          <p>Lab safety quiz results have been posted to the gradebook.</p>
-        </div>
-        <div class="edu-card">
-          <h3>Social Studies</h3>
-          <p>Primary source packet for the unit project is available in the resource library.</p>
-        </div>
-        <div class="edu-card">
-          <h3>Study Hall</h3>
-          <p>Quiet workspace scheduling is open for the remainder of the term.</p>
-        </div>
-        <div class="edu-card">
-          <h3>Counseling</h3>
-          <p>Schedule changes may be requested through the front office until Thursday.</p>
-        </div>
+      <section class="request-banner">
+        <div><span class="section-kicker">MISSING SOMETHING?</span><h3>Request a game.</h3><p>If a game is missing or blocked, send a request and it can be added to the archive.</p></div>
+        <button id="request-cta" class="primary">Request a Game <span>→</span></button>
       </section>
-    </div>
+    </section>
 
-    <aside class="edu-sidebar">
-      <div class="edu-box">
-        <h4>Announcements</h4>
-        <ul>
-          <li>Early dismissal this Friday at 1:15pm.</li>
-          <li>Yearbook photos rescheduled to next week.</li>
-          <li>Parent-teacher conferences open for sign-up.</li>
-        </ul>
+    <section id="settings-view" class="view hidden">
+      <div class="settings-head"><div><span class="section-kicker">CONTROL CENTER</span><h2>Settings</h2><p>Everything here is stored locally in your browser.</p></div><button class="ghost" data-view="browse">← Back</button></div>
+      <div class="settings-grid">
+        <section class="panel"><div class="panel-head"><span>Appearance</span><small>THEME</small></div>
+          <div class="setting"><div><b>Accent theme</b><small>Choose the archive color.</small></div><div id="theme-row" class="swatches"></div></div>
+          <div class="setting"><div><b>Grid size</b><small>Change game card density.</small></div><select id="grid-size"><option value="140">Compact</option><option value="180">Default</option><option value="220">Large</option></select></div>
+          <div class="setting"><div><b>Reduce motion</b><small>Disable transitions and effects.</small></div><button class="toggle" id="reduce-motion" aria-label="Reduce motion"></button></div>
+        </section>
+        <section class="panel"><div class="panel-head"><span>Background FX</span><small>AMBIENCE</small></div>
+          <div class="setting"><div><b>Effect</b><small>Ambient canvas effect.</small></div><select id="fx-mode"><option value="off">Off</option><option value="rain">Rain</option><option value="snow">Snow</option><option value="matrix">Matrix</option><option value="stars">Stars</option><option value="constellations">Constellations</option><option value="particles">Particles</option></select></div>
+          <div class="setting"><div><b>Density</b><small>Amount of particles.</small></div><select id="fx-density"><option value=".5">Low</option><option value="1">Normal</option><option value="1.8">High</option></select></div>
+        </section>
+        <section class="panel"><div class="panel-head"><span>Playback</span><small>GAME BEHAVIOR</small></div>
+          <div class="setting"><div><b>Fullscreen on play</b><small>Attempt fullscreen when supported.</small></div><button class="toggle" id="fullscreen-play"></button></div>
+          <div class="setting"><div><b>Confirm before closing</b><small>Ask before leaving a running game.</small></div><button class="toggle" id="confirm-close"></button></div>
+        </section>
+        <section class="panel"><div class="panel-head"><span>Tab Cloaking</span><small>OPTIONAL</small></div>
+          <div class="setting"><div><b>Enable tab cloaking</b><small>Use a custom title and favicon.</small></div><button class="toggle" id="cloak-enabled"></button></div>
+          <label class="field"><span>Tab title</span><input id="cloak-title" placeholder="Classes"></label>
+          <label class="field"><span>Favicon URL</span><input id="cloak-favicon" placeholder="https://www.gstatic.com/classroom/logo_square_rounded.svg"></label>
+          <button id="cloak-open" class="secondary full">Open cloaked tab</button>
+        </section>
       </div>
-      <div class="edu-box">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="#">Assignment Calendar</a></li>
-          <li><a href="#">Gradebook Login</a></li>
-          <li><a href="#">Library Catalog</a></li>
-          <li><a href="#">Bus Route Finder</a></li>
-        </ul>
-      </div>
-    </aside>
+      <button id="reset-settings" class="danger">Reset local settings</button>
+    </section>
+
+    <footer class="archive-footer"><span>DOOMSDAY</span><span>LOCAL-FIRST ARCHIVE</span><span>NO ACCOUNT REQUIRED</span></footer>
   </main>
 
-  <footer class="edu-footer">
-    © Fairview Unified School District — Digital Learning Portal. For technical support, contact the IT help desk.
-  </footer>
-
-  <div class="edu-hint">press e</div>
-</div>
-
-<div id="flash"></div>
-
-<div id="archive-root" aria-hidden="true">
-  <div class="loader-wrap">
-    <div class="loader-noise"></div>
-    <div class="loader-text">DOOMSDAY</div>
-    <div class="loader-sub">one sec</div>
-  </div>
-</div>
-
-<div id="archive-site">
-  <header class="arc-header">
-    <div class="arc-logo">DOOMSDAY</div>
-    <nav class="arc-nav">
-      <a href="#" id="request-btn">Request a Game</a>
-      <a href="#" id="settings-btn">Settings</a>
-    </nav>
-  </header>
-
-  <div id="browse-view">
-    <section class="arc-hero">
-      <h1>Every game they blocked. I added, You're Welcome.</h1>
-      <div class="arc-search">
-        <input type="text" placeholder="search Doomsday..." />
-        <button>Find</button>
-      </div>
-    </section>
-
-    <section class="arc-grid" id="game-grid"></section>
-
-    <section class="arc-request-cta">
-      <div class="arc-request-cta-inner">
-        <h2>Can't find what you're looking for?</h2>
-        <p>If a game's missing or blocked, request it and we'll try to add it to Doomsday.</p>
-        <button type="button" id="request-cta-btn" class="arc-request-btn">Request a Game</button>
-      </div>
-    </section>
-  </div>
-
-  <div id="settings-view">
-    <div class="settings-page-inner">
-      <button type="button" id="settings-back" class="settings-back-btn">← back to archive</button>
-
-      <div class="settings-panel">
-        <div class="settings-header">
-          <span>Settings</span>
-        </div>
-        <div class="settings-body">
-          <div class="settings-group">
-            <h4>Theme</h4>
-            <div class="theme-row" id="theme-row">
-              <div class="theme-swatch" data-theme="default" style="background:#0a0a0a; border-color:#3a3a3a;" title="Black"></div>
-              <div class="theme-swatch" data-theme="mono" style="background:#e8e8e8;" title="White"></div>
-              <div class="theme-swatch" data-theme="blue" style="background:#3d7bff;" title="Blue"></div>
-              <div class="theme-swatch" data-theme="teal" style="background:#2fcf9e;" title="Teal"></div>
-              <div class="theme-swatch" data-theme="red" style="background:#ef4444;" title="Red"></div>
-              <div class="theme-swatch" data-theme="amber" style="background:#f5a623;" title="Orange"></div>
-              <div class="theme-swatch" data-theme="purple" style="background:#6a5cff;" title="Purple"></div>
-              <div class="theme-swatch" data-theme="magenta" style="background:#d94fd9;" title="Magenta"></div>
-            </div>
-          </div>
-
-          <div class="settings-group">
-            <h4>Background FX</h4>
-            <div class="settings-row">
-              <span class="label">Weather / particles<small>Ambient background effect</small></span>
-              <select class="settings-select" id="fx-select">
-                <option value="off">Off</option>
-                <option value="rain">Rain</option>
-                <option value="snow">Snow</option>
-                <option value="matrix">Matrix</option>
-                <option value="stars">Stars</option>
-                <option value="constellations">Constellations</option>
-                <option value="particles">Particles</option>
-              </select>
-            </div>
-            <div class="settings-row">
-              <span class="label">Density<small>Amount of particles</small></span>
-              <select class="settings-select" id="fx-density">
-                <option value="0.5">Low</option>
-                <option value="1">Normal</option>
-                <option value="1.8">High</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="settings-group">
-            <h4>Layout</h4>
-            <div class="settings-row">
-              <span class="label">Grid size<small>Adjust tile density</small></span>
-              <select class="settings-select" id="grid-size-select">
-                <option value="140">Compact</option>
-                <option value="180">Default</option>
-                <option value="220">Large</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="settings-group">
-            <h4>Behavior</h4>
-            <div class="settings-row">
-              <span class="label">Fullscreen on play<small>Auto-expand game window</small></span>
-              <div class="toggle" id="toggle-fullscreen"></div>
-            </div>
-            <div class="settings-row">
-              <span class="label">Confirm before closing game<small>Ask before exiting a game</small></span>
-              <div class="toggle" id="toggle-confirm-close"></div>
-            </div>
-            <div class="settings-row">
-              <span class="label">Reduce motion<small>Disable hover/transition animations</small></span>
-              <div class="toggle" id="toggle-reduce-motion"></div>
-            </div>
-          </div>
-
-          <div class="settings-group">
-            <h4>Tab Cloaking</h4>
-            <div class="settings-row">
-              <span class="label">Enable tab cloaking<small>Disguise the tab title and icon</small></span>
-              <div class="toggle" id="toggle-cloak"></div>
-            </div>
-            <div class="settings-row">
-              <span class="label">Tab title<small>Custom title for the tab</small></span>
-              <input type="text" class="settings-input" id="cloak-title" placeholder="Classes">
-            </div>
-            <div class="settings-row">
-              <span class="label">Favicon URL<small>Custom favicon URL</small></span>
-              <input type="text" class="settings-input" id="cloak-favicon" placeholder="https://www.gstatic.com/classroom/logo_square_rounded.svg">
-            </div>
-            <div class="settings-row">
-              <span class="label">Open in cloaked tab<small>Launch about:blank with this site inside</small></span>
-              <button type="button" class="game-btn" id="cloak-open-btn">open about:blank</button>
-            </div>
-          </div>
-        </div>
-      </div>
+  <div id="request-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button id="request-close" class="modal-close">×</button>
+      <span class="section-kicker">ARCHIVE REQUEST</span><h2>Request a Game</h2><p>Tell us what should be added next.</p>
+      <form id="request-form">
+        <label>Game title<input id="request-name" maxlength="80" required placeholder="e.g. Retro Bowl"></label>
+        <label>Anything else? <small>(optional)</small><textarea id="request-note" maxlength="280" rows="4" placeholder="Link, category, notes..."></textarea></label>
+        <div class="modal-actions"><span id="request-status"></span><button class="primary" type="submit">Send request →</button></div>
+      </form>
     </div>
   </div>
 
-  <footer class="arc-footer">DOOMSDAY — this device leaves no logs</footer>
-</div>
-
-<div class="request-scrim" id="request-scrim" aria-hidden="true">
-  <div class="request-modal" role="dialog" aria-modal="true" aria-label="Request a game">
-    <div class="request-modal-bar">
-      <span class="request-modal-title">Request a Game</span>
-      <button type="button" class="request-close" id="request-close" aria-label="Close">&times;</button>
+  <div id="game-modal" class="game-modal hidden">
+    <div class="game-shell">
+      <header><div><span class="game-tag" id="play-tag"></span><strong id="play-title"></strong></div><div><button id="play-fullscreen" class="icon-btn">⛶</button><button id="play-close" class="icon-btn">×</button></div></header>
+      <iframe id="game-frame" title="Game" allow="fullscreen; gamepad; autoplay" allowfullscreen></iframe>
     </div>
-    <form class="request-form" id="request-form">
-      <label class="request-field">
-        <span class="request-label">Game title</span>
-        <input type="text" id="request-name" class="request-input" placeholder="e.g. Retro Bowl" required maxlength="80" />
-      </label>
-      <label class="request-field">
-        <span class="request-label">Anything else? <em>(optional)</em></span>
-        <textarea id="request-note" class="request-textarea" placeholder="link, category, why you want it..." maxlength="280" rows="3"></textarea>
-      </label>
-      <div class="request-actions">
-        <span class="request-hint" id="request-hint"></span>
-        <button type="submit" class="request-submit">Send request</button>
-      </div>
-    </form>
   </div>
-</div>
 
-<canvas id="fx"></canvas>
-
-<script src="./script.js" defer></script>
-<script src="./gamepix.js" defer></script>
-
+  <audio id="bg-music" loop preload="none" src="./g/assets/bg-music/MF Doom-Doomsday.mp3"></audio>
+  <script src="./script.js"></script>
 </body>
 </html>
