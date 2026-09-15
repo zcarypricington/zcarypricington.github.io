@@ -3,35 +3,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Doomsday</title>
-<link rel="icon" type="image/x-icon" href="https://www.gstatic.com/classroom/logo_square_rounded.svg">
-<style>
-/* ===========================
-   RESET + BASE
-=========================== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 15px; }
-body { font-family: 'Segoe UI', Arial, sans-serif; background: #0a0a0a; color: #e0e0e0; min-height: 100vh; overflow-x: hidden; }
-a { color: inherit; text-decoration: none; }
-button { cursor: pointer; font-family: inherit; }
-input, select, textarea { font-family: inherit; }
 
-/* ===========================
-   THEMES
-=========================== */
+<title>Doomsday</title>
+
+<link
+  rel="icon"
+  type="image/x-icon"
+  href="https://www.gstatic.com/classroom/logo_square_rounded.svg"
+>
+
+<style>
+/* =========================================================
+   RESET
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 15px;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
 :root {
   --accent: #e0e0e0;
   --accent-dim: #888;
+
   --bg: #0a0a0a;
   --bg2: #111;
   --bg3: #1a1a1a;
+
   --border: #2a2a2a;
+
   --text: #e0e0e0;
   --text-dim: #888;
-  --card-h: 180px;
+
   --card-w: 180px;
+  --card-h: 162px;
+
   --transition: .18s ease;
 }
+
+
+/* =========================================================
+   THEMES
+========================================================= */
+
 [data-theme="mono"] {
   --accent: #111;
   --accent-dim: #555;
@@ -42,6 +107,7 @@ input, select, textarea { font-family: inherit; }
   --text: #111;
   --text-dim: #555;
 }
+
 [data-theme="blue"] {
   --accent: #3d7bff;
   --accent-dim: #1a4db8;
@@ -52,6 +118,7 @@ input, select, textarea { font-family: inherit; }
   --text: #c8d8ff;
   --text-dim: #6688cc;
 }
+
 [data-theme="teal"] {
   --accent: #2fcf9e;
   --accent-dim: #19896a;
@@ -62,6 +129,7 @@ input, select, textarea { font-family: inherit; }
   --text: #b8f0e0;
   --text-dim: #5aaa88;
 }
+
 [data-theme="red"] {
   --accent: #ef4444;
   --accent-dim: #991f1f;
@@ -72,6 +140,7 @@ input, select, textarea { font-family: inherit; }
   --text: #ffd8d8;
   --text-dim: #cc7777;
 }
+
 [data-theme="amber"] {
   --accent: #f5a623;
   --accent-dim: #b07010;
@@ -82,6 +151,7 @@ input, select, textarea { font-family: inherit; }
   --text: #ffe8b8;
   --text-dim: #bb9944;
 }
+
 [data-theme="purple"] {
   --accent: #6a5cff;
   --accent-dim: #3a2eb8;
@@ -92,6 +162,7 @@ input, select, textarea { font-family: inherit; }
   --text: #d4d0ff;
   --text-dim: #7770cc;
 }
+
 [data-theme="magenta"] {
   --accent: #d94fd9;
   --accent-dim: #8a1f8a;
@@ -103,1569 +174,4503 @@ input, select, textarea { font-family: inherit; }
   --text-dim: #bb66bb;
 }
 
+
+/* =========================================================
+   BACKGROUND
+========================================================= */
+
 body {
   background: var(--bg);
   color: var(--text);
-  transition: background var(--transition), color var(--transition);
+  transition:
+    background .25s ease,
+    color .25s ease;
 }
 
-/* ===========================
-   FLASH OVERLAY
-=========================== */
+
+/* =========================================================
+   FLASH
+========================================================= */
+
 #flash {
-  position: fixed; inset: 0;
+  position: fixed;
+  inset: 0;
   background: var(--accent);
   opacity: 0;
   pointer-events: none;
-  z-index: 9998;
+  z-index: 9999;
   transition: opacity .12s;
 }
-#flash.active { opacity: .18; }
 
-/* ===========================
-   EDU SITE (DISGUISE)
-=========================== */
+#flash.active {
+  opacity: .18;
+}
+
+
+/* =========================================================
+   EDUCATION DISGUISE
+========================================================= */
+
 #edu-site {
   min-height: 100vh;
   background: #f8f9fa;
   color: #222;
+
   font-family: Georgia, serif;
+
   display: flex;
   flex-direction: column;
 }
+
 .edu-topbar {
   background: #1a3a5c;
-  color: #fff;
+  color: white;
+
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+
   padding: 6px 24px;
+
+  font-family: "Segoe UI", sans-serif;
   font-size: .78rem;
-  font-family: 'Segoe UI', sans-serif;
   letter-spacing: .04em;
 }
+
 .edu-header {
   background: #1e4d8c;
-  color: #fff;
+  color: white;
+
   display: flex;
   align-items: center;
+
   gap: 18px;
+
   padding: 18px 32px;
 }
+
 .edu-crest {
-  width: 56px; height: 56px;
-  background: rgba(255,255,255,.15);
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.3);
+  width: 56px;
+  height: 56px;
+
   flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.15);
+  border: 2px solid rgba(255,255,255,.3);
 }
-.edu-header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 2px; }
-.edu-header p { font-size: .88rem; opacity: .85; font-family: 'Segoe UI', sans-serif; }
+
+.edu-header h1 {
+  font-size: 1.5rem;
+  margin-bottom: 2px;
+}
+
+.edu-header p {
+  font-family: "Segoe UI", sans-serif;
+  font-size: .88rem;
+  opacity: .85;
+}
+
 .edu-nav {
   background: #163a6b;
+
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
 }
+
 .edu-nav a {
   color: #d8e8ff;
+
   padding: 10px 18px;
-  font-family: 'Segoe UI', sans-serif;
+
+  font-family: "Segoe UI", sans-serif;
   font-size: .84rem;
-  transition: background .15s;
+
   border-right: 1px solid rgba(255,255,255,.08);
+
+  transition:
+    background .15s ease,
+    color .15s ease;
 }
-.edu-nav a:hover { background: rgba(255,255,255,.1); }
+
+.edu-nav a:hover {
+  background: rgba(255,255,255,.1);
+}
+
 .edu-main {
   display: flex;
   flex: 1;
-  gap: 0;
 }
-.edu-main > div { flex: 1; padding: 24px 28px; }
+
+.edu-main > div {
+  flex: 1;
+  padding: 24px 28px;
+}
+
 .edu-hero {
-  background: #fff;
+  background: white;
+
   border: 1px solid #dde;
   border-radius: 6px;
+
   padding: 22px;
+
   margin-bottom: 20px;
 }
-.edu-hero h2 { font-size: 1.2rem; color: #1a3a5c; margin-bottom: 10px; }
-.edu-hero p { font-size: .9rem; color: #444; line-height: 1.6; margin-bottom: 8px; }
+
+.edu-hero h2 {
+  color: #1a3a5c;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.edu-hero p {
+  color: #444;
+  font-size: .9rem;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
 .edu-cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
 }
+
 .edu-card {
-  background: #fff;
+  background: white;
+
   border: 1px solid #dde;
   border-radius: 6px;
+
   padding: 16px;
 }
-.edu-card h3 { font-size: .95rem; color: #1a3a5c; margin-bottom: 6px; }
-.edu-card p { font-size: .82rem; color: #555; line-height: 1.5; }
+
+.edu-card h3 {
+  color: #1a3a5c;
+  font-size: .95rem;
+  margin-bottom: 6px;
+}
+
+.edu-card p {
+  color: #555;
+  font-size: .82rem;
+  line-height: 1.5;
+}
+
 .edu-sidebar {
   width: 240px;
-  padding: 24px 20px;
   flex-shrink: 0;
+
+  padding: 24px 20px;
+
   border-left: 1px solid #dde;
 }
-.edu-box { background: #fff; border: 1px solid #dde; border-radius: 6px; padding: 14px; margin-bottom: 14px; }
-.edu-box h4 { font-size: .88rem; color: #1a3a5c; font-weight: 700; margin-bottom: 8px; border-bottom: 1px solid #eef; padding-bottom: 6px; }
-.edu-box ul { list-style: disc; padding-left: 16px; }
-.edu-box li { font-size: .82rem; color: #444; line-height: 1.7; }
-.edu-box a { color: #1a3a5c; text-decoration: underline; font-size: .82rem; }
+
+.edu-box {
+  background: white;
+
+  border: 1px solid #dde;
+  border-radius: 6px;
+
+  padding: 14px;
+
+  margin-bottom: 14px;
+}
+
+.edu-box h4 {
+  color: #1a3a5c;
+
+  font-size: .88rem;
+
+  margin-bottom: 8px;
+
+  border-bottom: 1px solid #eef;
+  padding-bottom: 6px;
+}
+
+.edu-box ul {
+  list-style: disc;
+  padding-left: 16px;
+}
+
+.edu-box li {
+  color: #444;
+  font-size: .82rem;
+  line-height: 1.7;
+}
+
+.edu-box a {
+  color: #1a3a5c;
+  text-decoration: underline;
+  font-size: .82rem;
+}
+
 .edu-footer {
   background: #1a3a5c;
   color: #ccc;
-  font-family: 'Segoe UI', sans-serif;
+
+  font-family: "Segoe UI", sans-serif;
+
   font-size: .78rem;
+
   padding: 12px 28px;
+
   text-align: center;
 }
+
 .edu-hint {
   position: fixed;
-  bottom: 12px; right: 14px;
-  font-family: 'Segoe UI', sans-serif;
-  font-size: .72rem;
+
+  right: 14px;
+  bottom: 12px;
+
   color: rgba(0,0,0,.2);
-  background: transparent;
-  user-select: none;
+
+  font-family: "Segoe UI", sans-serif;
+  font-size: .72rem;
+
   pointer-events: none;
 }
 
-/* ===========================
-   LOADER (ARCHIVE ROOT)
-=========================== */
+
+/* =========================================================
+   ARCHIVE LOADER
+========================================================= */
+
 #archive-root {
-  position: fixed; inset: 0;
+  position: fixed;
+  inset: 0;
+
   background: var(--bg);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   z-index: 100;
+
   opacity: 0;
   pointer-events: none;
-  transition: opacity .3s;
+
+  transition: opacity .3s ease;
 }
+
 #archive-root.visible {
   opacity: 1;
   pointer-events: auto;
 }
-.loader-wrap { text-align: center; position: relative; }
+
+.loader-wrap {
+  text-align: center;
+}
+
 .loader-noise {
-  width: 120px; height: 120px;
+  width: 120px;
+  height: 120px;
+
   margin: 0 auto 22px;
+
   border-radius: 50%;
+
   border: 2px solid var(--accent);
-  position: relative;
+
   animation: spin 1.2s linear infinite;
 }
+
 .loader-noise::after {
-  content: '';
-  position: absolute;
-  inset: 8px;
+  content: "";
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
   border-radius: 50%;
+
   border: 1px solid var(--accent-dim);
+
+  transform: scale(.8);
+
   animation: spin 2s linear infinite reverse;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .loader-text {
+  color: var(--accent);
+
   font-size: 2.2rem;
   font-weight: 900;
+
   letter-spacing: .18em;
-  color: var(--accent);
-  font-family: 'Segoe UI', monospace;
-}
-.loader-sub {
-  font-size: .8rem;
-  color: var(--text-dim);
-  letter-spacing: .14em;
-  margin-top: 6px;
+
   font-family: monospace;
 }
 
-/* ===========================
-   ARCHIVE SITE
-=========================== */
+.loader-sub {
+  color: var(--text-dim);
+
+  font-family: monospace;
+
+  font-size: .8rem;
+
+  letter-spacing: .14em;
+
+  margin-top: 6px;
+}
+
+
+/* =========================================================
+   ARCHIVE
+========================================================= */
+
 #archive-site {
   min-height: 100vh;
+
   display: flex;
   flex-direction: column;
+
   background: var(--bg);
+
   opacity: 0;
   pointer-events: none;
-  transition: opacity .3s;
+
+  transition: opacity .3s ease;
 }
+
 #archive-site.visible {
   opacity: 1;
   pointer-events: auto;
 }
+
 .arc-header {
+  height: 54px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 0 28px;
-  height: 54px;
+
   background: var(--bg2);
+
   border-bottom: 1px solid var(--border);
-  position: sticky; top: 0;
+
+  position: sticky;
+  top: 0;
+
   z-index: 50;
 }
+
 .arc-logo {
+  color: var(--accent);
+
+  font-family: monospace;
+
   font-size: 1.05rem;
   font-weight: 900;
+
   letter-spacing: .18em;
-  color: var(--accent);
-  font-family: monospace;
 }
-.arc-nav { display: flex; gap: 8px; }
+
+.arc-nav {
+  display: flex;
+  gap: 8px;
+}
+
 .arc-nav a {
-  font-size: .8rem;
   color: var(--text-dim);
+
   padding: 6px 14px;
+
   border: 1px solid var(--border);
   border-radius: 4px;
-  transition: color var(--transition), border-color var(--transition), background var(--transition);
-  font-family: 'Segoe UI', sans-serif;
-}
-.arc-nav a:hover { color: var(--accent); border-color: var(--accent); background: rgba(255,255,255,.03); }
 
-/* HERO */
+  font-size: .8rem;
+
+  transition:
+    color .18s ease,
+    border-color .18s ease,
+    background .18s ease;
+}
+
+.arc-nav a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(255,255,255,.03);
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
 .arc-hero {
   padding: 44px 28px 32px;
+
   border-bottom: 1px solid var(--border);
 }
+
 .arc-hero h1 {
+  max-width: 700px;
+
+  color: var(--text);
+
   font-size: clamp(1.4rem, 3vw, 2.1rem);
   font-weight: 900;
-  color: var(--text);
-  margin-bottom: 18px;
-  max-width: 600px;
+
   line-height: 1.25;
+
+  margin-bottom: 18px;
 }
+
 .arc-search {
   display: flex;
+
   max-width: 500px;
-  gap: 0;
 }
+
 .arc-search input {
   flex: 1;
+
   background: var(--bg3);
+
+  color: var(--text);
+
   border: 1px solid var(--border);
   border-right: none;
+
   border-radius: 4px 0 0 4px;
+
   padding: 10px 14px;
-  color: var(--text);
+
   font-size: .9rem;
+
   outline: none;
-  transition: border-color var(--transition);
 }
-.arc-search input:focus { border-color: var(--accent); }
-.arc-search input::placeholder { color: var(--text-dim); }
+
+.arc-search input:focus {
+  border-color: var(--accent);
+}
+
+.arc-search input::placeholder {
+  color: var(--text-dim);
+}
+
 .arc-search button {
   background: var(--accent);
   color: var(--bg);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 0 4px 4px 0;
-  font-size: .88rem;
-  font-weight: 700;
-  transition: opacity var(--transition);
-}
-.arc-search button:hover { opacity: .85; }
 
-/* GAME GRID */
+  padding: 10px 20px;
+
+  border-radius: 0 4px 4px 0;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.game-section {
+  padding: 28px;
+}
+
+.game-section + .game-section {
+  padding-top: 8px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 16px;
+}
+
+.section-title {
+  color: var(--text);
+
+  font-size: 1rem;
+  font-weight: 800;
+
+  letter-spacing: .04em;
+}
+
+.section-subtitle {
+  color: var(--text-dim);
+  font-size: .75rem;
+}
+
+
+/* =========================================================
+   GAME GRID
+========================================================= */
+
 .arc-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--card-w), 1fr));
+
+  grid-template-columns:
+    repeat(auto-fill, minmax(var(--card-w), 1fr));
+
   gap: 14px;
-  padding: 28px;
-  flex: 1;
 }
+
 .game-card {
+  position: relative;
+
   background: var(--bg2);
+
   border: 1px solid var(--border);
-  border-radius: 6px;
+
+  border-radius: 7px;
+
   overflow: hidden;
+
   cursor: pointer;
-  transition: border-color var(--transition), transform var(--transition);
+
   display: flex;
   flex-direction: column;
+
+  opacity: 0;
+
+  animation: cardIn .35s ease forwards;
+
+  transition:
+    transform .2s ease,
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
 }
-.game-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.game-card:hover {
+  transform: translateY(-5px) scale(1.015);
+
+  border-color: var(--accent);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.28),
+    0 0 0 1px rgba(255,255,255,.025);
+}
+
+.game-card:active {
+  transform: translateY(-1px) scale(.995);
+}
+
 .game-card .thumb {
   width: 100%;
-  aspect-ratio: 16/9;
+
+  aspect-ratio: 16 / 9;
+
   background: var(--bg3);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
-  color: var(--text-dim);
+
   overflow: hidden;
+
   position: relative;
 }
-.game-card .thumb img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  display: block;
-}
-.game-card .thumb .placeholder-icon { font-size: 2rem; }
-.game-card .info { padding: 10px 12px 12px; }
-.game-card .title { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.game-card .meta { font-size: .72rem; color: var(--text-dim); }
 
-/* GAME VIEWER */
-#game-view {
-  display: flex;
-  position: fixed; inset: 0;
-  z-index: 200;
-  background: var(--bg);
-  flex-direction: column;
-  visibility: hidden;
-  opacity: 0;
-  transform: scale(1.025);
-  pointer-events: none;
-  transition: opacity .28s ease, transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s;
-}
-#game-view.open {
-  visibility: visible;
-  opacity: 1;
-  transform: scale(1);
-  pointer-events: auto;
-  transition: opacity .28s ease, transform .32s cubic-bezier(.2,.8,.2,1);
-}
-.game-loading {
+.game-card .thumb::after {
+  content: "";
+
   position: absolute;
-  inset: 42px 0 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 12px;
-  background: #000;
-  z-index: 2;
-  transition: opacity .2s ease;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.06),
+      transparent 40%,
+      rgba(0,0,0,.2)
+    );
+
   pointer-events: none;
 }
-.game-loading.hidden { opacity: 0; }
-.game-spinner {
-  width: 34px;
-  height: 34px;
-  border: 2px solid rgba(255,255,255,.16);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin .75s linear infinite;
+
+.game-card .thumb img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  transition:
+    transform .3s ease,
+    filter .3s ease;
 }
-.game-loading span { color: #aaa; font: 12px monospace; }
-.game-error {
+
+.game-card:hover .thumb img {
+  transform: scale(1.06);
+
+  filter: brightness(1.08);
+}
+
+.placeholder-icon {
+  font-size: 2rem;
+  opacity: .65;
+}
+
+.game-card .info {
+  padding: 10px 12px 12px;
+}
+
+.game-card .title {
+  color: var(--text);
+
+  font-size: .85rem;
+  font-weight: 700;
+
+  margin-bottom: 5px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-card .meta {
+  color: var(--text-dim);
+
+  font-size: .7rem;
+}
+
+.source-badge {
   position: absolute;
-  inset: 42px 0 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 10px;
-  background: #000;
+
+  top: 8px;
+  right: 8px;
+
   z-index: 3;
-  text-align: center;
-  padding: 30px;
+
+  padding: 4px 7px;
+
+  border-radius: 4px;
+
+  background: rgba(0,0,0,.78);
+
+  border: 1px solid rgba(255,255,255,.14);
+
+  color: #fff;
+
+  font-size: .62rem;
+  font-weight: 800;
+
+  letter-spacing: .04em;
+
+  backdrop-filter: blur(5px);
 }
-.game-error.open { display: flex; }
-.game-error strong { color: #fff; font-size: 1rem; }
-.game-error span { color: #888; max-width: 520px; line-height: 1.5; font-size: .8rem; }
+
+.source-badge.external {
+  color: #ffd166;
+  border-color: rgba(255,209,102,.4);
+}
+
+.source-badge.local {
+  color: #7ee787;
+  border-color: rgba(126,231,135,.35);
+}
+
+
+/* =========================================================
+   GAME VIEWER
+========================================================= */
+
+#game-view {
+  display: none;
+
+  position: fixed;
+  inset: 0;
+
+  z-index: 200;
+
+  background: var(--bg);
+
+  flex-direction: column;
+}
+
+#game-view.open {
+  display: flex;
+}
+
 .game-bar {
   height: 42px;
+
+  flex-shrink: 0;
+
   background: var(--bg2);
+
   border-bottom: 1px solid var(--border);
+
   display: flex;
   align-items: center;
+
   gap: 10px;
+
   padding: 0 14px;
-  flex-shrink: 0;
 }
+
 .game-btn {
   background: var(--bg3);
-  border: 1px solid var(--border);
+
   color: var(--text-dim);
+
+  border: 1px solid var(--border);
+
   padding: 5px 12px;
+
   border-radius: 4px;
+
   font-size: .78rem;
-  transition: color var(--transition), border-color var(--transition);
+
+  transition:
+    color .18s ease,
+    border-color .18s ease,
+    background .18s ease;
 }
-.game-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+.game-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .game-title-bar {
   flex: 1;
+
+  color: var(--text);
+
   font-size: .82rem;
   font-weight: 700;
-  color: var(--text);
+
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 #game-frame {
   flex: 1;
+
+  width: 100%;
+  height: 100%;
+
   border: none;
+
   background: #000;
-  width: 100%; height: 100%;
 }
 
-/* REQUEST MODAL */
+
+/* =========================================================
+   REQUEST
+========================================================= */
+
 .request-scrim {
   display: none;
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.7);
+
+  position: fixed;
+  inset: 0;
+
   z-index: 300;
+
+  background: rgba(0,0,0,.72);
+
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
+
+  backdrop-filter: blur(5px);
 }
-.request-scrim.open { display: flex; }
+
+.request-scrim.open {
+  display: flex;
+}
+
 .request-modal {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
   width: 440px;
   max-width: 94vw;
-  box-shadow: 0 12px 40px rgba(0,0,0,.6);
+
+  background: var(--bg2);
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.6);
+
+  animation: modalIn .2s ease;
 }
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .request-modal-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   padding: 14px 18px;
+
   border-bottom: 1px solid var(--border);
 }
-.request-modal-title { font-size: .9rem; font-weight: 700; color: var(--text); }
-.request-close {
-  background: none; border: none; color: var(--text-dim); font-size: 1.3rem;
-  line-height: 1; padding: 2px 6px; border-radius: 4px;
+
+.request-modal-title {
+  color: var(--text);
+
+  font-size: .9rem;
+  font-weight: 700;
 }
-.request-close:hover { color: var(--text); background: var(--bg3); }
-.request-form { padding: 18px; }
-.request-field { display: block; margin-bottom: 14px; }
-.request-label { display: block; font-size: .78rem; color: var(--text-dim); margin-bottom: 5px; }
-.request-label em { color: var(--text-dim); }
-.request-input, .request-textarea {
-  width: 100%; background: var(--bg3);
+
+.request-close {
+  background: none;
+
+  color: var(--text-dim);
+
+  font-size: 1.3rem;
+
+  padding: 2px 6px;
+
+  border-radius: 4px;
+}
+
+.request-close:hover {
+  color: var(--text);
+  background: var(--bg3);
+}
+
+.request-form {
+  padding: 18px;
+}
+
+.request-field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.request-label {
+  display: block;
+
+  color: var(--text-dim);
+
+  font-size: .78rem;
+
+  margin-bottom: 5px;
+}
+
+.request-input,
+.request-textarea {
+  width: 100%;
+
+  background: var(--bg3);
+
   border: 1px solid var(--border);
-  border-radius: 4px; padding: 9px 12px;
-  color: var(--text); font-size: .88rem; outline: none;
-  transition: border-color var(--transition);
+
+  border-radius: 4px;
+
+  color: var(--text);
+
+  padding: 9px 12px;
+
+  font-size: .88rem;
+
+  outline: none;
+
   resize: none;
 }
-.request-input:focus, .request-textarea:focus { border-color: var(--accent); }
-.request-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
-.request-hint { font-size: .75rem; color: var(--text-dim); }
-.request-submit {
-  background: var(--accent); color: var(--bg);
-  border: none; padding: 9px 22px; border-radius: 4px;
-  font-size: .85rem; font-weight: 700;
-  transition: opacity var(--transition);
-}
-.request-submit:hover { opacity: .85; }
 
-/* REQUEST CTA SECTION */
+.request-input:focus,
+.request-textarea:focus {
+  border-color: var(--accent);
+}
+
+.request-actions {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.request-hint {
+  color: var(--text-dim);
+
+  font-size: .75rem;
+}
+
+.request-submit,
+.arc-request-btn {
+  background: var(--accent);
+
+  color: var(--bg);
+
+  padding: 9px 22px;
+
+  border-radius: 4px;
+
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   REQUEST CTA
+========================================================= */
+
 .arc-request-cta {
   padding: 36px 28px;
+
   border-top: 1px solid var(--border);
+
   background: var(--bg2);
 }
-.arc-request-cta-inner { max-width: 500px; }
-.arc-request-cta h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
-.arc-request-cta p { font-size: .88rem; color: var(--text-dim); margin-bottom: 16px; }
-.arc-request-btn {
-  background: var(--accent); color: var(--bg);
-  border: none; padding: 10px 24px; border-radius: 4px;
-  font-size: .88rem; font-weight: 700;
-  transition: opacity var(--transition);
-}
-.arc-request-btn:hover { opacity: .85; }
 
-/* FOOTER */
+.arc-request-cta h2 {
+  color: var(--text);
+
+  font-size: 1.2rem;
+
+  margin-bottom: 8px;
+}
+
+.arc-request-cta p {
+  color: var(--text-dim);
+
+  font-size: .88rem;
+
+  margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
 .arc-footer {
   text-align: center;
+
   padding: 14px;
-  font-size: .72rem;
+
   color: var(--text-dim);
+
   border-top: 1px solid var(--border);
-  letter-spacing: .08em;
+
   font-family: monospace;
+
+  font-size: .72rem;
+
+  letter-spacing: .08em;
 }
 
-/* ===========================
-   SETTINGS VIEW
-=========================== */
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
 #settings-view {
   display: none;
+
   flex: 1;
+
   overflow-y: auto;
 }
-#settings-view.open { display: block; }
-.settings-page-inner { padding: 28px; max-width: 640px; }
+
+#settings-view.open {
+  display: block;
+}
+
+.settings-page-inner {
+  max-width: 640px;
+
+  padding: 28px;
+}
+
 .settings-back-btn {
-  background: none; border: 1px solid var(--border);
-  color: var(--text-dim); padding: 7px 14px;
-  border-radius: 4px; font-size: .8rem; margin-bottom: 24px;
-  transition: color var(--transition), border-color var(--transition);
+  background: none;
+
+  color: var(--text-dim);
+
+  border: 1px solid var(--border);
+
+  padding: 7px 14px;
+
+  border-radius: 4px;
+
+  font-size: .8rem;
+
+  margin-bottom: 24px;
 }
-.settings-back-btn:hover { color: var(--accent); border-color: var(--accent); }
-.settings-panel { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-.settings-header { padding: 14px 18px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--text); }
-.settings-body { padding: 8px 0; }
-.settings-group { padding: 14px 18px 10px; border-bottom: 1px solid var(--border); }
-.settings-group:last-child { border-bottom: none; }
-.settings-group h4 { font-size: .78rem; font-weight: 700; color: var(--accent); margin-bottom: 12px; letter-spacing: .06em; text-transform: uppercase; }
+
+.settings-back-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.settings-panel {
+  background: var(--bg2);
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  overflow: hidden;
+}
+
+.settings-header {
+  padding: 14px 18px;
+
+  border-bottom: 1px solid var(--border);
+
+  font-weight: 700;
+}
+
+.settings-group {
+  padding: 14px 18px 10px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-group:last-child {
+  border-bottom: none;
+}
+
+.settings-group h4 {
+  color: var(--accent);
+
+  font-size: .78rem;
+
+  margin-bottom: 12px;
+
+  letter-spacing: .06em;
+
+  text-transform: uppercase;
+}
+
 .settings-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 7px 0; gap: 14px;
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  padding: 7px 0;
 }
-.settings-row .label { flex: 1; }
-.settings-row .label { font-size: .85rem; color: var(--text); }
-.settings-row .label small { display: block; font-size: .72rem; color: var(--text-dim); margin-top: 1px; }
-.settings-select {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 4px; color: var(--text); padding: 6px 10px;
-  font-size: .82rem; outline: none; min-width: 110px;
-  transition: border-color var(--transition);
+
+.settings-row .label {
+  flex: 1;
+
+  color: var(--text);
+
+  font-size: .85rem;
 }
-.settings-select:focus { border-color: var(--accent); }
+
+.settings-row .label small {
+  display: block;
+
+  color: var(--text-dim);
+
+  font-size: .72rem;
+
+  margin-top: 1px;
+}
+
+.settings-select,
 .settings-input {
-  background: var(--bg3); border: 1px solid var(--border);
-  border-radius: 4px; color: var(--text); padding: 6px 10px;
-  font-size: .82rem; outline: none; width: 200px;
-  transition: border-color var(--transition);
-}
-.settings-input:focus { border-color: var(--accent); }
+  background: var(--bg3);
 
-/* TOGGLE SWITCH */
+  color: var(--text);
+
+  border: 1px solid var(--border);
+
+  border-radius: 4px;
+
+  padding: 6px 10px;
+
+  font-size: .82rem;
+
+  outline: none;
+}
+
+.settings-select {
+  min-width: 110px;
+}
+
+.settings-input {
+  width: 200px;
+}
+
+.settings-select:focus,
+.settings-input:focus {
+  border-color: var(--accent);
+}
+
+
+/* =========================================================
+   TOGGLE
+========================================================= */
+
 .toggle {
-  width: 40px; height: 22px;
-  background: var(--border);
-  border-radius: 11px; position: relative;
-  cursor: pointer; transition: background var(--transition);
+  width: 40px;
+  height: 22px;
+
   flex-shrink: 0;
+
+  background: var(--border);
+
+  border-radius: 11px;
+
+  position: relative;
+
+  cursor: pointer;
 }
-.toggle.on { background: var(--accent); }
+
+.toggle.on {
+  background: var(--accent);
+}
+
 .toggle::after {
-  content: '';
-  position: absolute; top: 3px; left: 3px;
-  width: 16px; height: 16px;
-  border-radius: 50%; background: #fff;
-  transition: left var(--transition);
-}
-.toggle.on::after { left: 21px; }
+  content: "";
 
-/* THEME SWATCHES */
-.theme-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  position: absolute;
+
+  top: 3px;
+  left: 3px;
+
+  width: 16px;
+  height: 16px;
+
+  background: white;
+
+  border-radius: 50%;
+
+  transition: left .18s ease;
+}
+
+.toggle.on::after {
+  left: 21px;
+}
+
+
+/* =========================================================
+   THEME SWATCHES
+========================================================= */
+
+.theme-row {
+  display: flex;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+}
+
 .theme-swatch {
-  width: 28px; height: 28px;
-  border-radius: 50%; cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform .12s, border-color .12s;
-}
-.theme-swatch:hover { transform: scale(1.15); }
-.theme-swatch.active { border-color: var(--text) !important; }
+  width: 28px;
+  height: 28px;
 
-/* ===========================
-   CANVAS FX
-=========================== */
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  border: 2px solid transparent;
+
+  transition:
+    transform .12s ease,
+    border-color .12s ease;
+}
+
+.theme-swatch:hover {
+  transform: scale(1.15);
+}
+
+.theme-swatch.active {
+  border-color: var(--text) !important;
+}
+
+
+/* =========================================================
+   FX
+========================================================= */
+
 #fx {
-  position: fixed; inset: 0;
+  position: fixed;
+  inset: 0;
+
   pointer-events: none;
+
   z-index: 0;
+
   opacity: .45;
 }
 
-/* ===========================
-   GAME SECTIONS
-=========================== */
-.game-section {
-  margin: 0 28px 34px;
-}
-.game-section-heading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 0 0 14px;
-}
-.game-section-heading h2 {
-  margin: 3px 0 0;
-  font-size: 1.15rem;
-  letter-spacing: -.02em;
-}
-.game-section-kicker {
-  display: block;
-  color: var(--accent);
-  font-size: .62rem;
-  font-weight: 800;
-  letter-spacing: .14em;
-}
-.game-section-count {
-  color: var(--text-dim);
-  font-size: .72rem;
-  padding-bottom: 3px;
-}
-.external-section {
-  padding-top: 8px;
-}
-@media (max-width: 700px) {
-  .game-section { margin-left: 16px; margin-right: 16px; }
-}
 
-/* ===========================
-   GAMEPIX EMBED STYLES
-=========================== */
-.gamepix-embed {
-  display: none;
-  position: fixed; inset: 0; z-index: 500;
-  background: var(--bg);
-  flex-direction: column;
-}
-.gamepix-embed.open { display: flex; }
-.gamepix-bar {
-  height: 42px; background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center;
-  gap: 10px; padding: 0 14px; flex-shrink: 0;
-}
-.gamepix-iframe {
-  flex: 1; border: none; background: #000;
-  width: 100%; height: 100%;
-}
+/* =========================================================
+   EMPTY
+========================================================= */
 
-/* ===========================
-   BROWSE VIEW
-=========================== */
-#browse-view { display: flex; flex-direction: column; flex: 1; }
-#browse-view.hidden { display: none; }
-
-/* EXTRA MOTION */
-.arc-header {
-  animation: headerDrop .55s cubic-bezier(.2,.8,.2,1) both;
-}
-.arc-hero h1 {
-  animation: heroUp .65s .08s cubic-bezier(.2,.8,.2,1) both;
-}
-.arc-search {
-  animation: heroUp .65s .16s cubic-bezier(.2,.8,.2,1) both;
-}
-.arc-request-cta {
-  animation: fadeUp .65s .2s both;
-}
-.edu-header, .edu-nav, .edu-hero, .edu-card, .edu-box {
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-.edu-card:hover, .edu-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0,0,0,.08);
-}
-.request-modal {
-  animation: modalIn .28s cubic-bezier(.2,.8,.2,1) both;
-}
-.request-scrim.open {
-  animation: scrimIn .2s ease both;
-}
-@keyframes headerDrop {
-  from { opacity: 0; transform: translateY(-12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes heroUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes modalIn {
-  from { opacity: 0; transform: translateY(14px) scale(.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes scrimIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-/* REDUCE MOTION */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; animation: none !important; }
-}
-body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after {
-  transition: none !important; animation: none !important;
-}
-
-/* EMPTY STATE */
 .arc-empty {
-  grid-column: 1/-1;
+  grid-column: 1 / -1;
+
   padding: 48px 0;
+
   text-align: center;
+
   color: var(--text-dim);
+
   font-size: .9rem;
 }
 
-/* SCROLLBAR */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg2); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-dim);
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .edu-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .edu-sidebar {
+    display: none;
+  }
+
+  .arc-header {
+    padding: 0 14px;
+  }
+
+  .arc-hero {
+    padding: 30px 16px 24px;
+  }
+
+  .game-section {
+    padding: 20px 16px;
+  }
+
+  .arc-request-cta {
+    padding: 28px 16px;
+  }
+
+  .settings-page-inner {
+    padding: 18px 16px;
+  }
+
+  .settings-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .settings-select,
+  .settings-input {
+    width: 100%;
+  }
+}
 </style>
 </head>
+
 <body>
 
-<!-- =========== EDU DISGUISE LAYER =========== -->
+
+<!-- =======================================================
+     EDUCATION DISGUISE
+======================================================= -->
+
 <div id="edu-site">
+
   <div class="edu-topbar">
     <span>Doomsday</span>
     <span>Digital Archive</span>
   </div>
+
   <header class="edu-header">
+
     <div class="edu-crest"></div>
+
     <div>
       <h1>Doomsday</h1>
       <p>Every game they blocked. All in one place.</p>
     </div>
+
   </header>
+
   <nav class="edu-nav">
+
     <a href="#">Home</a>
     <a href="#">Announcements</a>
     <a href="#">Assignments</a>
     <a href="#">Library</a>
     <a href="#">Resources</a>
-    <a href="#" id="request-btn-disguise">Request a Game</a>
+
+    <a
+      href="#"
+      id="request-btn-disguise"
+    >
+      Request a Game
+    </a>
+
     <a href="#">Staff Directory</a>
     <a href="#">Contact</a>
+
   </nav>
+
   <main class="edu-main">
+
     <div>
+
       <section class="edu-hero">
+
         <h2>Welcome back, Students</h2>
-        <p>This portal provides access to approved learning materials, subject guides, and district-wide announcements. Please review your assignment calendar and check the resource library for supplemental readings assigned by your instructors this week.</p>
-        <p>Reminder: all devices are subject to the district's acceptable use policy while connected to the school network.</p>
+
+        <p>
+          This portal provides access to approved learning materials,
+          subject guides, and district-wide announcements.
+        </p>
+
+        <p>
+          Reminder: all devices are subject to the district's
+          acceptable use policy while connected to the school network.
+        </p>
+
       </section>
+
       <section class="edu-cards">
-        <div class="edu-card"><h3>Mathematics</h3><p>Unit 4 practice sets and review guides are now posted for all sections.</p></div>
-        <div class="edu-card"><h3>Language Arts</h3><p>Independent reading logs due Friday. See your teacher's page for the current list.</p></div>
-        <div class="edu-card"><h3>Science</h3><p>Lab safety quiz results have been posted to the gradebook.</p></div>
-        <div class="edu-card"><h3>Social Studies</h3><p>Primary source packet for the unit project is available in the resource library.</p></div>
-        <div class="edu-card"><h3>Study Hall</h3><p>Quiet workspace scheduling is open for the remainder of the term.</p></div>
-        <div class="edu-card"><h3>Counseling</h3><p>Schedule changes may be requested through the front office until Thursday.</p></div>
+
+        <div class="edu-card">
+          <h3>Mathematics</h3>
+          <p>Unit 4 practice sets and review guides are now posted.</p>
+        </div>
+
+        <div class="edu-card">
+          <h3>Language Arts</h3>
+          <p>Independent reading logs due Friday.</p>
+        </div>
+
+        <div class="edu-card">
+          <h3>Science</h3>
+          <p>Lab safety quiz results have been posted.</p>
+        </div>
+
+        <div class="edu-card">
+          <h3>Social Studies</h3>
+          <p>Primary source materials are available.</p>
+        </div>
+
+        <div class="edu-card">
+          <h3>Study Hall</h3>
+          <p>Quiet workspace scheduling is open.</p>
+        </div>
+
+        <div class="edu-card">
+          <h3>Counseling</h3>
+          <p>Schedule changes may be requested through the office.</p>
+        </div>
+
       </section>
+
     </div>
+
     <aside class="edu-sidebar">
+
       <div class="edu-box">
+
         <h4>Announcements</h4>
+
         <ul>
-          <li>Early dismissal this Friday at 1:15pm.</li>
-          <li>Yearbook photos rescheduled to next week.</li>
-          <li>Parent-teacher conferences open for sign-up.</li>
+          <li>Early dismissal this Friday.</li>
+          <li>Yearbook photos rescheduled.</li>
+          <li>Parent-teacher conferences open.</li>
         </ul>
+
       </div>
+
       <div class="edu-box">
+
         <h4>Quick Links</h4>
+
         <ul>
           <li><a href="#">Assignment Calendar</a></li>
           <li><a href="#">Gradebook Login</a></li>
           <li><a href="#">Library Catalog</a></li>
           <li><a href="#">Bus Route Finder</a></li>
         </ul>
+
       </div>
+
     </aside>
+
   </main>
-  <footer class="edu-footer">© Fairview Unified School District — Digital Learning Portal. For technical support, contact the IT help desk.</footer>
-  <div class="edu-hint">press e</div>
+
+  <footer class="edu-footer">
+    © Fairview Unified School District — Digital Learning Portal.
+  </footer>
+
+  <div class="edu-hint">
+    press E
+  </div>
+
 </div>
 
-<!-- =========== FLASH OVERLAY =========== -->
+
+<!-- =======================================================
+     FLASH
+======================================================= -->
+
 <div id="flash"></div>
 
-<!-- =========== LOADER =========== -->
+
+<!-- =======================================================
+     LOADER
+======================================================= -->
+
 <div id="archive-root">
+
   <div class="loader-wrap">
+
     <div class="loader-noise"></div>
-    <div class="loader-text">DOOMSDAY</div>
-    <div class="loader-sub">one sec</div>
+
+    <div class="loader-text">
+      DOOMSDAY
+    </div>
+
+    <div class="loader-sub">
+      one sec
+    </div>
+
   </div>
+
 </div>
 
-<!-- =========== ARCHIVE SITE =========== -->
+
+<!-- =======================================================
+     ARCHIVE
+======================================================= -->
+
 <div id="archive-site">
+
   <header class="arc-header">
-    <div class="arc-logo">DOOMSDAY</div>
+
+    <div class="arc-logo">
+      DOOMSDAY
+    </div>
+
     <nav class="arc-nav">
-      <a href="#" id="request-btn">Request a Game</a>
-      <a href="#" id="settings-btn">Settings</a>
+
+      <a href="#" id="request-btn">
+        Request a Game
+      </a>
+
+      <a href="#" id="settings-btn">
+        Settings
+      </a>
+
     </nav>
+
   </header>
 
-  <!-- BROWSE VIEW -->
+
+  <!-- =====================================================
+       BROWSE
+  ====================================================== -->
+
   <div id="browse-view">
+
     <section class="arc-hero">
-      <h1>Every game they blocked. I added, You're Welcome.</h1>
+
+      <h1>
+        Every game they blocked. I added, You're Welcome.
+      </h1>
+
       <div class="arc-search">
-        <input type="text" id="search-input" placeholder="search Doomsday..." />
-        <button id="search-btn">Find</button>
+
+        <input
+          type="text"
+          id="search-input"
+          placeholder="search Doomsday..."
+          autocomplete="off"
+        >
+
+        <button id="search-btn">
+          Find
+        </button>
+
       </div>
-    </section>
-    <section class="game-section" id="local-games-section">
-      <div class="game-section-heading">
-        <div>
-          <span class="game-section-kicker">HOSTED ON DOOMSDAY</span>
-          <h2>Local Games</h2>
-        </div>
-        <span class="game-section-count" id="local-games-count"></span>
-      </div>
-      <section class="arc-grid" id="local-game-grid"></section>
+
     </section>
 
-    <section class="game-section external-section" id="external-games-section">
-      <div class="game-section-heading">
-        <div>
-          <span class="game-section-kicker">EXTERNAL SOURCES</span>
-          <h2>More Games</h2>
+
+    <!-- LOCAL -->
+
+    <section class="game-section">
+
+      <div class="section-header">
+
+        <div class="section-title">
+          HOSTED ON DOOMSDAY
         </div>
-        <span class="game-section-count" id="external-games-count"></span>
+
+        <div
+          class="section-subtitle"
+          id="local-count"
+        >
+          Local Games
+        </div>
+
       </div>
-      <section class="arc-grid" id="external-game-grid"></section>
+
+      <div
+        class="arc-grid"
+        id="local-game-grid"
+      ></div>
+
     </section>
+
+
+    <!-- EXTERNAL -->
+
+    <section class="game-section">
+
+      <div class="section-header">
+
+        <div class="section-title">
+          EXTERNAL SOURCES
+        </div>
+
+        <div class="section-subtitle">
+          Opens in a new tab
+        </div>
+
+      </div>
+
+      <div
+        class="arc-grid"
+        id="external-game-grid"
+      ></div>
+
+    </section>
+
+
+    <!-- REQUEST -->
+
     <section class="arc-request-cta">
-      <div class="arc-request-cta-inner">
-        <h2>Can't find what you're looking for?</h2>
-        <p>If a game's missing or blocked, request it and we'll try to add it to Doomsday.</p>
-        <button type="button" id="request-cta-btn" class="arc-request-btn">Request a Game</button>
+
+      <div>
+
+        <h2>
+          Can't find what you're looking for?
+        </h2>
+
+        <p>
+          If a game's missing or blocked, request it and we'll try
+          to add it to Doomsday.
+        </p>
+
+        <button
+          type="button"
+          id="request-cta-btn"
+          class="arc-request-btn"
+        >
+          Request a Game
+        </button>
+
       </div>
+
     </section>
-    <footer class="arc-footer">DOOMSDAY — this device leaves no logs</footer>
+
+
+    <footer class="arc-footer">
+      DOOMSDAY — this device leaves no logs
+    </footer>
+
   </div>
 
-  <!-- SETTINGS VIEW -->
+
+  <!-- =====================================================
+       SETTINGS
+  ====================================================== -->
+
   <div id="settings-view">
+
     <div class="settings-page-inner">
-      <button type="button" id="settings-back" class="settings-back-btn">← back to archive</button>
+
+      <button
+        type="button"
+        id="settings-back"
+        class="settings-back-btn"
+      >
+        ← back to archive
+      </button>
+
       <div class="settings-panel">
-        <div class="settings-header"><span>Settings</span></div>
+
+        <div class="settings-header">
+          Settings
+        </div>
+
         <div class="settings-body">
 
-          <div class="settings-group">
-            <h4>Theme</h4>
-            <div class="theme-row" id="theme-row">
-              <div class="theme-swatch" data-theme="default" style="background:#0a0a0a; border-color:#3a3a3a;" title="Black"></div>
-              <div class="theme-swatch" data-theme="mono"    style="background:#e8e8e8;" title="White"></div>
-              <div class="theme-swatch" data-theme="blue"    style="background:#3d7bff;" title="Blue"></div>
-              <div class="theme-swatch" data-theme="teal"    style="background:#2fcf9e;" title="Teal"></div>
-              <div class="theme-swatch" data-theme="red"     style="background:#ef4444;" title="Red"></div>
-              <div class="theme-swatch" data-theme="amber"   style="background:#f5a623;" title="Orange"></div>
-              <div class="theme-swatch" data-theme="purple"  style="background:#6a5cff;" title="Purple"></div>
-              <div class="theme-swatch" data-theme="magenta" style="background:#d94fd9;" title="Magenta"></div>
-            </div>
-          </div>
+
+          <!-- THEME -->
 
           <div class="settings-group">
-            <h4>Background FX</h4>
+
+            <h4>
+              Theme
+            </h4>
+
+            <div
+              class="theme-row"
+              id="theme-row"
+            >
+
+              <div
+                class="theme-swatch"
+                data-theme="default"
+                style="background:#0a0a0a;border-color:#3a3a3a;"
+                title="Black"
+              ></div>
+
+              <div
+                class="theme-swatch"
+                data-theme="mono"
+                style="background:#e8e8e8;"
+                title="White"
+              ></div>
+
+              <div
+                class="theme-swatch"
+                data-theme="blue"
+                style="background:#3d7bff;"
+                title="Blue"
+              ></div>
+
+              <div
+                class="theme-swatch"
+                data-theme="teal"
+                style="background:#2fcf9e;"
+                title="Teal"
+              ></div>
+
+              <div
+                class="theme-swatch"
+                data-theme="red"
+                style="background:#ef4444;"
+                title="Red"
+              ></div>
+
+              <div
+                class="theme-swatch"
+                data-theme="amber"
+                style="background:#f5a623;"
+                title="Orange"
+              ></div>
+
+              <div
+                class="theme-swatch"
+                data-theme="purple"
+                style="background:#6a5cff;"
+                title="Purple"
+              ></div>
+
+              <div
+                class="theme-swatch"
+                data-theme="magenta"
+                style="background:#d94fd9;"
+                title="Magenta"
+              ></div>
+
+            </div>
+
+          </div>
+
+
+          <!-- FX -->
+
+          <div class="settings-group">
+
+            <h4>
+              Background FX
+            </h4>
+
             <div class="settings-row">
-              <span class="label">Weather / particles<small>Ambient background effect</small></span>
-              <select class="settings-select" id="fx-select">
-                <option value="off">Off</option>
-                <option value="rain">Rain</option>
-                <option value="snow">Snow</option>
-                <option value="matrix">Matrix</option>
-                <option value="stars">Stars</option>
-                <option value="constellations">Constellations</option>
-                <option value="particles">Particles</option>
+
+              <span class="label">
+                Weather / particles
+                <small>
+                  Ambient background effect
+                </small>
+              </span>
+
+              <select
+                class="settings-select"
+                id="fx-select"
+              >
+
+                <option value="off">
+                  Off
+                </option>
+
+                <option value="rain">
+                  Rain
+                </option>
+
+                <option value="snow">
+                  Snow
+                </option>
+
+                <option value="matrix">
+                  Matrix
+                </option>
+
+                <option value="stars">
+                  Stars
+                </option>
+
+                <option value="constellations">
+                  Constellations
+                </option>
+
+                <option value="particles">
+                  Particles
+                </option>
+
               </select>
+
             </div>
+
+
             <div class="settings-row">
-              <span class="label">Density<small>Amount of particles</small></span>
-              <select class="settings-select" id="fx-density">
-                <option value="0.5">Low</option>
-                <option value="1" selected>Normal</option>
-                <option value="1.8">High</option>
+
+              <span class="label">
+                Density
+                <small>
+                  Amount of particles
+                </small>
+              </span>
+
+              <select
+                class="settings-select"
+                id="fx-density"
+              >
+
+                <option value="0.5">
+                  Low
+                </option>
+
+                <option value="1">
+                  Normal
+                </option>
+
+                <option value="1.8">
+                  High
+                </option>
+
               </select>
+
             </div>
+
           </div>
 
+
+          <!-- LAYOUT -->
+
           <div class="settings-group">
-            <h4>Layout</h4>
+
+            <h4>
+              Layout
+            </h4>
+
             <div class="settings-row">
-              <span class="label">Grid size<small>Adjust tile density</small></span>
-              <select class="settings-select" id="grid-size-select">
-                <option value="140">Compact</option>
-                <option value="180" selected>Default</option>
-                <option value="220">Large</option>
+
+              <span class="label">
+                Grid size
+                <small>
+                  Adjust tile density
+                </small>
+              </span>
+
+              <select
+                class="settings-select"
+                id="grid-size-select"
+              >
+
+                <option value="140">
+                  Compact
+                </option>
+
+                <option value="180">
+                  Default
+                </option>
+
+                <option value="220">
+                  Large
+                </option>
+
               </select>
+
             </div>
+
           </div>
 
-          <div class="settings-group">
-            <h4>Behavior</h4>
-            <div class="settings-row">
-              <span class="label">Fullscreen on play<small>Auto-expand game window</small></span>
-              <div class="toggle" id="toggle-fullscreen"></div>
-            </div>
-            <div class="settings-row">
-              <span class="label">Confirm before closing game<small>Ask before exiting a game</small></span>
-              <div class="toggle" id="toggle-confirm-close"></div>
-            </div>
-            <div class="settings-row">
-              <span class="label">Reduce motion<small>Disable hover/transition animations</small></span>
-              <div class="toggle" id="toggle-reduce-motion"></div>
-            </div>
-          </div>
+
+          <!-- BEHAVIOR -->
 
           <div class="settings-group">
-            <h4>Tab Cloaking</h4>
+
+            <h4>
+              Behavior
+            </h4>
+
             <div class="settings-row">
-              <span class="label">Enable tab cloaking<small>Disguise the tab title and icon</small></span>
-              <div class="toggle" id="toggle-cloak"></div>
+
+              <span class="label">
+                Fullscreen on play
+                <small>
+                  Auto-expand local game window
+                </small>
+              </span>
+
+              <div
+                class="toggle"
+                id="toggle-fullscreen"
+              ></div>
+
             </div>
+
             <div class="settings-row">
-              <span class="label">Tab title<small>Custom title for the tab</small></span>
-              <input type="text" class="settings-input" id="cloak-title" placeholder="Classes">
+
+              <span class="label">
+                Confirm before closing game
+                <small>
+                  Ask before exiting a game
+                </small>
+              </span>
+
+              <div
+                class="toggle"
+                id="toggle-confirm-close"
+              ></div>
+
             </div>
+
             <div class="settings-row">
-              <span class="label">Favicon URL<small>Custom favicon URL</small></span>
-              <input type="text" class="settings-input" id="cloak-favicon" placeholder="https://www.gstatic.com/classroom/logo_square_rounded.svg">
+
+              <span class="label">
+                Reduce motion
+                <small>
+                  Disable animations
+                </small>
+              </span>
+
+              <div
+                class="toggle"
+                id="toggle-reduce-motion"
+              ></div>
+
             </div>
+
+          </div>
+
+
+          <!-- CLOAK -->
+
+          <div class="settings-group">
+
+            <h4>
+              Tab Cloaking
+            </h4>
+
             <div class="settings-row">
-              <span class="label">Open in cloaked tab<small>Launch about:blank with this site inside</small></span>
-              <button type="button" class="game-btn" id="cloak-open-btn">open about:blank</button>
+
+              <span class="label">
+                Enable tab cloaking
+                <small>
+                  Disguise the tab title and icon
+                </small>
+              </span>
+
+              <div
+                class="toggle"
+                id="toggle-cloak"
+              ></div>
+
             </div>
+
+            <div class="settings-row">
+
+              <span class="label">
+                Tab title
+                <small>
+                  Custom title
+                </small>
+              </span>
+
+              <input
+                type="text"
+                class="settings-input"
+                id="cloak-title"
+                placeholder="Classes"
+              >
+
+            </div>
+
+            <div class="settings-row">
+
+              <span class="label">
+                Favicon URL
+                <small>
+                  Custom favicon URL
+                </small>
+              </span>
+
+              <input
+                type="text"
+                class="settings-input"
+                id="cloak-favicon"
+                placeholder="https://www.gstatic.com/classroom/logo_square_rounded.svg"
+              >
+
+            </div>
+
+            <div class="settings-row">
+
+              <span class="label">
+                Open in cloaked tab
+                <small>
+                  Launch the archive inside about:blank
+                </small>
+              </span>
+
+              <button
+                type="button"
+                class="game-btn"
+                id="cloak-open-btn"
+              >
+                open about:blank
+              </button>
+
+            </div>
+
           </div>
 
         </div>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- GAME VIEW -->
+
+<!-- =======================================================
+     GAME VIEWER
+======================================================= -->
+
 <div id="game-view">
+
   <div class="game-bar">
-    <button class="game-btn" id="game-close">✕ Close</button>
-    <div class="game-title-bar" id="game-title-bar"></div>
-    <button class="game-btn" id="game-open-tab">↗ Open tab</button>
-  <button class="game-btn" id="game-fullscreen">⛶ Fullscreen</button>
+
+    <button
+      class="game-btn"
+      id="game-close"
+    >
+      ✕ Close
+    </button>
+
+    <div
+      class="game-title-bar"
+      id="game-title-bar"
+    ></div>
+
+    <button
+      class="game-btn"
+      id="game-fullscreen"
+    >
+      ⛶ Fullscreen
+    </button>
+
   </div>
-  <div class="game-loading" id="game-loading">
-    <div class="game-spinner"></div>
-    <span>LOADING GAME…</span>
-  </div>
-  <div class="game-error" id="game-error">
-    <strong>This game could not be embedded.</strong>
-    <span>The game may block iframe embedding. Use “Open tab” to launch it directly.</span>
-    <button class="game-btn" id="game-error-open">↗ Open game directly</button>
-  </div>
-  <iframe id="game-frame" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-popups allow-presentation" allowfullscreen></iframe>
+
+  <iframe
+    id="game-frame"
+    sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-popups allow-popups-to-escape-sandbox"
+    allowfullscreen
+  ></iframe>
+
 </div>
 
-<!-- REQUEST MODAL -->
-<div class="request-scrim" id="request-scrim">
-  <div class="request-modal" role="dialog" aria-modal="true" aria-label="Request a game">
+
+<!-- =======================================================
+     REQUEST MODAL
+======================================================= -->
+
+<div
+  class="request-scrim"
+  id="request-scrim"
+>
+
+  <div
+    class="request-modal"
+    role="dialog"
+    aria-modal="true"
+  >
+
     <div class="request-modal-bar">
-      <span class="request-modal-title">Request a Game</span>
-      <button type="button" class="request-close" id="request-close" aria-label="Close">&times;</button>
+
+      <span class="request-modal-title">
+        Request a Game
+      </span>
+
+      <button
+        type="button"
+        class="request-close"
+        id="request-close"
+      >
+        &times;
+      </button>
+
     </div>
-    <div class="request-form" id="request-form">
+
+    <div class="request-form">
+
       <label class="request-field">
-        <span class="request-label">Game title</span>
-        <input type="text" id="request-name" class="request-input" placeholder="e.g. Retro Bowl" maxlength="80" />
+
+        <span class="request-label">
+          Game title
+        </span>
+
+        <input
+          type="text"
+          id="request-name"
+          class="request-input"
+          placeholder="e.g. Retro Bowl"
+          maxlength="80"
+        >
+
       </label>
+
+
       <label class="request-field">
-        <span class="request-label">Anything else? <em>(optional)</em></span>
-        <textarea id="request-note" class="request-textarea" placeholder="link, category, why you want it..." maxlength="280" rows="3"></textarea>
+
+        <span class="request-label">
+          Anything else?
+        </span>
+
+        <textarea
+          id="request-note"
+          class="request-textarea"
+          placeholder="link, category, why you want it..."
+          maxlength="280"
+          rows="3"
+        ></textarea>
+
       </label>
+
+
       <div class="request-actions">
-        <span class="request-hint" id="request-hint"></span>
-        <button type="button" class="request-submit" id="request-submit">Send request</button>
+
+        <span
+          class="request-hint"
+          id="request-hint"
+        ></span>
+
+        <button
+          type="button"
+          class="request-submit"
+          id="request-submit"
+        >
+          Send request
+        </button>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
 
-<!-- FX CANVAS -->
+
+<!-- =======================================================
+     FX
+======================================================= -->
+
 <canvas id="fx"></canvas>
 
+
 <script>
-/* ===================================================
-   GAME DATA — inline the games list here.
-   Format: { title, path, thumb?, category? }
-   All paths relative to ./g/ so they survive as-is.
-   Add more entries below following the same pattern.
-=================================================== */
+
+/* =========================================================
+   GAME DATA
+========================================================= */
+
+/*
+   LOCAL GAMES
+   These are hosted directly in your ./g/ directory.
+*/
+
 const LOCAL_GAMES = [
-  { "tag": "Arcade",  "name": "Slope",             "file": "./g/slope.html",             "icon": "./g/assets/slope.png" },
-  { "tag": "Shooter", "name": "1v1.LOL",           "file": "./g/1v1.lol.html",           "icon": "./g/assets/1v1.lol.png" },
-  { "tag": "Sports",  "name": "Basket Bros",       "file": "./g/basket-bros.html",       "icon": "./g/assets/basket-bros.png" },
-  { "tag": "Arcade",  "name": "Moto X3M",          "file": "./g/moto-x3m.html",          "icon": "./g/assets/moto-x3m.png" },
-  { "tag": "Puzzle",  "name": "Cookie Clicker",    "file": "./g/cookie-clicker.html",    "icon": "./g/assets/cookie-clicker.png" },
-  { "tag": "Arcade",  "name": "Escape Road City 2", "file": "./g/escape-road-city-2.html", "icon": "./g/assets/escape-road-city-2.png" },
-  { "tag": "Arcade",  "name": "Tomb Of The Mask",  "file": "./g/tomb-of-the-mask.html",  "icon": "./g/assets/tomb-of-the-mask.png" },
-  { "tag": "Sports",  "name": "Football Bros",     "file": "./g/football-bros.html",     "icon": "./g/assets/football-bros.png" },
-  { "tag": "Sports",  "name": "Baseball Bros",     "file": "./g/baseball-bros.html",     "icon": "./g/assets/baseball-bros.jpg" },
-  { "tag": "Horror",  "name": "Granny",            "file": "./g/granny.html",            "icon": "./g/assets/granny.jpg" },
-  { "tag": "Horror",  "name": "Granny 2",          "file": "./g/granny-2.html",          "icon": "./g/assets/granny-2.jpg" },
-  { "tag": "Horror",  "name": "FNAF 4",            "file": "./g/fnaf4.html",            "icon": "./g/assets/fnaf4.jpg" }
+
+  {
+    category: "Arcade",
+    title: "Slope",
+    path: "./g/slope.html",
+    thumb: "./g/assets/slope.png"
+  },
+
+  {
+    category: "Shooter",
+    title: "1v1.LOL",
+    path: "./g/1v1.lol.html",
+    thumb: "./g/assets/1v1.lol.png"
+  },
+
+  {
+    category: "Sports",
+    title: "Basket Bros",
+    path: "./g/basket-bros.html",
+    thumb: "./g/assets/basket-bros.png"
+  },
+
+  {
+    category: "Arcade",
+    title: "Moto X3M",
+    path: "./g/moto-x3m.html",
+    thumb: "./g/assets/moto-x3m.png"
+  },
+
+  {
+    category: "Puzzle",
+    title: "Cookie Clicker",
+    path: "./g/cookie-clicker.html",
+    thumb: "./g/assets/cookie-clicker.png"
+  },
+
+  {
+    category: "Arcade",
+    title: "Escape Road City 2",
+    path: "./g/escape-road-city-2.html",
+    thumb: "./g/assets/escape-road-city-2.png"
+  },
+
+  {
+    category: "Arcade",
+    title: "Tomb Of The Mask",
+    path: "./g/tomb-of-the-mask.html",
+    thumb: "./g/assets/tomb-of-the-mask.png"
+  },
+
+  {
+    category: "Sports",
+    title: "Football Bros",
+    path: "./g/football-bros.html",
+    thumb: "./g/assets/football-bros.png"
+  },
+
+  {
+    category: "Sports",
+    title: "Baseball Bros",
+    path: "./g/baseball-bros.html",
+    thumb: "./g/assets/baseball-bros.jpg"
+  },
+
+  {
+    category: "Horror",
+    title: "Granny",
+    path: "./g/granny.html",
+    thumb: "./g/assets/granny.jpg"
+  },
+
+  {
+    category: "Horror",
+    title: "Granny 2",
+    path: "./g/granny-2.html",
+    thumb: "./g/assets/granny-2.jpg"
+  },
+
+  {
+    category: "Horror",
+    title: "FNAF 4",
+    path: "./g/fnaf4.html",
+    thumb: "./g/assets/fnaf4.jpg"
+  }
+
 ];
+
+
+/*
+   EXTERNAL GAMES
+
+   IMPORTANT:
+   These NEVER get placed inside the Doomsday iframe.
+
+   They open directly in a new browser tab.
+
+   This prevents external resources such as:
+   cdn.r9x.in
+   geo.js
+   ad scripts
+   third-party game engines
+   etc.
+
+   from being blocked by the archive iframe.
+*/
 
 const EXTERNAL_GAMES = [
-  { "tag": "Sports",  "name": "Retro Bowl",        "file": "https://script.google.com/macros/s/AKfycbxkfMHeNjgt0LuksJhoAGS_T1jAnsQTkGw9GIRRi2VTljTi4t46Q0HIkslBvD7WOyXPHg/exec",        "icon": "./g/assets/retro-bowl.jpg" },
-  { "tag": "Sports",  "name": "Basketball Stars",  "file": "https://script.google.com/macros/s/AKfycbwzYMDDcdDUAvEP7iO6OdRk-5_oUp6vYvDdyEEz8tTOzWi5y4-Qf3vQ6TBoZuc9UYVcLg/exec",  "icon": "./g/assets/basketball-stars.jpg" },
-  { "tag": "Horror",  "name": "FNAF",              "file": "https://script.google.com/macros/s/AKfycbxJNtrKTWPCSIo9tOqq53G2xqoQCIPDTYUsVOT79Eqk8I7C5cQkGdDnj0jzlNHa7bvs3g/exec",              "icon": "./g/assets/fnaf.jpg" },
-  { "tag": "Horror",  "name": "FNAF 2",            "file": "https://jasongamesdev.github.io/fnaf-2/", "icon": "./g/assets/fnaf2.jpg" },
-  { "tag": "Horror",  "name": "FNAF 3",            "file": "https://script.google.com/macros/s/AKfycbyVdPAG4aRGh5tmBwKEZthKmaqO12GTD-h-C1Do6ICbR3ZEj5ic1aJQ2e4Im2pxcWLf/exec",            "icon": "./g/assets/fnaf3.jpg" }
+
+  {
+    category: "Sports",
+    title: "Retro Bowl",
+    path: "https://script.google.com/macros/s/AKfycbxkfMHeNjgt0LuksJhoAGS_T1jAnsQTkGw9GIRRi2VTljTi4t46Q0HIkslBvD7WOyXPHg/exec",
+    thumb: "./g/assets/retro-bowl.jpg",
+    external: true
+  },
+
+  {
+    category: "Sports",
+    title: "Basketball Stars",
+    path: "https://script.google.com/macros/s/AKfycbwzYMDDcdDUAvEP7iO6OdRk-5_oUp6vYvDdyEEz8tTOzWi5y4-Qf3vQ6TBoZuc9UYVcLg/exec",
+    thumb: "./g/assets/basketball-stars.jpg",
+    external: true
+  },
+
+  {
+    category: "Horror",
+    title: "FNAF",
+    path: "https://script.google.com/macros/s/AKfycbxJNtrKTWPCSIo9tOqq53G2xqoQCIPDTYUsVOT79Eqk8I7C5cQkGdDnj0jzlNHa7bvs3g/exec",
+    thumb: "./g/assets/fnaf.jpg",
+    external: true
+  },
+
+  {
+    category: "Horror",
+    title: "FNAF 2",
+    path: "https://jasongamesdev.github.io/fnaf-2/",
+    thumb: "./g/assets/fnaf2.jpg",
+    external: true
+  },
+
+  {
+    category: "Horror",
+    title: "FNAF 3",
+    path: "https://script.google.com/macros/s/AKfycbyVdPAG4aRGh5tmBwKEZthKmaqO12GTD-h-C1Do6ICbR3ZEj5ic1aJQ2e4Im2pxcWLf/exec",
+    thumb: "./g/assets/fnaf3.jpg",
+    external: true
+  }
+
 ];
 
-const GAMES = [...LOCAL_GAMES, ...EXTERNAL_GAMES];
 
-/* ===================================================
-   SETTINGS — persist to localStorage
-=================================================== */
+/*
+   Combined list is used for searching.
+*/
+
+const GAMES = [
+  ...LOCAL_GAMES,
+  ...EXTERNAL_GAMES
+];
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
 const LS = {
-  get: k => { try { return JSON.parse(localStorage.getItem('dd_'+k)); } catch(e) { return null; } },
-  set: (k, v) => { try { localStorage.setItem('dd_'+k, JSON.stringify(v)); } catch(e) {} }
+
+  get(key) {
+
+    try {
+
+      return JSON.parse(
+        localStorage.getItem("dd_" + key)
+      );
+
+    } catch {
+
+      return null;
+
+    }
+
+  },
+
+  set(key, value) {
+
+    try {
+
+      localStorage.setItem(
+        "dd_" + key,
+        JSON.stringify(value)
+      );
+
+    } catch {}
+
+  }
+
 };
+
 
 const S = {
-  theme:         LS.get('theme')         ?? 'default',
-  fx:            LS.get('fx')            ?? 'off',
-  fxDensity:     LS.get('fxDensity')    ?? 1,
-  gridSize:      LS.get('gridSize')      ?? 180,
-  fullscreen:    LS.get('fullscreen')    ?? false,
-  confirmClose:  LS.get('confirmClose')  ?? false,
-  reduceMotion:  LS.get('reduceMotion')  ?? false,
-  cloak:         LS.get('cloak')         ?? false,
-  cloakTitle:    LS.get('cloakTitle')    ?? '',
-  cloakFavicon:  LS.get('cloakFavicon') ?? '',
+
+  theme: LS.get("theme") ?? "default",
+
+  fx: LS.get("fx") ?? "off",
+
+  fxDensity: LS.get("fxDensity") ?? 1,
+
+  gridSize: LS.get("gridSize") ?? 180,
+
+  fullscreen: LS.get("fullscreen") ?? false,
+
+  confirmClose: LS.get("confirmClose") ?? false,
+
+  reduceMotion: LS.get("reduceMotion") ?? false,
+
+  cloak: LS.get("cloak") ?? false,
+
+  cloakTitle: LS.get("cloakTitle") ?? "",
+
+  cloakFavicon: LS.get("cloakFavicon") ?? ""
+
 };
 
+
 function saveSettings() {
-  for (const [k, v] of Object.entries(S)) LS.set(k, v);
-}
 
-/* ===================================================
-   APPLY SETTINGS TO DOM
-=================================================== */
-function applyTheme(t) {
-  document.documentElement.setAttribute('data-theme', t === 'default' ? '' : t);
-  document.querySelectorAll('.theme-swatch').forEach(sw => sw.classList.toggle('active', sw.dataset.theme === t));
-}
+  for (
+    const [key, value]
+    of Object.entries(S)
+  ) {
 
-function applyGridSize(sz) {
-  document.documentElement.style.setProperty('--card-w', sz + 'px');
-  document.documentElement.style.setProperty('--card-h', Math.round(sz * 0.9) + 'px');
-}
+    LS.set(key, value);
 
-function applyReduceMotion(v) {
-  document.body.classList.toggle('reduce-motion', v);
-}
-
-function applyCloak(enabled, title, favicon) {
-  if (enabled) {
-    document.title = title || 'Classes';
-    const fav = document.querySelector('link[rel="icon"]');
-    if (fav) fav.href = favicon || 'https://www.gstatic.com/classroom/logo_square_rounded.svg';
-  } else {
-    document.title = 'Doomsday';
-    const fav = document.querySelector('link[rel="icon"]');
-    if (fav) fav.href = 'https://www.gstatic.com/classroom/logo_square_rounded.svg';
   }
+
 }
 
-function setToggle(el, v) { el && el.classList.toggle('on', v); }
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function applyTheme(theme) {
+
+  document.documentElement.setAttribute(
+    "data-theme",
+    theme === "default"
+      ? ""
+      : theme
+  );
+
+  document
+    .querySelectorAll(".theme-swatch")
+    .forEach(swatch => {
+
+      swatch.classList.toggle(
+        "active",
+        swatch.dataset.theme === theme
+      );
+
+    });
+
+}
+
+
+function applyGridSize(size) {
+
+  document.documentElement.style.setProperty(
+    "--card-w",
+    size + "px"
+  );
+
+  document.documentElement.style.setProperty(
+    "--card-h",
+    Math.round(size * .9) + "px"
+  );
+
+}
+
+
+function applyReduceMotion(enabled) {
+
+  document.body.classList.toggle(
+    "reduce-motion",
+    enabled
+  );
+
+}
+
+
+function applyCloak(
+  enabled,
+  title,
+  favicon
+) {
+
+  const icon =
+    document.querySelector(
+      'link[rel="icon"]'
+    );
+
+  if (enabled) {
+
+    document.title =
+      title || "Classes";
+
+    if (icon) {
+
+      icon.href =
+        favicon ||
+        "https://www.gstatic.com/classroom/logo_square_rounded.svg";
+
+    }
+
+  } else {
+
+    document.title = "Doomsday";
+
+    if (icon) {
+
+      icon.href =
+        "https://www.gstatic.com/classroom/logo_square_rounded.svg";
+
+    }
+
+  }
+
+}
+
+
+function setToggle(
+  element,
+  value
+) {
+
+  if (!element) return;
+
+  element.classList.toggle(
+    "on",
+    value
+  );
+
+}
+
+
+/* =========================================================
+   SETTINGS UI
+========================================================= */
 
 function initSettingsUI() {
+
   applyTheme(S.theme);
+
   applyGridSize(S.gridSize);
-  applyReduceMotion(S.reduceMotion);
-  applyCloak(S.cloak, S.cloakTitle, S.cloakFavicon);
 
-  const fxSel = document.getElementById('fx-select');
-  const fxDen = document.getElementById('fx-density');
-  const gridSel = document.getElementById('grid-size-select');
-  const tFullscreen = document.getElementById('toggle-fullscreen');
-  const tConfirm = document.getElementById('toggle-confirm-close');
-  const tMotion = document.getElementById('toggle-reduce-motion');
-  const tCloak = document.getElementById('toggle-cloak');
-  const cTitle = document.getElementById('cloak-title');
-  const cFav = document.getElementById('cloak-favicon');
+  applyReduceMotion(
+    S.reduceMotion
+  );
 
-  if (fxSel) fxSel.value = S.fx;
-  if (fxDen) fxDen.value = S.fxDensity;
-  if (gridSel) gridSel.value = S.gridSize;
-  setToggle(tFullscreen, S.fullscreen);
-  setToggle(tConfirm, S.confirmClose);
-  setToggle(tMotion, S.reduceMotion);
-  setToggle(tCloak, S.cloak);
-  if (cTitle) cTitle.value = S.cloakTitle;
-  if (cFav) cFav.value = S.cloakFavicon;
+  applyCloak(
+    S.cloak,
+    S.cloakTitle,
+    S.cloakFavicon
+  );
 
-  // Theme swatches
-  document.querySelectorAll('.theme-swatch').forEach(sw => {
-    sw.addEventListener('click', () => {
-      S.theme = sw.dataset.theme;
-      applyTheme(S.theme);
-      saveSettings();
+
+  const fxSelect =
+    document.getElementById(
+      "fx-select"
+    );
+
+  const fxDensity =
+    document.getElementById(
+      "fx-density"
+    );
+
+  const gridSelect =
+    document.getElementById(
+      "grid-size-select"
+    );
+
+  const fullscreenToggle =
+    document.getElementById(
+      "toggle-fullscreen"
+    );
+
+  const confirmToggle =
+    document.getElementById(
+      "toggle-confirm-close"
+    );
+
+  const motionToggle =
+    document.getElementById(
+      "toggle-reduce-motion"
+    );
+
+  const cloakToggle =
+    document.getElementById(
+      "toggle-cloak"
+    );
+
+  const cloakTitle =
+    document.getElementById(
+      "cloak-title"
+    );
+
+  const cloakFavicon =
+    document.getElementById(
+      "cloak-favicon"
+    );
+
+
+  if (fxSelect)
+    fxSelect.value = S.fx;
+
+  if (fxDensity)
+    fxDensity.value = S.fxDensity;
+
+  if (gridSelect)
+    gridSelect.value = S.gridSize;
+
+
+  setToggle(
+    fullscreenToggle,
+    S.fullscreen
+  );
+
+  setToggle(
+    confirmToggle,
+    S.confirmClose
+  );
+
+  setToggle(
+    motionToggle,
+    S.reduceMotion
+  );
+
+  setToggle(
+    cloakToggle,
+    S.cloak
+  );
+
+
+  if (cloakTitle)
+    cloakTitle.value =
+      S.cloakTitle;
+
+  if (cloakFavicon)
+    cloakFavicon.value =
+      S.cloakFavicon;
+
+
+  document
+    .querySelectorAll(".theme-swatch")
+    .forEach(swatch => {
+
+      swatch.addEventListener(
+        "click",
+        () => {
+
+          S.theme =
+            swatch.dataset.theme;
+
+          applyTheme(S.theme);
+
+          saveSettings();
+
+        }
+      );
+
     });
-  });
 
-  if (fxSel) fxSel.addEventListener('change', () => { S.fx = fxSel.value; startFX(S.fx); saveSettings(); });
-  if (fxDen) fxDen.addEventListener('change', () => { S.fxDensity = parseFloat(fxDen.value); startFX(S.fx); saveSettings(); });
-  if (gridSel) gridSel.addEventListener('change', () => { S.gridSize = parseInt(gridSel.value); applyGridSize(S.gridSize); saveSettings(); });
 
-  function bindToggle(el, key, cb) {
-    if (!el) return;
-    el.addEventListener('click', () => {
-      S[key] = !S[key];
-      setToggle(el, S[key]);
-      if (cb) cb(S[key]);
-      saveSettings();
-    });
+  if (fxSelect) {
+
+    fxSelect.addEventListener(
+      "change",
+      () => {
+
+        S.fx =
+          fxSelect.value;
+
+        startFX(S.fx);
+
+        saveSettings();
+
+      }
+    );
+
   }
-  bindToggle(tFullscreen, 'fullscreen');
-  bindToggle(tConfirm, 'confirmClose');
-  bindToggle(tMotion, 'reduceMotion', v => applyReduceMotion(v));
-  bindToggle(tCloak, 'cloak', v => applyCloak(v, S.cloakTitle, S.cloakFavicon));
 
-  if (cTitle) cTitle.addEventListener('input', () => { S.cloakTitle = cTitle.value; if (S.cloak) applyCloak(true, S.cloakTitle, S.cloakFavicon); saveSettings(); });
-  if (cFav) cFav.addEventListener('input', () => { S.cloakFavicon = cFav.value; if (S.cloak) applyCloak(S.cloak, S.cloakTitle, S.cloakFavicon); saveSettings(); });
 
-  const cloakBtn = document.getElementById('cloak-open-btn');
-  if (cloakBtn) cloakBtn.addEventListener('click', () => {
-    const w = window.open('about:blank', '_blank');
-    if (!w) return;
-    const html = `<!DOCTYPE html><html><head><title>${S.cloakTitle || 'Classes'}</title><link rel="icon" href="${S.cloakFavicon || 'https://www.gstatic.com/classroom/logo_square_rounded.svg'}"><style>body,html{margin:0;padding:0;height:100%;overflow:hidden}iframe{width:100%;height:100%;border:none}</style></head><body><iframe src="${location.href}"></iframe></body></html>`;
-    w.document.open(); w.document.write(html); w.document.close();
-  });
+  if (fxDensity) {
+
+    fxDensity.addEventListener(
+      "change",
+      () => {
+
+        S.fxDensity =
+          parseFloat(
+            fxDensity.value
+          );
+
+        startFX(S.fx);
+
+        saveSettings();
+
+      }
+    );
+
+  }
+
+
+  if (gridSelect) {
+
+    gridSelect.addEventListener(
+      "change",
+      () => {
+
+        S.gridSize =
+          parseInt(
+            gridSelect.value,
+            10
+          );
+
+        applyGridSize(
+          S.gridSize
+        );
+
+        saveSettings();
+
+      }
+    );
+
+  }
+
+
+  function bindToggle(
+    element,
+    key,
+    callback
+  ) {
+
+    if (!element) return;
+
+    element.addEventListener(
+      "click",
+      () => {
+
+        S[key] =
+          !S[key];
+
+        setToggle(
+          element,
+          S[key]
+        );
+
+        if (callback)
+          callback(S[key]);
+
+        saveSettings();
+
+      }
+    );
+
+  }
+
+
+  bindToggle(
+    fullscreenToggle,
+    "fullscreen"
+  );
+
+  bindToggle(
+    confirmToggle,
+    "confirmClose"
+  );
+
+  bindToggle(
+    motionToggle,
+    "reduceMotion",
+    value =>
+      applyReduceMotion(value)
+  );
+
+  bindToggle(
+    cloakToggle,
+    "cloak",
+    value =>
+      applyCloak(
+        value,
+        S.cloakTitle,
+        S.cloakFavicon
+      )
+  );
+
+
+  if (cloakTitle) {
+
+    cloakTitle.addEventListener(
+      "input",
+      () => {
+
+        S.cloakTitle =
+          cloakTitle.value;
+
+        if (S.cloak) {
+
+          applyCloak(
+            true,
+            S.cloakTitle,
+            S.cloakFavicon
+          );
+
+        }
+
+        saveSettings();
+
+      }
+    );
+
+  }
+
+
+  if (cloakFavicon) {
+
+    cloakFavicon.addEventListener(
+      "input",
+      () => {
+
+        S.cloakFavicon =
+          cloakFavicon.value;
+
+        if (S.cloak) {
+
+          applyCloak(
+            true,
+            S.cloakTitle,
+            S.cloakFavicon
+          );
+
+        }
+
+        saveSettings();
+
+      }
+    );
+
+  }
+
+
+  const cloakButton =
+    document.getElementById(
+      "cloak-open-btn"
+    );
+
+
+  if (cloakButton) {
+
+    cloakButton.addEventListener(
+      "click",
+      () => {
+
+        const win =
+          window.open(
+            "about:blank",
+            "_blank"
+          );
+
+        if (!win) {
+
+          alert(
+            "Your browser blocked the popup."
+          );
+
+          return;
+
+        }
+
+
+        const title =
+          S.cloakTitle ||
+          "Classes";
+
+        const favicon =
+          S.cloakFavicon ||
+          "https://www.gstatic.com/classroom/logo_square_rounded.svg";
+
+
+        const page = `
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>${escapeHTML(title)}</title>
+
+<link
+  rel="icon"
+  href="${escapeAttribute(favicon)}"
+>
+
+<style>
+
+html,
+body,
+iframe {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: 0;
+  overflow: hidden;
 }
 
-/* ===================================================
-   GAME GRID
-=================================================== */
-let filteredGames = [...GAMES];
+</style>
 
-function normalizeGame(g) {
-  return {
-    title: g.name || g.title || 'Untitled Game',
-    category: g.tag || g.category || 'Game',
-    path: g.file || g.path || '',
-    thumb: g.icon || g.thumb || '',
-    external: /^https?:\/\//i.test(g.file || g.path || '')
-  };
-}
+</head>
 
-function renderGameCard(rawGame, index) {
-  const g = normalizeGame(rawGame);
-  const card = document.createElement('article');
-  card.className = 'game-card';
-  card.style.animationDelay = `${Math.min(index * 35, 700)}ms`;
-  card.setAttribute('role', 'button');
-  card.setAttribute('tabindex', '0');
-  card.setAttribute('aria-label', `Play ${g.title}`);
+<body>
 
-  const thumb = document.createElement('div');
-  thumb.className = 'thumb';
+<iframe
+  src="${escapeAttribute(location.href)}"
+></iframe>
 
-  if (g.thumb) {
-    const img = document.createElement('img');
-    img.src = g.thumb;
-    img.alt = g.title;
-    img.loading = 'lazy';
-    img.addEventListener('error', () => {
-      img.remove();
-      thumb.insertAdjacentHTML('beforeend', '<div class="placeholder-icon">🎮</div>');
-    });
-    thumb.appendChild(img);
-  } else {
-    thumb.innerHTML = '<div class="placeholder-icon">🎮</div>';
+</body>
+</html>
+`;
+
+
+        win.document.open();
+
+        win.document.write(page);
+
+        win.document.close();
+
+      }
+    );
+
   }
 
-  const info = document.createElement('div');
-  info.className = 'info';
-  info.innerHTML = '<div class="title"></div><div class="meta"></div>';
-  info.querySelector('.title').textContent = g.title;
-  info.querySelector('.meta').textContent = g.category + (g.external ? ' • External' : ' • Local');
+}
 
-  card.appendChild(thumb);
-  card.appendChild(info);
 
-  card.addEventListener('click', () => openGame(g));
-  card.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      openGame(g);
+/* =========================================================
+   ESCAPING
+========================================================= */
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+function escapeAttribute(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+
+}
+
+
+/* =========================================================
+   GAME CARDS
+========================================================= */
+
+function renderCard(
+  game,
+  index
+) {
+
+  const card =
+    document.createElement(
+      "div"
+    );
+
+  card.className =
+    "game-card";
+
+
+  card.style.animationDelay =
+    Math.min(
+      index * .035,
+      .4
+    ) + "s";
+
+
+  const source =
+    game.external
+      ? "EXTERNAL"
+      : "LOCAL";
+
+
+  const badgeClass =
+    game.external
+      ? "external"
+      : "local";
+
+
+  const thumb =
+    game.thumb
+
+      ? `
+        <img
+          src="${escapeAttribute(game.thumb)}"
+          alt="${escapeAttribute(game.title)}"
+          loading="lazy"
+          onerror="this.style.display='none'"
+        >
+      `
+
+      : `
+        <div class="placeholder-icon">
+          🎮
+        </div>
+      `;
+
+
+  card.innerHTML = `
+
+    <div class="thumb">
+
+      <div
+        class="source-badge ${badgeClass}"
+      >
+        ${source}
+      </div>
+
+      ${thumb}
+
+    </div>
+
+    <div class="info">
+
+      <div class="title">
+        ${escapeHTML(game.title)}
+      </div>
+
+      <div class="meta">
+        ${escapeHTML(game.category || "")}
+        ${game.external
+          ? " • Opens in new tab"
+          : " • Hosted locally"}
+      </div>
+
+    </div>
+
+  `;
+
+
+  card.addEventListener(
+    "click",
+    () => {
+
+      playGame(game);
+
     }
-  });
+  );
+
 
   return card;
+
 }
 
-function renderGrid(games) {
-  const localGrid = document.getElementById('local-game-grid');
-  const externalGrid = document.getElementById('external-game-grid');
-  if (!localGrid || !externalGrid) return;
 
-  localGrid.innerHTML = '';
-  externalGrid.innerHTML = '';
+/* =========================================================
+   RENDER GRIDS
+========================================================= */
 
-  const localGames = games.filter(g => !normalizeGame(g).external);
-  const externalGames = games.filter(g => normalizeGame(g).external);
+function renderGrid(
+  games
+) {
 
-  document.getElementById('local-games-count').textContent = `${localGames.length} game${localGames.length === 1 ? '' : 's'}`;
-  document.getElementById('external-games-count').textContent = `${externalGames.length} game${externalGames.length === 1 ? '' : 's'}`;
+  const localGrid =
+    document.getElementById(
+      "local-game-grid"
+    );
 
-  localGames.forEach((game, index) => localGrid.appendChild(renderGameCard(game, index)));
-  externalGames.forEach((game, index) => externalGrid.appendChild(renderGameCard(game, index)));
+  const externalGrid =
+    document.getElementById(
+      "external-game-grid"
+    );
 
-  localGrid.querySelectorAll('.game-card').length === 0 &&
-    (localGrid.innerHTML = '<div class="arc-empty">No local games found.</div>');
-  externalGrid.querySelectorAll('.game-card').length === 0 &&
-    (externalGrid.innerHTML = '<div class="arc-empty">No external games found.</div>');
-}
 
-function filterGames(q) {
-  q = q.trim().toLowerCase();
-  filteredGames = q
-    ? GAMES.filter(raw => {
-        const g = normalizeGame(raw);
-        return g.title.toLowerCase().includes(q) ||
-               g.category.toLowerCase().includes(q);
-      })
-    : [...GAMES];
-
-  renderGrid(filteredGames);
-}
-
-/* ===================================================
-   GAME VIEWER
-=================================================== */
-let activeGame = null;
-
-function openGame(g) {
-  const view = document.getElementById('game-view');
-  const frame = document.getElementById('game-frame');
-  const titleBar = document.getElementById('game-title-bar');
-  const loading = document.getElementById('game-loading');
-  const error = document.getElementById('game-error');
-
-  if (!g || !g.path) {
-    console.error('Game has no playable file:', g);
+  if (!localGrid ||
+      !externalGrid) {
     return;
   }
 
-  activeGame = g;
-  titleBar.textContent = g.title;
-  frame.src = 'about:blank';
-  error.classList.remove('open');
-  loading.classList.remove('hidden');
 
-  // Set the real game URL AFTER resetting the frame.
-  // Local ./g/*.html games now resolve correctly on GitHub Pages/Netlify.
-  requestAnimationFrame(() => {
-    frame.src = g.path;
-  });
+  localGrid.innerHTML = "";
 
-  view.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  externalGrid.innerHTML = "";
+
+
+  const localGames =
+    games.filter(
+      game => !game.external
+    );
+
+
+  const externalGames =
+    games.filter(
+      game => game.external
+    );
+
+
+  document.getElementById(
+    "local-count"
+  ).textContent =
+    `${localGames.length} Local Games`;
+
+
+  if (!localGames.length) {
+
+    localGrid.innerHTML = `
+      <div class="arc-empty">
+        No local games found.
+      </div>
+    `;
+
+  } else {
+
+    localGames.forEach(
+      (game, index) => {
+
+        localGrid.appendChild(
+          renderCard(
+            game,
+            index
+          )
+        );
+
+      }
+    );
+
+  }
+
+
+  if (!externalGames.length) {
+
+    externalGrid.innerHTML = `
+      <div class="arc-empty">
+        No external games found.
+      </div>
+    `;
+
+  } else {
+
+    externalGames.forEach(
+      (game, index) => {
+
+        externalGrid.appendChild(
+          renderCard(
+            game,
+            index
+          )
+        );
+
+      }
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function filterGames(
+  query
+) {
+
+  const q =
+    String(query || "")
+      .trim()
+      .toLowerCase();
+
+
+  if (!q) {
+
+    renderGrid(GAMES);
+
+    return;
+
+  }
+
+
+  const filtered =
+    GAMES.filter(
+      game =>
+
+        game.title
+          .toLowerCase()
+          .includes(q)
+
+        ||
+
+        (game.category || "")
+          .toLowerCase()
+          .includes(q)
+
+    );
+
+
+  renderGrid(filtered);
+
+}
+
+
+/* =========================================================
+   GAME OPENING
+========================================================= */
+
+/*
+   THIS IS THE IMPORTANT FIX.
+
+   External games do NOT use:
+      iframe.src = externalURL
+
+   Instead they use:
+      window.open(externalURL)
+
+   This means the external site's own scripts run directly
+   in its own tab instead of inside the Doomsday iframe.
+*/
+
+function openExternalGame(
+  game
+) {
+
+  if (!game ||
+      !game.path) {
+    return;
+  }
+
+
+  const newWindow =
+    window.open(
+      game.path,
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+
+  if (!newWindow) {
+
+    alert(
+      "Your browser blocked the new tab. " +
+      "Allow popups for Doomsday and try again."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    newWindow.opener = null;
+
+  } catch {}
+
+}
+
+
+/* =========================================================
+   LOCAL GAME VIEWER
+========================================================= */
+
+function openLocalGame(
+  game
+) {
+
+  const view =
+    document.getElementById(
+      "game-view"
+    );
+
+  const frame =
+    document.getElementById(
+      "game-frame"
+    );
+
+  const title =
+    document.getElementById(
+      "game-title-bar"
+    );
+
+
+  frame.src = game.path;
+
+  title.textContent =
+    game.title;
+
+
+  view.classList.add(
+    "open"
+  );
+
 
   if (S.fullscreen) {
-    setTimeout(() => {
-      try {
-        if (!document.fullscreenElement && view.requestFullscreen) {
-          view.requestFullscreen();
-        }
-      } catch (e) {}
-    }, 100);
-  }
-}
 
-function closeGame(force = false) {
-  if (!force && S.confirmClose) {
-    if (!confirm('Close this game?')) return;
-  }
+    setTimeout(
+      () => {
 
-  const view = document.getElementById('game-view');
-  const frame = document.getElementById('game-frame');
-  const loading = document.getElementById('game-loading');
-  const error = document.getElementById('game-error');
+        try {
 
-  frame.src = 'about:blank';
-  loading.classList.add('hidden');
-  error.classList.remove('open');
-  view.classList.remove('open');
-  document.body.style.overflow = '';
+          if (
+            view.requestFullscreen
+          ) {
 
-  if (document.fullscreenElement) {
-    try { document.exitFullscreen(); } catch (e) {}
+            view.requestFullscreen();
+
+          }
+
+        } catch {}
+
+      },
+      100
+    );
+
   }
 
-  activeGame = null;
 }
 
-function openActiveGameInNewTab() {
-  if (!activeGame?.path) return;
-  window.open(activeGame.path, '_blank', 'noopener,noreferrer');
+
+/* =========================================================
+   UNIFIED PLAY FUNCTION
+========================================================= */
+
+function playGame(
+  game
+) {
+
+  if (!game) return;
+
+
+  if (game.external) {
+
+    /*
+      External:
+      open in a separate tab.
+    */
+
+    openExternalGame(
+      game
+    );
+
+    return;
+
+  }
+
+
+  /*
+    Local:
+    use the built-in viewer.
+  */
+
+  openLocalGame(
+    game
+  );
+
 }
 
-/* ===================================================
-   NAVIGATION / VIEW SWITCHING
-=================================================== */
+
+/* =========================================================
+   CLOSE GAME
+========================================================= */
+
+function closeGame(
+  force = false
+) {
+
+  if (
+    !force &&
+    S.confirmClose
+  ) {
+
+    if (
+      !confirm(
+        "Close this game?"
+      )
+    ) {
+
+      return;
+
+    }
+
+  }
+
+
+  const view =
+    document.getElementById(
+      "game-view"
+    );
+
+  const frame =
+    document.getElementById(
+      "game-frame"
+    );
+
+
+  frame.src = "";
+
+  view.classList.remove(
+    "open"
+  );
+
+
+  if (
+    document.fullscreenElement
+  ) {
+
+    try {
+
+      document.exitFullscreen();
+
+    } catch {}
+
+  }
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
 function showBrowse() {
-  document.getElementById('browse-view').classList.remove('hidden');
-  document.getElementById('settings-view').classList.remove('open');
+
+  document
+    .getElementById(
+      "browse-view"
+    )
+    .classList.remove(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "settings-view"
+    )
+    .classList.remove(
+      "open"
+    );
+
 }
+
 
 function showSettings() {
-  document.getElementById('browse-view').classList.add('hidden');
-  document.getElementById('settings-view').classList.add('open');
+
+  document
+    .getElementById(
+      "browse-view"
+    )
+    .classList.add(
+      "hidden"
+    );
+
+  document
+    .getElementById(
+      "settings-view"
+    )
+    .classList.add(
+      "open"
+    );
+
 }
 
-/* ===================================================
+
+/* =========================================================
    REQUEST MODAL
-=================================================== */
+========================================================= */
+
 function openRequest() {
-  document.getElementById('request-scrim').classList.add('open');
-}
-function closeRequest() {
-  document.getElementById('request-scrim').classList.remove('open');
-  document.getElementById('request-hint').textContent = '';
+
+  document
+    .getElementById(
+      "request-scrim"
+    )
+    .classList.add(
+      "open"
+    );
+
 }
 
-/* ===================================================
-   FX CANVAS
-=================================================== */
+
+function closeRequest() {
+
+  document
+    .getElementById(
+      "request-scrim"
+    )
+    .classList.remove(
+      "open"
+    );
+
+  document.getElementById(
+    "request-hint"
+  ).textContent = "";
+
+}
+
+
+/* =========================================================
+   FX
+========================================================= */
+
 let fxRAF = null;
-const fxCanvas = document.getElementById('fx');
-const fxCtx = fxCanvas.getContext('2d');
+
+const fxCanvas =
+  document.getElementById(
+    "fx"
+  );
+
+const fxCtx =
+  fxCanvas.getContext(
+    "2d",
+    {
+      alpha: true
+    }
+  );
+
 
 function resizeFX() {
-  fxCanvas.width = window.innerWidth;
-  fxCanvas.height = window.innerHeight;
+
+  const dpr =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+
+
+  fxCanvas.width =
+    Math.floor(
+      window.innerWidth * dpr
+    );
+
+  fxCanvas.height =
+    Math.floor(
+      window.innerHeight * dpr
+    );
+
+
+  fxCanvas.style.width =
+    window.innerWidth + "px";
+
+  fxCanvas.style.height =
+    window.innerHeight + "px";
+
+
+  fxCtx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
 }
-window.addEventListener('resize', resizeFX);
+
+
+window.addEventListener(
+  "resize",
+  resizeFX
+);
+
+
 resizeFX();
 
+
 class Particle {
-  constructor(type) { this.type = type; this.reset(true); }
-  reset(init) {
-    const w = fxCanvas.width, h = fxCanvas.height;
-    this.x = Math.random() * w;
-    this.y = init ? Math.random() * h : -10;
-    this.size = Math.random() * 2 + 0.5;
-    this.speed = Math.random() * 1.5 + 0.5;
-    this.opacity = Math.random() * 0.6 + 0.2;
-    this.vx = (Math.random() - 0.5) * 0.5;
-    this.char = Math.random() > 0.5 ? '1' : '0';
-    this.angle = Math.random() * Math.PI * 2;
-    this.vangle = (Math.random() - 0.5) * 0.01;
+
+  constructor(type) {
+
+    this.type =
+      type;
+
+    this.reset(true);
+
   }
+
+
+  reset(initial) {
+
+    const width =
+      window.innerWidth;
+
+    const height =
+      window.innerHeight;
+
+
+    this.x =
+      Math.random() * width;
+
+    this.y =
+      initial
+        ? Math.random() * height
+        : -20;
+
+
+    this.size =
+      Math.random() * 2 + .5;
+
+    this.speed =
+      Math.random() * 1.5 + .5;
+
+    this.opacity =
+      Math.random() * .6 + .2;
+
+    this.vx =
+      (Math.random() - .5) * .5;
+
+    this.char =
+      Math.random() > .5
+        ? "1"
+        : "0";
+
+  }
+
+
   update() {
-    const h = fxCanvas.height;
-    if (this.type === 'rain') { this.x += 0.5; this.y += this.speed * 6 + 4; }
-    else if (this.type === 'snow') { this.x += Math.sin(this.y * 0.02) * 0.5; this.y += this.speed; }
-    else if (this.type === 'matrix') { this.y += this.speed * 3 + 2; }
-    else if (this.type === 'stars') { /* static */ }
-    else if (this.type === 'particles' || this.type === 'constellations') {
-      this.x += this.vx; this.y += this.speed * 0.3;
-      this.angle += this.vangle;
+
+    const height =
+      window.innerHeight;
+
+
+    if (
+      this.type === "rain"
+    ) {
+
+      this.x += .5;
+
+      this.y +=
+        this.speed * 6 + 4;
+
     }
-    if (this.y > h + 20) this.reset(false);
+
+    else if (
+      this.type === "snow"
+    ) {
+
+      this.x +=
+        Math.sin(
+          this.y * .02
+        ) * .5;
+
+      this.y +=
+        this.speed;
+
+    }
+
+    else if (
+      this.type === "matrix"
+    ) {
+
+      this.y +=
+        this.speed * 3 + 2;
+
+    }
+
+    else if (
+      this.type === "particles" ||
+      this.type === "constellations"
+    ) {
+
+      this.x +=
+        this.vx;
+
+      this.y +=
+        this.speed * .3;
+
+    }
+
+
+    if (
+      this.y >
+      height + 20
+    ) {
+
+      this.reset(false);
+
+    }
+
   }
-  draw(ctx, accentHex) {
-    ctx.globalAlpha = this.opacity;
-    const rgb = hexToRgb(accentHex) || {r:224,g:224,b:224};
-    ctx.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
-    ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},0.3)`;
-    if (this.type === 'rain') {
+
+
+  draw(
+    ctx,
+    accent
+  ) {
+
+    ctx.globalAlpha =
+      this.opacity;
+
+
+    const rgb =
+      hexToRgb(accent) ||
+      {
+        r: 224,
+        g: 224,
+        b: 224
+      };
+
+
+    ctx.fillStyle =
+      `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+
+
+    ctx.strokeStyle =
+      `rgba(${rgb.r},${rgb.g},${rgb.b},.3)`;
+
+
+    if (
+      this.type === "rain"
+    ) {
+
       ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(this.x - 1, this.y - 12);
-      ctx.lineWidth = 1; ctx.stroke();
-    } else if (this.type === 'snow') {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size + 1, 0, Math.PI * 2);
-      ctx.fill();
-    } else if (this.type === 'matrix') {
-      ctx.font = `${Math.round(this.size * 8 + 8)}px monospace`;
-      ctx.fillText(this.char, this.x, this.y);
-    } else if (this.type === 'stars') {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    } else {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size + 1, 0, Math.PI * 2);
-      ctx.fill();
+
+      ctx.moveTo(
+        this.x,
+        this.y
+      );
+
+      ctx.lineTo(
+        this.x - 1,
+        this.y - 12
+      );
+
+      ctx.lineWidth = 1;
+
+      ctx.stroke();
+
     }
+
+    else if (
+      this.type === "snow"
+    ) {
+
+      ctx.beginPath();
+
+      ctx.arc(
+        this.x,
+        this.y,
+        this.size + 1,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+
+    }
+
+    else if (
+      this.type === "matrix"
+    ) {
+
+      ctx.font =
+        `${Math.round(
+          this.size * 8 + 8
+        )}px monospace`;
+
+      ctx.fillText(
+        this.char,
+        this.x,
+        this.y
+      );
+
+    }
+
+    else {
+
+      ctx.beginPath();
+
+      ctx.arc(
+        this.x,
+        this.y,
+        this.size + 1,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+
+    }
+
+
     ctx.globalAlpha = 1;
+
   }
+
 }
 
-function hexToRgb(hex) {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return m ? {r:parseInt(m[1],16),g:parseInt(m[2],16),b:parseInt(m[3],16)} : null;
+
+function hexToRgb(
+  hex
+) {
+
+  const match =
+    /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+      .exec(hex);
+
+
+  return match
+
+    ? {
+        r: parseInt(
+          match[1],
+          16
+        ),
+
+        g: parseInt(
+          match[2],
+          16
+        ),
+
+        b: parseInt(
+          match[3],
+          16
+        )
+      }
+
+    : null;
+
 }
+
 
 let particles = [];
 
-function startFX(type) {
-  if (fxRAF) { cancelAnimationFrame(fxRAF); fxRAF = null; }
+
+function startFX(
+  type
+) {
+
+  if (fxRAF) {
+
+    cancelAnimationFrame(
+      fxRAF
+    );
+
+    fxRAF = null;
+
+  }
+
+
   particles = [];
-  fxCanvas.style.display = type === 'off' ? 'none' : 'block';
-  if (type === 'off') { fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height); return; }
 
-  const density = parseFloat(S.fxDensity) || 1;
+
+  fxCanvas.style.display =
+    type === "off"
+      ? "none"
+      : "block";
+
+
+  if (
+    type === "off"
+  ) {
+
+    fxCtx.clearRect(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight
+    );
+
+    return;
+
+  }
+
+
+  const density =
+    parseFloat(
+      S.fxDensity
+    ) || 1;
+
+
   let count;
-  if (type === 'rain') count = Math.round(80 * density);
-  else if (type === 'snow') count = Math.round(60 * density);
-  else if (type === 'matrix') count = Math.round(40 * density);
-  else if (type === 'stars') count = Math.round(120 * density);
-  else if (type === 'constellations') count = Math.round(60 * density);
-  else count = Math.round(50 * density);
 
-  for (let i = 0; i < count; i++) particles.push(new Particle(type));
+
+  if (type === "rain")
+    count =
+      Math.round(
+        80 * density
+      );
+
+  else if (type === "snow")
+    count =
+      Math.round(
+        60 * density
+      );
+
+  else if (type === "matrix")
+    count =
+      Math.round(
+        40 * density
+      );
+
+  else if (type === "stars")
+    count =
+      Math.round(
+        120 * density
+      );
+
+  else if (type === "constellations")
+    count =
+      Math.round(
+        60 * density
+      );
+
+  else
+    count =
+      Math.round(
+        50 * density
+      );
+
+
+  for (
+    let i = 0;
+    i < count;
+    i++
+  ) {
+
+    particles.push(
+      new Particle(type)
+    );
+
+  }
+
 
   function loop() {
-    fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-    const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#e0e0e0';
 
-    // Draw constellation lines
-    if (type === 'constellations') {
-      fxCtx.globalAlpha = 0.08;
-      fxCtx.strokeStyle = accentHex;
-      fxCtx.lineWidth = 0.6;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i+1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const d = Math.sqrt(dx*dx + dy*dy);
-          if (d < 120) {
+    fxCtx.clearRect(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight
+    );
+
+
+    const accent =
+      getComputedStyle(
+        document.documentElement
+      )
+      .getPropertyValue(
+        "--accent"
+      )
+      .trim() ||
+      "#e0e0e0";
+
+
+    if (
+      type ===
+      "constellations"
+    ) {
+
+      fxCtx.globalAlpha =
+        .08;
+
+      fxCtx.strokeStyle =
+        accent;
+
+      fxCtx.lineWidth =
+        .6;
+
+
+      for (
+        let i = 0;
+        i < particles.length;
+        i++
+      ) {
+
+        for (
+          let j = i + 1;
+          j < particles.length;
+          j++
+        ) {
+
+          const dx =
+            particles[i].x -
+            particles[j].x;
+
+          const dy =
+            particles[i].y -
+            particles[j].y;
+
+          const distance =
+            Math.sqrt(
+              dx * dx +
+              dy * dy
+            );
+
+
+          if (
+            distance < 120
+          ) {
+
             fxCtx.beginPath();
-            fxCtx.moveTo(particles[i].x, particles[i].y);
-            fxCtx.lineTo(particles[j].x, particles[j].y);
+
+            fxCtx.moveTo(
+              particles[i].x,
+              particles[i].y
+            );
+
+            fxCtx.lineTo(
+              particles[j].x,
+              particles[j].y
+            );
+
             fxCtx.stroke();
+
           }
+
         }
+
       }
-      fxCtx.globalAlpha = 1;
+
+
+      fxCtx.globalAlpha =
+        1;
+
     }
 
-    particles.forEach(p => { p.update(); p.draw(fxCtx, accentHex); });
-    fxRAF = requestAnimationFrame(loop);
+
+    particles.forEach(
+      particle => {
+
+        particle.update();
+
+        particle.draw(
+          fxCtx,
+          accent
+        );
+
+      }
+    );
+
+
+    fxRAF =
+      requestAnimationFrame(
+        loop
+      );
+
   }
+
+
   loop();
+
 }
 
-/* ===================================================
-   EDU → ARCHIVE TRANSITION
-=================================================== */
-let archiveUnlocked = false;
+
+/* =========================================================
+   ARCHIVE TRANSITION
+========================================================= */
+
+let archiveUnlocked =
+  false;
+
 
 function unlockArchive() {
-  if (archiveUnlocked) return;
-  archiveUnlocked = true;
 
-  // Flash
-  const flash = document.getElementById('flash');
-  flash.classList.add('active');
-  setTimeout(() => flash.classList.remove('active'), 180);
+  if (
+    archiveUnlocked
+  ) {
 
-  // Show loader
-  document.getElementById('archive-root').classList.add('visible');
+    return;
 
-  setTimeout(() => {
-    document.getElementById('edu-site').style.display = 'none';
-    document.getElementById('archive-root').classList.remove('visible');
-    document.getElementById('archive-site').classList.add('visible');
-    renderGrid(GAMES);
-    startFX(S.fx);
-    window.scrollTo({ top: 0, behavior: S.reduceMotion ? 'auto' : 'smooth' });
-  }, 1400);
+  }
+
+
+  archiveUnlocked =
+    true;
+
+
+  const flash =
+    document.getElementById(
+      "flash"
+    );
+
+
+  flash.classList.add(
+    "active"
+  );
+
+
+  setTimeout(
+    () =>
+      flash.classList.remove(
+        "active"
+      ),
+    180
+  );
+
+
+  document
+    .getElementById(
+      "archive-root"
+    )
+    .classList.add(
+      "visible"
+    );
+
+
+  setTimeout(
+    () => {
+
+      document
+        .getElementById(
+          "edu-site"
+        )
+        .style.display =
+        "none";
+
+
+      document
+        .getElementById(
+          "archive-root"
+        )
+        .classList.remove(
+          "visible"
+        );
+
+
+      document
+        .getElementById(
+          "archive-site"
+        )
+        .classList.add(
+          "visible"
+        );
+
+
+      renderGrid(
+        GAMES
+      );
+
+
+      startFX(
+        S.fx
+      );
+
+    },
+    1400
+  );
+
 }
 
-/* ===================================================
+
+/* =========================================================
    BOOT
-=================================================== */
-document.addEventListener('DOMContentLoaded', () => {
-  initSettingsUI();
+========================================================= */
 
-  // Key trigger
-  document.addEventListener('keydown', e => {
-    if (e.key === 'e' || e.key === 'E') unlockArchive();
-    if (e.key === 'Escape') {
-      closeRequest();
-      if (document.getElementById('game-view').classList.contains('open')) closeGame(false);
-    }
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
-      const view = document.getElementById('game-view');
-      if (view.classList.contains('open')) {
-        e.preventDefault();
-        view.requestFullscreen?.().catch?.(() => {});
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    initSettingsUI();
+
+
+    /* ---------------------------------------------
+       Keyboard
+    --------------------------------------------- */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "e" ||
+          event.key === "E"
+        ) {
+
+          unlockArchive();
+
+        }
+
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          closeRequest();
+
+
+          const gameView =
+            document.getElementById(
+              "game-view"
+            );
+
+
+          if (
+            gameView.classList.contains(
+              "open"
+            )
+          ) {
+
+            closeGame(false);
+
+          }
+
+        }
+
       }
+    );
+
+
+    /* ---------------------------------------------
+       Navigation
+    --------------------------------------------- */
+
+    document
+      .getElementById(
+        "request-btn-disguise"
+      )
+      ?.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          unlockArchive();
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "request-btn"
+      )
+      ?.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          openRequest();
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "settings-btn"
+      )
+      ?.addEventListener(
+        "click",
+        event => {
+
+          event.preventDefault();
+
+          showSettings();
+
+        }
+      );
+
+
+    document
+      .getElementById(
+        "settings-back"
+      )
+      ?.addEventListener(
+        "click",
+        showBrowse
+      );
+
+
+    document
+      .getElementById(
+        "request-cta-btn"
+      )
+      ?.addEventListener(
+        "click",
+        openRequest
+      );
+
+
+    document
+      .getElementById(
+        "request-close"
+      )
+      ?.addEventListener(
+        "click",
+        closeRequest
+      );
+
+
+    document
+      .getElementById(
+        "request-scrim"
+      )
+      ?.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target ===
+            document.getElementById(
+              "request-scrim"
+            )
+          ) {
+
+            closeRequest();
+
+          }
+
+        }
+      );
+
+
+    /* ---------------------------------------------
+       Request
+    --------------------------------------------- */
+
+    document
+      .getElementById(
+        "request-submit"
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+
+          const name =
+            document
+              .getElementById(
+                "request-name"
+              )
+              ?.value
+              .trim();
+
+
+          const hint =
+            document.getElementById(
+              "request-hint"
+            );
+
+
+          if (!name) {
+
+            hint.textContent =
+              "Enter a game title first.";
+
+            return;
+
+          }
+
+
+          hint.textContent =
+            "✓ Request sent!";
+
+
+          document.getElementById(
+            "request-name"
+          ).value = "";
+
+
+          document.getElementById(
+            "request-note"
+          ).value = "";
+
+
+          setTimeout(
+            closeRequest,
+            1200
+          );
+
+        }
+      );
+
+
+    /* ---------------------------------------------
+       Search
+    --------------------------------------------- */
+
+    const searchInput =
+      document.getElementById(
+        "search-input"
+      );
+
+    const searchButton =
+      document.getElementById(
+        "search-btn"
+      );
+
+
+    if (searchInput) {
+
+      searchInput.addEventListener(
+        "input",
+        () =>
+          filterGames(
+            searchInput.value
+          )
+      );
+
+
+      searchInput.addEventListener(
+        "keydown",
+        event => {
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            filterGames(
+              searchInput.value
+            );
+
+          }
+
+        }
+      );
+
     }
-  });
 
-  // Nav triggers
-  document.getElementById('request-btn-disguise')?.addEventListener('click', e => { e.preventDefault(); unlockArchive(); });
-  document.getElementById('request-btn')?.addEventListener('click', e => { e.preventDefault(); openRequest(); });
-  document.getElementById('settings-btn')?.addEventListener('click', e => { e.preventDefault(); showSettings(); });
-  document.getElementById('settings-back')?.addEventListener('click', showBrowse);
-  document.getElementById('request-cta-btn')?.addEventListener('click', openRequest);
-  document.getElementById('request-close')?.addEventListener('click', closeRequest);
 
-  document.getElementById('request-scrim')?.addEventListener('click', e => {
-    if (e.target === document.getElementById('request-scrim')) closeRequest();
-  });
+    if (searchButton) {
 
-  document.getElementById('request-submit')?.addEventListener('click', () => {
-    const name = document.getElementById('request-name')?.value.trim();
-    if (!name) { document.getElementById('request-hint').textContent = 'Enter a game title first.'; return; }
-    document.getElementById('request-hint').textContent = '✓ Request sent!';
-    document.getElementById('request-name').value = '';
-    document.getElementById('request-note').value = '';
-    setTimeout(closeRequest, 1200);
-  });
+      searchButton.addEventListener(
+        "click",
+        () =>
+          filterGames(
+            searchInput?.value || ""
+          )
+      );
 
-  // Search
-  const searchInput = document.getElementById('search-input');
-  const searchBtn = document.getElementById('search-btn');
-  if (searchInput) {
-    searchInput.addEventListener('input', () => filterGames(searchInput.value));
-    searchInput.addEventListener('keydown', e => { if (e.key === 'Enter') filterGames(searchInput.value); });
+    }
+
+
+    /* ---------------------------------------------
+       Game controls
+    --------------------------------------------- */
+
+    document
+      .getElementById(
+        "game-close"
+      )
+      ?.addEventListener(
+        "click",
+        () =>
+          closeGame(false)
+      );
+
+
+    document
+      .getElementById(
+        "game-fullscreen"
+      )
+      ?.addEventListener(
+        "click",
+        () => {
+
+          const view =
+            document.getElementById(
+              "game-view"
+            );
+
+
+          if (
+            document.fullscreenElement
+          ) {
+
+            document.exitFullscreen();
+
+          } else {
+
+            view.requestFullscreen?.();
+
+          }
+
+        }
+      );
+
   }
-  if (searchBtn) searchBtn.addEventListener('click', () => filterGames(searchInput?.value || ''));
+);
 
-  // Game controls
-  const gameFrame = document.getElementById('game-frame');
-  const gameLoading = document.getElementById('game-loading');
-  const gameError = document.getElementById('game-error');
-
-  gameFrame?.addEventListener('load', () => {
-    // A successful local game load reaches here immediately.
-    // For external games, the provider may still refuse iframe embedding;
-    // the Open tab fallback remains available.
-    setTimeout(() => gameLoading?.classList.add('hidden'), 180);
-  });
-
-  gameFrame?.addEventListener('error', () => {
-    gameLoading?.classList.add('hidden');
-    gameError?.classList.add('open');
-  });
-
-  document.getElementById('game-close')?.addEventListener('click', () => closeGame(false));
-  document.getElementById('game-open-tab')?.addEventListener('click', openActiveGameInNewTab);
-  document.getElementById('game-error-open')?.addEventListener('click', openActiveGameInNewTab);
-
-  document.getElementById('game-fullscreen')?.addEventListener('click', () => {
-    const view = document.getElementById('game-view');
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else if (view.requestFullscreen) {
-      view.requestFullscreen().catch(() => {});
-    }
-  });
-});
 </script>
+
 </body>
 </html>
