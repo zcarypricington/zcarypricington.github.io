@@ -1120,6 +1120,122 @@ const EXTERNAL_GAMES = [
 const GAMES = [...LOCAL_GAMES, ...EXTERNAL_GAMES];
 
 /* ===================================================
+   GN-MATH / FREEBUISNESS GAME SOURCE
+   Dynamically loads the public GN-Math catalog.
+   These games are added to the external collection.
+=================================================== */
+/*
+   GN-Math CDN options.
+   The first working CDN is used automatically. This keeps the catalog
+   working if one jsDelivr endpoint is blocked or unavailable.
+*/
+const CDN_OPTIONS = [
+  'https://quantil.jsdelivr.net',
+  'https://cdn.jsdelivr.net',
+  'https://fastly.jsdelivr.net',
+  'https://testingcf.jsdelivr.net',
+  'https://gcore.jsdelivr.net',
+  'https://originfastly.jsdelivr.net',
+  'https://jsd.onmicrosoft.cn',
+  'https://cdn.staticdelivr.com'
+];
+
+let _cdn = CDN_OPTIONS[0];
+let GN_HTML_URL = _cdn + '/gh/freebuisness/html@main';
+let GN_COVER_URL = _cdn + '/gh/freebuisness/covers@main';
+
+const DATA = {
+  gn: [],
+  gnCdn: _cdn
+};
+
+function setGNCdn(cdn) {
+  _cdn = cdn;
+  GN_HTML_URL = _cdn + '/gh/freebuisness/html@main';
+  GN_COVER_URL = _cdn + '/gh/freebuisness/covers@main';
+  DATA.gnCdn = _cdn;
+}
+
+async function loadGN() {
+  if (DATA.gn.length) return DATA.gn;
+
+  const cdns = [
+    _cdn,
+    ...CDN_OPTIONS.filter(cdn => cdn !== _cdn)
+  ];
+
+  for (const cdn of cdns) {
+    try {
+      const zonesUrl = cdn + '/gh/freebuisness/assets/zones.json?t=' + Date.now();
+
+      const response = await fetch(zonesUrl, {
+        cache: 'no-store',
+        credentials: 'omit'
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error('zones.json did not return an array');
+      }
+
+      // Use the CDN that successfully returned the catalog for all game assets.
+      setGNCdn(cdn);
+
+      DATA.gn = data
+        .filter(g =>
+          g &&
+          g.id !== -1 &&
+          g.id !== undefined &&
+          !String(g.name || '').startsWith('[!]')
+        )
+        .map(g => {
+          const gu = String(g.url || '')
+            .replace(/\{HTML_URL\}/g, GN_HTML_URL)
+            .replace(/\{COVER_URL\}/g, GN_COVER_URL)
+            .trim();
+
+          const rawCover = String(g.cover || '')
+            .replace(/\{COVER_URL\}/g, GN_COVER_URL)
+            .trim();
+
+          const gameUrl = gu.startsWith('http')
+            ? gu
+            : (GN_HTML_URL + '/' + g.id + '.html');
+
+          const coverUrl = rawCover
+            ? (rawCover.startsWith('http')
+                ? rawCover
+                : (GN_COVER_URL + '/' + rawCover.replace(/^\/+/, '')))
+            : '';
+
+          return {
+            tag: g.category || g.tag || 'GN-Math',
+            name: g.name || `GN Game ${g.id}`,
+            file: gameUrl,
+            icon: coverUrl,
+            external: true,
+            source: 'GN-Math'
+          };
+        });
+
+      console.info(`[Doomsday] Loaded ${DATA.gn.length} GN-Math games from ${cdn}`);
+      return DATA.gn;
+    } catch (e) {
+      console.warn(`[Doomsday] GN-Math CDN failed: ${cdn}`, e);
+    }
+  }
+
+  console.warn('[Doomsday] All GN-Math CDN endpoints failed.');
+  DATA.gn = [];
+  return DATA.gn;
+}
+
+/* ===================================================
    SETTINGS — persist to localStorage
 =================================================== */
 const LS = {
@@ -1246,12 +1362,16 @@ function initSettingsUI() {
 let filteredGames = [...GAMES];
 
 function normalizeGame(g) {
+  const path = g.file || g.path || '';
+  const external = g.external === true || /^https?:\/\//i.test(path);
+
   return {
     title: g.name || g.title || 'Untitled Game',
     category: g.tag || g.category || 'Game',
-    path: g.file || g.path || '',
+    path,
     thumb: g.icon || g.thumb || '',
-    external: /^https?:\/\//i.test(g.file || g.path || '')
+    external,
+    source: g.source || (external ? 'External' : 'Doomsday')
   };
 }
 
@@ -1285,7 +1405,7 @@ function renderGameCard(rawGame, index) {
   info.className = 'info';
   info.innerHTML = '<div class="title"></div><div class="meta"></div>';
   info.querySelector('.title').textContent = g.title;
-  info.querySelector('.meta').textContent = g.category + (g.external ? ' • External' : ' • Local');
+  info.querySelector('.meta').textContent = g.category + (g.external ? ` • ${g.source || 'External'}` : ' • Local');
 
   card.appendChild(thumb);
   card.appendChild(info);
@@ -1672,6 +1792,29 @@ document.addEventListener('DOMContentLoaded', () => {
       document.exitFullscreen();
     } else if (view.requestFullscreen) {
       view.requestFullscreen().catch(() => {});
+    }
+  });
+
+  // Load GN-Math in the background. Existing games remain available
+  // even if the remote catalog cannot be reached.
+  loadGN().then(gnGames => {
+    if (!gnGames.length) return;
+
+    const existingPaths = new Set(
+      GAMES.map(game => normalizeGame(game).path).filter(Boolean)
+    );
+
+    for (const game of gnGames) {
+      const normalized = normalizeGame(game);
+      if (!existingPaths.has(normalized.path)) {
+        GAMES.push(game);
+        existingPaths.add(normalized.path);
+      }
+    }
+
+    // Refresh the grids if the archive is already visible.
+    if (document.getElementById('archive-site')?.classList.contains('visible')) {
+      filterGames(document.getElementById('search-input')?.value || '');
     }
   });
 
