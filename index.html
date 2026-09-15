@@ -679,6 +679,43 @@ body {
 }
 
 /* ===========================
+   GAME SECTIONS
+=========================== */
+.game-section {
+  margin: 0 28px 34px;
+}
+.game-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 14px;
+}
+.game-section-heading h2 {
+  margin: 3px 0 0;
+  font-size: 1.15rem;
+  letter-spacing: -.02em;
+}
+.game-section-kicker {
+  display: block;
+  color: var(--accent);
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .14em;
+}
+.game-section-count {
+  color: var(--text-dim);
+  font-size: .72rem;
+  padding-bottom: 3px;
+}
+.external-section {
+  padding-top: 8px;
+}
+@media (max-width: 700px) {
+  .game-section { margin-left: 16px; margin-right: 16px; }
+}
+
+/* ===========================
    GAMEPIX EMBED STYLES
 =========================== */
 .gamepix-embed {
@@ -872,7 +909,27 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
         <button id="search-btn">Find</button>
       </div>
     </section>
-    <section class="arc-grid" id="game-grid"></section>
+    <section class="game-section" id="local-games-section">
+      <div class="game-section-heading">
+        <div>
+          <span class="game-section-kicker">HOSTED ON DOOMSDAY</span>
+          <h2>Local Games</h2>
+        </div>
+        <span class="game-section-count" id="local-games-count"></span>
+      </div>
+      <section class="arc-grid" id="local-game-grid"></section>
+    </section>
+
+    <section class="game-section external-section" id="external-games-section">
+      <div class="game-section-heading">
+        <div>
+          <span class="game-section-kicker">EXTERNAL SOURCES</span>
+          <h2>More Games</h2>
+        </div>
+        <span class="game-section-count" id="external-games-count"></span>
+      </div>
+      <section class="arc-grid" id="external-game-grid"></section>
+    </section>
     <section class="arc-request-cta">
       <div class="arc-request-cta-inner">
         <h2>Can't find what you're looking for?</h2>
@@ -1037,7 +1094,7 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
    All paths relative to ./g/ so they survive as-is.
    Add more entries below following the same pattern.
 =================================================== */
-const GAMES = [
+const LOCAL_GAMES = [
   { "tag": "Arcade",  "name": "Slope",             "file": "./g/slope.html",             "icon": "./g/assets/slope.png" },
   { "tag": "Shooter", "name": "1v1.LOL",           "file": "./g/1v1.lol.html",           "icon": "./g/assets/1v1.lol.png" },
   { "tag": "Sports",  "name": "Basket Bros",       "file": "./g/basket-bros.html",       "icon": "./g/assets/basket-bros.png" },
@@ -1045,17 +1102,22 @@ const GAMES = [
   { "tag": "Puzzle",  "name": "Cookie Clicker",    "file": "./g/cookie-clicker.html",    "icon": "./g/assets/cookie-clicker.png" },
   { "tag": "Arcade",  "name": "Escape Road City 2", "file": "./g/escape-road-city-2.html", "icon": "./g/assets/escape-road-city-2.png" },
   { "tag": "Arcade",  "name": "Tomb Of The Mask",  "file": "./g/tomb-of-the-mask.html",  "icon": "./g/assets/tomb-of-the-mask.png" },
-  { "tag": "Sports",  "name": "Retro Bowl",        "file": "https://script.google.com/macros/s/AKfycbxkfMHeNjgt0LuksJhoAGS_T1jAnsQTkGw9GIRRi2VTljTi4t46Q0HIkslBvD7WOyXPHg/exec",        "icon": "./g/assets/retro-bowl.jpg" },
   { "tag": "Sports",  "name": "Football Bros",     "file": "./g/football-bros.html",     "icon": "./g/assets/football-bros.png" },
   { "tag": "Sports",  "name": "Baseball Bros",     "file": "./g/baseball-bros.html",     "icon": "./g/assets/baseball-bros.jpg" },
-  { "tag": "Sports",  "name": "Basketball Stars",  "file": "https://script.google.com/macros/s/AKfycbwzYMDDcdDUAvEP7iO6OdRk-5_oUp6vYvDdyEEz8tTOzWi5y4-Qf3vQ6TBoZuc9UYVcLg/exec",  "icon": "./g/assets/basketball-stars.jpg" },
   { "tag": "Horror",  "name": "Granny",            "file": "./g/granny.html",            "icon": "./g/assets/granny.jpg" },
   { "tag": "Horror",  "name": "Granny 2",          "file": "./g/granny-2.html",          "icon": "./g/assets/granny-2.jpg" },
-  { "tag": "Horror",  "name": "FNAF",              "file": "https://script.google.com/macros/s/AKfycbxJNtrKTWPCSIo9tOqq53G2xqoQCIPDTYUsVOT79Eqk8I7C5cQkGdDnj0jzlNHa7bvs3g/exec",              "icon": "./g/assets/fnaf.jpg" },
-  { "tag": "Horror",  "name": "FNAF 2",            "file": "https://jasongamesdev.github.io/fnaf-2/", "icon": "./g/assets/fnaf2.jpg" },
-  { "tag": "Horror",  "name": "FNAF 3",            "file": "https://script.google.com/macros/s/AKfycbyVdPAG4aRGh5tmBwKEZthKmaqO12GTD-h-C1Do6ICbR3ZEj5ic1aJQ2e4Im2pxcWLf/exec",            "icon": "./g/assets/fnaf3.jpg" },
   { "tag": "Horror",  "name": "FNAF 4",            "file": "./g/fnaf4.html",            "icon": "./g/assets/fnaf4.jpg" }
 ];
+
+const EXTERNAL_GAMES = [
+  { "tag": "Sports",  "name": "Retro Bowl",        "file": "https://script.google.com/macros/s/AKfycbxkfMHeNjgt0LuksJhoAGS_T1jAnsQTkGw9GIRRi2VTljTi4t46Q0HIkslBvD7WOyXPHg/exec",        "icon": "./g/assets/retro-bowl.jpg" },
+  { "tag": "Sports",  "name": "Basketball Stars",  "file": "https://script.google.com/macros/s/AKfycbwzYMDDcdDUAvEP7iO6OdRk-5_oUp6vYvDdyEEz8tTOzWi5y4-Qf3vQ6TBoZuc9UYVcLg/exec",  "icon": "./g/assets/basketball-stars.jpg" },
+  { "tag": "Horror",  "name": "FNAF",              "file": "https://script.google.com/macros/s/AKfycbxJNtrKTWPCSIo9tOqq53G2xqoQCIPDTYUsVOT79Eqk8I7C5cQkGdDnj0jzlNHa7bvs3g/exec",              "icon": "./g/assets/fnaf.jpg" },
+  { "tag": "Horror",  "name": "FNAF 2",            "file": "https://jasongamesdev.github.io/fnaf-2/", "icon": "./g/assets/fnaf2.jpg" },
+  { "tag": "Horror",  "name": "FNAF 3",            "file": "https://script.google.com/macros/s/AKfycbyVdPAG4aRGh5tmBwKEZthKmaqO12GTD-h-C1Do6ICbR3ZEj5ic1aJQ2e4Im2pxcWLf/exec",            "icon": "./g/assets/fnaf3.jpg" }
+];
+
+const GAMES = [...LOCAL_GAMES, ...EXTERNAL_GAMES];
 
 /* ===================================================
    SETTINGS — persist to localStorage
@@ -1184,75 +1246,82 @@ function initSettingsUI() {
 let filteredGames = [...GAMES];
 
 function normalizeGame(g) {
-  // The game list uses tag/name/file/icon. The old renderer expected
-  // title/category/path/thumb, which made every card open "undefined".
   return {
     title: g.name || g.title || 'Untitled Game',
     category: g.tag || g.category || 'Game',
     path: g.file || g.path || '',
     thumb: g.icon || g.thumb || '',
+    external: /^https?:\/\//i.test(g.file || g.path || '')
   };
 }
 
-function renderGrid(games) {
-  const grid = document.getElementById('game-grid');
-  if (!grid) return;
+function renderGameCard(rawGame, index) {
+  const g = normalizeGame(rawGame);
+  const card = document.createElement('article');
+  card.className = 'game-card';
+  card.style.animationDelay = `${Math.min(index * 35, 700)}ms`;
+  card.setAttribute('role', 'button');
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('aria-label', `Play ${g.title}`);
 
-  grid.innerHTML = '';
+  const thumb = document.createElement('div');
+  thumb.className = 'thumb';
 
-  if (!games.length) {
-    grid.innerHTML = '<div class="arc-empty">No games found. Try a different search.</div>';
-    return;
+  if (g.thumb) {
+    const img = document.createElement('img');
+    img.src = g.thumb;
+    img.alt = g.title;
+    img.loading = 'lazy';
+    img.addEventListener('error', () => {
+      img.remove();
+      thumb.insertAdjacentHTML('beforeend', '<div class="placeholder-icon">🎮</div>');
+    });
+    thumb.appendChild(img);
+  } else {
+    thumb.innerHTML = '<div class="placeholder-icon">🎮</div>';
   }
 
-  games.forEach((rawGame, index) => {
-    const g = normalizeGame(rawGame);
-    const card = document.createElement('article');
-    card.className = 'game-card';
-    card.style.animationDelay = `${Math.min(index * 35, 700)}ms`;
-    card.setAttribute('role', 'button');
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', `Play ${g.title}`);
+  const info = document.createElement('div');
+  info.className = 'info';
+  info.innerHTML = '<div class="title"></div><div class="meta"></div>';
+  info.querySelector('.title').textContent = g.title;
+  info.querySelector('.meta').textContent = g.category + (g.external ? ' • External' : ' • Local');
 
-    const thumb = document.createElement('div');
-    thumb.className = 'thumb';
+  card.appendChild(thumb);
+  card.appendChild(info);
 
-    if (g.thumb) {
-      const img = document.createElement('img');
-      img.src = g.thumb;
-      img.alt = g.title;
-      img.loading = 'lazy';
-      img.addEventListener('error', () => {
-        img.remove();
-        thumb.insertAdjacentHTML('beforeend', '<div class="placeholder-icon">🎮</div>');
-      });
-      thumb.appendChild(img);
-    } else {
-      thumb.innerHTML = '<div class="placeholder-icon">🎮</div>';
+  card.addEventListener('click', () => openGame(g));
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openGame(g);
     }
-
-    const info = document.createElement('div');
-    info.className = 'info';
-    info.innerHTML = `
-      <div class="title"></div>
-      <div class="meta"></div>
-    `;
-    info.querySelector('.title').textContent = g.title;
-    info.querySelector('.meta').textContent = g.category;
-
-    card.appendChild(thumb);
-    card.appendChild(info);
-
-    card.addEventListener('click', () => openGame(g));
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        openGame(g);
-      }
-    });
-
-    grid.appendChild(card);
   });
+
+  return card;
+}
+
+function renderGrid(games) {
+  const localGrid = document.getElementById('local-game-grid');
+  const externalGrid = document.getElementById('external-game-grid');
+  if (!localGrid || !externalGrid) return;
+
+  localGrid.innerHTML = '';
+  externalGrid.innerHTML = '';
+
+  const localGames = games.filter(g => !normalizeGame(g).external);
+  const externalGames = games.filter(g => normalizeGame(g).external);
+
+  document.getElementById('local-games-count').textContent = `${localGames.length} game${localGames.length === 1 ? '' : 's'}`;
+  document.getElementById('external-games-count').textContent = `${externalGames.length} game${externalGames.length === 1 ? '' : 's'}`;
+
+  localGames.forEach((game, index) => localGrid.appendChild(renderGameCard(game, index)));
+  externalGames.forEach((game, index) => externalGrid.appendChild(renderGameCard(game, index)));
+
+  localGrid.querySelectorAll('.game-card').length === 0 &&
+    (localGrid.innerHTML = '<div class="arc-empty">No local games found.</div>');
+  externalGrid.querySelectorAll('.game-card').length === 0 &&
+    (externalGrid.innerHTML = '<div class="arc-empty">No external games found.</div>');
 }
 
 function filterGames(q) {
