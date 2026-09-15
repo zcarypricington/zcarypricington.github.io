@@ -418,13 +418,63 @@ body {
 
 /* GAME VIEWER */
 #game-view {
-  display: none;
+  display: flex;
   position: fixed; inset: 0;
   z-index: 200;
   background: var(--bg);
   flex-direction: column;
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(1.025);
+  pointer-events: none;
+  transition: opacity .28s ease, transform .32s cubic-bezier(.2,.8,.2,1), visibility 0s linear .32s;
 }
-#game-view.open { display: flex; }
+#game-view.open {
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+  transition: opacity .28s ease, transform .32s cubic-bezier(.2,.8,.2,1);
+}
+.game-loading {
+  position: absolute;
+  inset: 42px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+  background: #000;
+  z-index: 2;
+  transition: opacity .2s ease;
+  pointer-events: none;
+}
+.game-loading.hidden { opacity: 0; }
+.game-spinner {
+  width: 34px;
+  height: 34px;
+  border: 2px solid rgba(255,255,255,.16);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .75s linear infinite;
+}
+.game-loading span { color: #aaa; font: 12px monospace; }
+.game-error {
+  position: absolute;
+  inset: 42px 0 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  background: #000;
+  z-index: 3;
+  text-align: center;
+  padding: 30px;
+}
+.game-error.open { display: flex; }
+.game-error strong { color: #fff; font-size: 1rem; }
+.game-error span { color: #888; max-width: 520px; line-height: 1.5; font-size: .8rem; }
 .game-bar {
   height: 42px;
   background: var(--bg2);
@@ -654,6 +704,53 @@ body {
 =========================== */
 #browse-view { display: flex; flex-direction: column; flex: 1; }
 #browse-view.hidden { display: none; }
+
+/* EXTRA MOTION */
+.arc-header {
+  animation: headerDrop .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.arc-hero h1 {
+  animation: heroUp .65s .08s cubic-bezier(.2,.8,.2,1) both;
+}
+.arc-search {
+  animation: heroUp .65s .16s cubic-bezier(.2,.8,.2,1) both;
+}
+.arc-request-cta {
+  animation: fadeUp .65s .2s both;
+}
+.edu-header, .edu-nav, .edu-hero, .edu-card, .edu-box {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.edu-card:hover, .edu-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+.request-modal {
+  animation: modalIn .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.request-scrim.open {
+  animation: scrimIn .2s ease both;
+}
+@keyframes headerDrop {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(14px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
 /* REDUCE MOTION */
 @media (prefers-reduced-motion: reduce) {
@@ -891,9 +988,19 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
   <div class="game-bar">
     <button class="game-btn" id="game-close">✕ Close</button>
     <div class="game-title-bar" id="game-title-bar"></div>
-    <button class="game-btn" id="game-fullscreen">⛶ Fullscreen</button>
+    <button class="game-btn" id="game-open-tab">↗ Open tab</button>
+  <button class="game-btn" id="game-fullscreen">⛶ Fullscreen</button>
   </div>
-  <iframe id="game-frame" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-popups" allowfullscreen></iframe>
+  <div class="game-loading" id="game-loading">
+    <div class="game-spinner"></div>
+    <span>LOADING GAME…</span>
+  </div>
+  <div class="game-error" id="game-error">
+    <strong>This game could not be embedded.</strong>
+    <span>The game may block iframe embedding. Use “Open tab” to launch it directly.</span>
+    <button class="game-btn" id="game-error-open">↗ Open game directly</button>
+  </div>
+  <iframe id="game-frame" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms allow-popups allow-presentation" allowfullscreen></iframe>
 </div>
 
 <!-- REQUEST MODAL -->
@@ -1076,64 +1183,160 @@ function initSettingsUI() {
 =================================================== */
 let filteredGames = [...GAMES];
 
+function normalizeGame(g) {
+  // The game list uses tag/name/file/icon. The old renderer expected
+  // title/category/path/thumb, which made every card open "undefined".
+  return {
+    title: g.name || g.title || 'Untitled Game',
+    category: g.tag || g.category || 'Game',
+    path: g.file || g.path || '',
+    thumb: g.icon || g.thumb || '',
+  };
+}
+
 function renderGrid(games) {
   const grid = document.getElementById('game-grid');
   if (!grid) return;
+
   grid.innerHTML = '';
+
   if (!games.length) {
     grid.innerHTML = '<div class="arc-empty">No games found. Try a different search.</div>';
     return;
   }
-  games.forEach(g => {
-    const card = document.createElement('div');
+
+  games.forEach((rawGame, index) => {
+    const g = normalizeGame(rawGame);
+    const card = document.createElement('article');
     card.className = 'game-card';
-    const thumbHTML = g.thumb
-      ? `<img src="${g.thumb}" alt="${g.title}" loading="lazy" onerror="this.style.display='none'">`
-      : `<div class="placeholder-icon">🎮</div>`;
-    card.innerHTML = `
-      <div class="thumb">${thumbHTML}</div>
-      <div class="info">
-        <div class="title">${g.title}</div>
-        <div class="meta">${g.category || ''}</div>
-      </div>`;
+    card.style.animationDelay = `${Math.min(index * 35, 700)}ms`;
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `Play ${g.title}`);
+
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb';
+
+    if (g.thumb) {
+      const img = document.createElement('img');
+      img.src = g.thumb;
+      img.alt = g.title;
+      img.loading = 'lazy';
+      img.addEventListener('error', () => {
+        img.remove();
+        thumb.insertAdjacentHTML('beforeend', '<div class="placeholder-icon">🎮</div>');
+      });
+      thumb.appendChild(img);
+    } else {
+      thumb.innerHTML = '<div class="placeholder-icon">🎮</div>';
+    }
+
+    const info = document.createElement('div');
+    info.className = 'info';
+    info.innerHTML = `
+      <div class="title"></div>
+      <div class="meta"></div>
+    `;
+    info.querySelector('.title').textContent = g.title;
+    info.querySelector('.meta').textContent = g.category;
+
+    card.appendChild(thumb);
+    card.appendChild(info);
+
     card.addEventListener('click', () => openGame(g));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openGame(g);
+      }
+    });
+
     grid.appendChild(card);
   });
 }
 
 function filterGames(q) {
   q = q.trim().toLowerCase();
-  filteredGames = q ? GAMES.filter(g =>
-    g.title.toLowerCase().includes(q) ||
-    (g.category || '').toLowerCase().includes(q)
-  ) : [...GAMES];
+  filteredGames = q
+    ? GAMES.filter(raw => {
+        const g = normalizeGame(raw);
+        return g.title.toLowerCase().includes(q) ||
+               g.category.toLowerCase().includes(q);
+      })
+    : [...GAMES];
+
   renderGrid(filteredGames);
 }
 
 /* ===================================================
    GAME VIEWER
 =================================================== */
+let activeGame = null;
+
 function openGame(g) {
   const view = document.getElementById('game-view');
   const frame = document.getElementById('game-frame');
   const titleBar = document.getElementById('game-title-bar');
-  frame.src = g.path;
+  const loading = document.getElementById('game-loading');
+  const error = document.getElementById('game-error');
+
+  if (!g || !g.path) {
+    console.error('Game has no playable file:', g);
+    return;
+  }
+
+  activeGame = g;
   titleBar.textContent = g.title;
+  frame.src = 'about:blank';
+  error.classList.remove('open');
+  loading.classList.remove('hidden');
+
+  // Set the real game URL AFTER resetting the frame.
+  // Local ./g/*.html games now resolve correctly on GitHub Pages/Netlify.
+  requestAnimationFrame(() => {
+    frame.src = g.path;
+  });
+
   view.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
   if (S.fullscreen) {
-    try { view.requestFullscreen && view.requestFullscreen(); } catch(e){}
+    setTimeout(() => {
+      try {
+        if (!document.fullscreenElement && view.requestFullscreen) {
+          view.requestFullscreen();
+        }
+      } catch (e) {}
+    }, 100);
   }
 }
 
-function closeGame(force) {
+function closeGame(force = false) {
   if (!force && S.confirmClose) {
     if (!confirm('Close this game?')) return;
   }
+
   const view = document.getElementById('game-view');
   const frame = document.getElementById('game-frame');
-  frame.src = '';
+  const loading = document.getElementById('game-loading');
+  const error = document.getElementById('game-error');
+
+  frame.src = 'about:blank';
+  loading.classList.add('hidden');
+  error.classList.remove('open');
   view.classList.remove('open');
-  if (document.fullscreenElement) document.exitFullscreen();
+  document.body.style.overflow = '';
+
+  if (document.fullscreenElement) {
+    try { document.exitFullscreen(); } catch (e) {}
+  }
+
+  activeGame = null;
+}
+
+function openActiveGameInNewTab() {
+  if (!activeGame?.path) return;
+  window.open(activeGame.path, '_blank', 'noopener,noreferrer');
 }
 
 /* ===================================================
@@ -1308,6 +1511,7 @@ function unlockArchive() {
     document.getElementById('archive-site').classList.add('visible');
     renderGrid(GAMES);
     startFX(S.fx);
+    window.scrollTo({ top: 0, behavior: S.reduceMotion ? 'auto' : 'smooth' });
   }, 1400);
 }
 
@@ -1323,6 +1527,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       closeRequest();
       if (document.getElementById('game-view').classList.contains('open')) closeGame(false);
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
+      const view = document.getElementById('game-view');
+      if (view.classList.contains('open')) {
+        e.preventDefault();
+        view.requestFullscreen?.().catch?.(() => {});
+      }
     }
   });
 
@@ -1357,11 +1568,33 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchBtn) searchBtn.addEventListener('click', () => filterGames(searchInput?.value || ''));
 
   // Game controls
+  const gameFrame = document.getElementById('game-frame');
+  const gameLoading = document.getElementById('game-loading');
+  const gameError = document.getElementById('game-error');
+
+  gameFrame?.addEventListener('load', () => {
+    // A successful local game load reaches here immediately.
+    // For external games, the provider may still refuse iframe embedding;
+    // the Open tab fallback remains available.
+    setTimeout(() => gameLoading?.classList.add('hidden'), 180);
+  });
+
+  gameFrame?.addEventListener('error', () => {
+    gameLoading?.classList.add('hidden');
+    gameError?.classList.add('open');
+  });
+
   document.getElementById('game-close')?.addEventListener('click', () => closeGame(false));
+  document.getElementById('game-open-tab')?.addEventListener('click', openActiveGameInNewTab);
+  document.getElementById('game-error-open')?.addEventListener('click', openActiveGameInNewTab);
+
   document.getElementById('game-fullscreen')?.addEventListener('click', () => {
     const view = document.getElementById('game-view');
-    if (document.fullscreenElement) document.exitFullscreen();
-    else view.requestFullscreen && view.requestFullscreen();
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else if (view.requestFullscreen) {
+      view.requestFullscreen().catch(() => {});
+    }
   });
 });
 </script>
