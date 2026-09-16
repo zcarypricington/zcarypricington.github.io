@@ -1219,7 +1219,9 @@ async function loadGN() {
             file: gameUrl,
             icon: coverUrl,
             external: true,
-            source: 'GN-Math'
+            source: 'GN-Math',
+            gnMath: true,
+            gnId: g.id
           };
         });
 
@@ -1462,15 +1464,46 @@ function filterGames(q) {
 =================================================== */
 let activeGame = null;
 
-function openGame(g) {
-  if (g?.external && g.path) {
-    const popup = window.open(g.path, '_blank');
-    if (!popup) {
-      alert('Your browser blocked the new tab. Please allow popups for Doomsday and try again.');
-    }
-    return;
+async function fetchGNGameHTML(game) {
+  if (!game?.path) throw new Error('GN-Math game has no URL.');
+
+  const response = await fetch(game.path, {
+    cache: 'no-store',
+    credentials: 'omit'
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`);
   }
 
+  let html = await response.text();
+  if (!html.trim()) throw new Error('The game returned an empty document.');
+
+  // GN-Math HTML files commonly use relative asset paths. Add a base URL so
+  // those assets continue resolving against the CDN after the HTML is moved
+  // into the Doomsday game iframe.
+  const baseHref = new URL('.', game.path).href;
+  const baseTag = `<base href="${baseHref.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">`;
+
+  if (/<base\s/i.test(html)) {
+    html = html.replace(/<base\b[^>]*>/i, baseTag);
+  } else if (/<head\b[^>]*>/i.test(html)) {
+    html = html.replace(/<head\b[^>]*>/i, match => `${match}${baseTag}`);
+  } else {
+    html = `<!doctype html><html><head>${baseTag}<meta charset="utf-8"></head><body>${html}</body></html>`;
+  }
+
+  return html;
+}
+
+function setGameLoading(message = 'LOADING GAME…') {
+  const loading = document.getElementById('game-loading');
+  const label = loading?.querySelector('span');
+  if (label) label.textContent = message;
+  loading?.classList.remove('hidden');
+}
+
+async function openGame(g) {
   const view = document.getElementById('game-view');
   const frame = document.getElementById('game-frame');
   const titleBar = document.getElementById('game-title-bar');
@@ -1478,24 +1511,47 @@ function openGame(g) {
   const error = document.getElementById('game-error');
 
   if (!g || !g.path) {
-    console.error('Game has no playable file:', g);
+    console.error('Game has no playable URL:', g);
     return;
   }
 
   activeGame = g;
   titleBar.textContent = g.title;
+  frame.srcdoc = '';
   frame.src = 'about:blank';
+  frame.removeAttribute('srcdoc');
   error.classList.remove('open');
-  loading.classList.remove('hidden');
-
-  // Set the real game URL AFTER resetting the frame.
-  // Local ./g/*.html games now resolve correctly on GitHub Pages/Netlify.
-  requestAnimationFrame(() => {
-    frame.src = g.path;
-  });
-
+  setGameLoading(g.gnMath ? 'FETCHING GAME…' : 'LOADING GAME…');
   view.classList.add('open');
   document.body.style.overflow = 'hidden';
+
+  try {
+    if (g.gnMath) {
+      // GN-Math games are fetched first, then their actual HTML is injected
+      // into the modal iframe. The game itself is not navigated to directly.
+      const html = await fetchGNGameHTML(g);
+      if (activeGame !== g) return;
+
+      frame.src = 'about:blank';
+      frame.srcdoc = html;
+      setGameLoading('STARTING GAME…');
+    } else {
+      // Normal external games remain URL-backed and are embedded directly in
+      // the modal. They are NOT automatically opened in a new tab.
+      frame.srcdoc = '';
+      frame.src = g.path;
+    }
+  } catch (e) {
+    console.error('[Doomsday] Game load failed:', e);
+    loading?.classList.add('hidden');
+    error.classList.add('open');
+    const message = error.querySelector('span');
+    if (message) {
+      message.textContent = g.gnMath
+        ? `Could not fetch this GN-Math game from the CDN. ${e?.message || 'Unknown error.'}`
+        : 'The game could not be embedded. Use “Open tab” to launch it in a separate about:blank tab.';
+    }
+  }
 
   if (S.fullscreen) {
     setTimeout(() => {
@@ -1518,7 +1574,9 @@ function closeGame(force = false) {
   const loading = document.getElementById('game-loading');
   const error = document.getElementById('game-error');
 
+  frame.srcdoc = '';
   frame.src = 'about:blank';
+  frame.removeAttribute('srcdoc');
   loading.classList.add('hidden');
   error.classList.remove('open');
   view.classList.remove('open');
@@ -1531,10 +1589,39 @@ function closeGame(force = false) {
   activeGame = null;
 }
 
-function openActiveGameInNewTab() {
+async function openActiveGameInNewTab() {
   if (!activeGame?.path) return;
-  const popup = window.open(activeGame.path, '_blank');
-  if (!popup) alert('Your browser blocked the new tab. Please allow popups for Doomsday and try again.');
+
+  const game = activeGame;
+  const popup = window.open('about:blank', '_blank');
+
+  if (!popup) {
+    alert('Your browser blocked the new tab. Please allow popups for Doomsday and try again.');
+    return;
+  }
+
+  try {
+    popup.document.title = game.title || 'Doomsday Game';
+
+    if (game.gnMath) {
+      // Fetch the same CDN HTML and write it directly into the about:blank tab.
+      const html = await fetchGNGameHTML(game);
+      popup.document.open();
+      popup.document.write(html);
+      popup.document.close();
+    } else {
+      // Keep the tab as about:blank and put the external URL inside an iframe.
+      const doc = popup.document;
+      doc.open();
+      doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>${String(game.title || 'Doomsday Game').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{display:block;width:100%;height:100%;border:0}</style></head><body><iframe src="${String(game.path).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe></body></html>`);
+      doc.close();
+    }
+  } catch (e) {
+    console.error('[Doomsday] New-tab game launch failed:', e);
+    try {
+      popup.document.body.innerHTML = '<p style="font:14px sans-serif;color:#fff;background:#000;padding:24px">Unable to load this game.</p>';
+    } catch (_) {}
+  }
 }
 
 /* ===================================================
@@ -1771,9 +1858,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameError = document.getElementById('game-error');
 
   gameFrame?.addEventListener('load', () => {
-    // A successful local game load reaches here immediately.
-    // For external games, the provider may still refuse iframe embedding;
-    // the Open tab fallback remains available.
+    // Both normal URL games and fetched GN-Math HTML reach this handler when
+    // the modal iframe has loaded its document.
     setTimeout(() => gameLoading?.classList.add('hidden'), 180);
   });
 
