@@ -1600,6 +1600,17 @@ async function fetchRemoteGameHTML(game) {
 // Backwards-compatible name used by the existing GN-Math launcher.
 const fetchGNGameHTML = fetchRemoteGameHTML;
 
+// Keep the modal loading state in one place. This is used by both catalog
+// games (GN-Math / Noah) and ordinary URL/local games.
+function setGameLoading(message = 'LOADING GAME…') {
+  const loading = document.getElementById('game-loading');
+  if (!loading) return;
+
+  const label = loading.querySelector('span');
+  if (label) label.textContent = message;
+  loading.classList.remove('hidden');
+}
+
 async function openGame(g) {
   const view = document.getElementById('game-view');
   const frame = document.getElementById('game-frame');
