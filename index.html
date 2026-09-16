@@ -1146,8 +1146,108 @@ let GN_COVER_URL = _cdn + '/gh/freebuisness/covers@main';
 
 const DATA = {
   gn: [],
+  noah: [],
   gnCdn: _cdn
 };
+
+/* ===================================================
+   NOAH'S AMAZING TUTORING HELP GAME SOURCE
+   Loads the catalog from games.json, with a games.js fallback.
+=================================================== */
+const NOAH_BASE = _cdn + '/gh/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor@master';
+
+function noahUrl(url) {
+  if (!url) return '#';
+  url = String(url).trim();
+  if (url.startsWith('http')) return url;
+  return NOAH_BASE + '/' + url.replace(/^\//, '');
+}
+
+async function loadNoah() {
+  if (DATA.noah.length) return DATA.noah;
+
+  try {
+    const r = await fetch(NOAH_BASE + '/games.json?t=' + Date.now(), {
+      cache: 'no-store',
+      credentials: 'omit'
+    });
+
+    if (r.ok) {
+      const d = await r.json();
+      DATA.noah = (Array.isArray(d) ? d : (d.games || []))
+        .map(g => {
+          const image = g.image || g.img || '';
+          const img = String(image).startsWith('http')
+            ? String(image)
+            : (image ? NOAH_BASE + '/images/' + String(image).replace(/^\/+/, '') : '');
+
+          return {
+            name: g.title || g.name,
+            icon: img,
+            file: noahUrl(g.url),
+            external: true,
+            source: "Noah's Amazing Tutoring Help",
+            noah: true
+          };
+        })
+        .filter(g => g.file && g.file !== '#')
+        .map(normalizeGame);
+
+      if (DATA.noah.length) {
+        console.info(`[Doomsday] Loaded ${DATA.noah.length} Noah games from games.json`);
+        return DATA.noah;
+      }
+    }
+  } catch (e) {
+    console.warn('[Doomsday] Noah JSON failed:', e);
+  }
+
+  // Fallback: load games.js as text and extract the simple game objects.
+  try {
+    const r2 = await fetch(NOAH_BASE + '/games.js?t=' + Date.now(), {
+      cache: 'no-store',
+      credentials: 'omit'
+    });
+    if (!r2.ok) throw new Error(`HTTP ${r2.status}`);
+
+    const text = await r2.text();
+    const gameObjects = [];
+    const objRegex = /\{([^}]+)\}/g;
+    let match;
+
+    while ((match = objRegex.exec(text)) !== null) {
+      const block = match[1];
+      const titleM = block.match(/title:\s*["'](.+?)["']/);
+      const urlM = block.match(/url:\s*["'](.+?)["']/);
+      const imageM = block.match(/image:\s*["'](.+?)["']/);
+
+      if (titleM && urlM) {
+        let img = imageM ? imageM[1] : '';
+        if (img && !img.startsWith('http')) {
+          img = NOAH_BASE + '/images/' + img.replace(/^\/+/, '');
+        }
+
+        gameObjects.push(normalizeGame({
+          name: titleM[1],
+          img,
+          url: noahUrl(urlM[1]),
+          external: true,
+          source: "Noah's Amazing Tutoring Help",
+          noah: true
+        }));
+      }
+    }
+
+    if (gameObjects.length) {
+      DATA.noah = gameObjects;
+      console.info(`[Doomsday] Loaded ${DATA.noah.length} Noah games from games.js`);
+    }
+  } catch (e) {
+    console.warn('[Doomsday] Noah JS parse failed:', e);
+  }
+
+  return DATA.noah;
+}
 
 function setGNCdn(cdn) {
   _cdn = cdn;
@@ -1371,9 +1471,11 @@ function normalizeGame(g) {
     title: g.name || g.title || 'Untitled Game',
     category: g.tag || g.category || 'Game',
     path,
-    thumb: g.icon || g.thumb || '',
+    thumb: g.icon || g.thumb || g.img || '',
     external,
-    source: g.source || (external ? 'External' : 'Doomsday')
+    source: g.source || (external ? 'External' : 'Doomsday'),
+    gnMath: g.gnMath === true,
+    noah: g.noah === true
   };
 }
 
@@ -1464,8 +1566,8 @@ function filterGames(q) {
 =================================================== */
 let activeGame = null;
 
-async function fetchGNGameHTML(game) {
-  if (!game?.path) throw new Error('GN-Math game has no URL.');
+async function fetchRemoteGameHTML(game) {
+  if (!game?.path) throw new Error('Remote game has no URL.');
 
   const response = await fetch(game.path, {
     cache: 'no-store',
@@ -1479,9 +1581,8 @@ async function fetchGNGameHTML(game) {
   let html = await response.text();
   if (!html.trim()) throw new Error('The game returned an empty document.');
 
-  // GN-Math HTML files commonly use relative asset paths. Add a base URL so
-  // those assets continue resolving against the CDN after the HTML is moved
-  // into the Doomsday game iframe.
+  // Remote HTML is moved into an about:blank/srcdoc document, so preserve
+  // the original document directory for relative scripts, styles and assets.
   const baseHref = new URL('.', game.path).href;
   const baseTag = `<base href="${baseHref.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">`;
 
@@ -1496,12 +1597,8 @@ async function fetchGNGameHTML(game) {
   return html;
 }
 
-function setGameLoading(message = 'LOADING GAME…') {
-  const loading = document.getElementById('game-loading');
-  const label = loading?.querySelector('span');
-  if (label) label.textContent = message;
-  loading?.classList.remove('hidden');
-}
+// Backwards-compatible name used by the existing GN-Math launcher.
+const fetchGNGameHTML = fetchRemoteGameHTML;
 
 async function openGame(g) {
   const view = document.getElementById('game-view');
@@ -1521,15 +1618,15 @@ async function openGame(g) {
   frame.src = 'about:blank';
   frame.removeAttribute('srcdoc');
   error.classList.remove('open');
-  setGameLoading(g.gnMath ? 'FETCHING GAME…' : 'LOADING GAME…');
+  setGameLoading((g.gnMath || g.noah) ? 'FETCHING GAME…' : 'LOADING GAME…');
   view.classList.add('open');
   document.body.style.overflow = 'hidden';
 
   try {
-    if (g.gnMath) {
-      // GN-Math games are fetched first, then their actual HTML is injected
-      // into the modal iframe. The game itself is not navigated to directly.
-      const html = await fetchGNGameHTML(g);
+    if (g.gnMath || g.noah) {
+      // Remote catalog games are fetched first, then their actual HTML is
+      // injected into the modal iframe instead of navigating away.
+      const html = await fetchRemoteGameHTML(g);
       if (activeGame !== g) return;
 
       frame.src = 'about:blank';
@@ -1547,8 +1644,8 @@ async function openGame(g) {
     error.classList.add('open');
     const message = error.querySelector('span');
     if (message) {
-      message.textContent = g.gnMath
-        ? `Could not fetch this GN-Math game from the CDN. ${e?.message || 'Unknown error.'}`
+      message.textContent = (g.gnMath || g.noah)
+        ? `Could not fetch this remote game from its source. ${e?.message || 'Unknown error.'}`
         : 'The game could not be embedded. Use “Open tab” to launch it in a separate about:blank tab.';
     }
   }
@@ -1603,9 +1700,9 @@ async function openActiveGameInNewTab() {
   try {
     popup.document.title = game.title || 'Doomsday Game';
 
-    if (game.gnMath) {
-      // Fetch the same CDN HTML and write it directly into the about:blank tab.
-      const html = await fetchGNGameHTML(game);
+    if (game.gnMath || game.noah) {
+      // Fetch the remote HTML and write it directly into the about:blank tab.
+      const html = await fetchRemoteGameHTML(game);
       popup.document.open();
       popup.document.write(html);
       popup.document.close();
@@ -1899,6 +1996,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Refresh the grids if the archive is already visible.
+    if (document.getElementById('archive-site')?.classList.contains('visible')) {
+      filterGames(document.getElementById('search-input')?.value || '');
+    }
+  });
+
+  // Load Noah's games in the background alongside GN-Math. Existing games
+  // remain available even if either remote catalog is unavailable.
+  loadNoah().then(noahGames => {
+    if (!noahGames.length) return;
+
+    const existingPaths = new Set(
+      GAMES.map(game => normalizeGame(game).path).filter(Boolean)
+    );
+
+    for (const game of noahGames) {
+      const normalized = normalizeGame(game);
+      if (!existingPaths.has(normalized.path)) {
+        GAMES.push(game);
+        existingPaths.add(normalized.path);
+      }
+    }
+
     if (document.getElementById('archive-site')?.classList.contains('visible')) {
       filterGames(document.getElementById('search-input')?.value || '');
     }
