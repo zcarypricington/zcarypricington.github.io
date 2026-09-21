@@ -708,32 +708,8 @@ body {
   font-size: .72rem;
   padding-bottom: 3px;
 }
-.external-section {
-  padding-top: 8px;
-}
 @media (max-width: 700px) {
   .game-section { margin-left: 16px; margin-right: 16px; }
-}
-
-/* ===========================
-   GAMEPIX EMBED STYLES
-=========================== */
-.gamepix-embed {
-  display: none;
-  position: fixed; inset: 0; z-index: 500;
-  background: var(--bg);
-  flex-direction: column;
-}
-.gamepix-embed.open { display: flex; }
-.gamepix-bar {
-  height: 42px; background: var(--bg2);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center;
-  gap: 10px; padding: 0 14px; flex-shrink: 0;
-}
-.gamepix-iframe {
-  flex: 1; border: none; background: #000;
-  width: 100%; height: 100%;
 }
 
 /* ===========================
@@ -909,6 +885,7 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
         <button id="search-btn">Find</button>
       </div>
     </section>
+
     <section class="game-section" id="local-games-section">
       <div class="game-section-heading">
         <div>
@@ -920,16 +897,6 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
       <section class="arc-grid" id="local-game-grid"></section>
     </section>
 
-    <section class="game-section external-section" id="external-games-section">
-      <div class="game-section-heading">
-        <div>
-          <span class="game-section-kicker">EXTERNAL SOURCES</span>
-          <h2>More Games</h2>
-        </div>
-        <span class="game-section-count" id="external-games-count"></span>
-      </div>
-      <section class="arc-grid" id="external-game-grid"></section>
-    </section>
     <section class="arc-request-cta">
       <div class="arc-request-cta-inner">
         <h2>Can't find what you're looking for?</h2>
@@ -1046,7 +1013,7 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
     <button class="game-btn" id="game-close">✕ Close</button>
     <div class="game-title-bar" id="game-title-bar"></div>
     <button class="game-btn" id="game-open-tab">↗ Open tab</button>
-  <button class="game-btn" id="game-fullscreen">⛶ Fullscreen</button>
+    <button class="game-btn" id="game-fullscreen">⛶ Fullscreen</button>
   </div>
   <div class="game-loading" id="game-loading">
     <div class="game-spinner"></div>
@@ -1054,7 +1021,7 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
   </div>
   <div class="game-error" id="game-error">
     <strong>This game could not be embedded.</strong>
-    <span>The game may block iframe embedding. Use “Open tab” to launch it directly.</span>
+    <span>The game may block iframe embedding. Use "Open tab" to launch it directly.</span>
     <button class="game-btn" id="game-error-open">↗ Open game directly</button>
   </div>
   <iframe id="game-frame" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe>
@@ -1089,10 +1056,7 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 
 <script>
 /* ===================================================
-   GAME DATA — inline the games list here.
-   Format: { title, path, thumb?, category? }
-   All paths relative to ./g/ so they survive as-is.
-   Add more entries below following the same pattern.
+   GAME DATA — local games only
 =================================================== */
 const LOCAL_GAMES = [
   { "tag": "Arcade",  "name": "Slope",             "file": "./g/slope.html",             "icon": "./g/assets/slope.png" },
@@ -1100,242 +1064,16 @@ const LOCAL_GAMES = [
   { "tag": "Sports",  "name": "Basket Bros",       "file": "./g/basket-bros.html",       "icon": "./g/assets/basket-bros.png" },
   { "tag": "Arcade",  "name": "Moto X3M",          "file": "./g/moto-x3m.html",          "icon": "./g/assets/moto-x3m.png" },
   { "tag": "Puzzle",  "name": "Cookie Clicker",    "file": "./g/cookie-clicker.html",    "icon": "./g/assets/cookie-clicker.png" },
-  { "tag": "Arcade",  "name": "Escape Road City 2", "file": "./g/escape-road-city-2.html", "icon": "./g/assets/escape-road-city-2.png" },
+  { "tag": "Arcade",  "name": "Escape Road City 2","file": "./g/escape-road-city-2.html","icon": "./g/assets/escape-road-city-2.png" },
   { "tag": "Arcade",  "name": "Tomb Of The Mask",  "file": "./g/tomb-of-the-mask.html",  "icon": "./g/assets/tomb-of-the-mask.png" },
   { "tag": "Sports",  "name": "Football Bros",     "file": "./g/football-bros.html",     "icon": "./g/assets/football-bros.png" },
   { "tag": "Sports",  "name": "Baseball Bros",     "file": "./g/baseball-bros.html",     "icon": "./g/assets/baseball-bros.jpg" },
   { "tag": "Horror",  "name": "Granny",            "file": "./g/granny.html",            "icon": "./g/assets/granny.jpg" },
   { "tag": "Horror",  "name": "Granny 2",          "file": "./g/granny-2.html",          "icon": "./g/assets/granny-2.jpg" },
-  { "tag": "Horror",  "name": "FNAF 4",            "file": "./g/fnaf4.html",            "icon": "./g/assets/fnaf4.jpg" }
+  { "tag": "Horror",  "name": "FNAF 4",            "file": "./g/fnaf4.html",             "icon": "./g/assets/fnaf4.jpg" }
 ];
 
-const EXTERNAL_GAMES = [
-  { "tag": "Sports",  "name": "Retro Bowl",        "file": "https://script.google.com/macros/s/AKfycbxkfMHeNjgt0LuksJhoAGS_T1jAnsQTkGw9GIRRi2VTljTi4t46Q0HIkslBvD7WOyXPHg/exec",        "icon": "./g/assets/retro-bowl.jpg" },
-  { "tag": "Sports",  "name": "Basketball Stars",  "file": "https://script.google.com/macros/s/AKfycbwzYMDDcdDUAvEP7iO6OdRk-5_oUp6vYvDdyEEz8tTOzWi5y4-Qf3vQ6TBoZuc9UYVcLg/exec",  "icon": "./g/assets/basketball-stars.jpg" },
-  { "tag": "Horror",  "name": "FNAF",              "file": "https://script.google.com/macros/s/AKfycbxJNtrKTWPCSIo9tOqq53G2xqoQCIPDTYUsVOT79Eqk8I7C5cQkGdDnj0jzlNHa7bvs3g/exec",              "icon": "./g/assets/fnaf.jpg" },
-  { "tag": "Horror",  "name": "FNAF 2",            "file": "https://jasongamesdev.github.io/fnaf-2/", "icon": "./g/assets/fnaf2.jpg" },
-  { "tag": "Horror",  "name": "FNAF 3",            "file": "https://script.google.com/macros/s/AKfycbyVdPAG4aRGh5tmBwKEZthKmaqO12GTD-h-C1Do6ICbR3ZEj5ic1aJQ2e4Im2pxcWLf/exec",            "icon": "./g/assets/fnaf3.jpg" }
-];
-
-const GAMES = [...LOCAL_GAMES, ...EXTERNAL_GAMES];
-
-/* ===================================================
-   GN-MATH / FREEBUISNESS GAME SOURCE
-   Dynamically loads the public GN-Math catalog.
-   These games are added to the external collection.
-=================================================== */
-/*
-   GN-Math CDN options.
-   The first working CDN is used automatically. This keeps the catalog
-   working if one jsDelivr endpoint is blocked or unavailable.
-*/
-const CDN_OPTIONS = [
-  'https://quantil.jsdelivr.net',
-  'https://cdn.jsdelivr.net',
-  'https://fastly.jsdelivr.net',
-  'https://testingcf.jsdelivr.net',
-  'https://gcore.jsdelivr.net',
-  'https://originfastly.jsdelivr.net',
-  'https://jsd.onmicrosoft.cn',
-  'https://cdn.staticdelivr.com'
-];
-
-let _cdn = CDN_OPTIONS[0];
-let GN_HTML_URL = _cdn + '/gh/freebuisness/html@main';
-let GN_COVER_URL = _cdn + '/gh/freebuisness/covers@main';
-
-const DATA = {
-  gn: [],
-  noah: [],
-  gnCdn: _cdn
-};
-
-/* ===================================================
-   NOAH'S AMAZING TUTORING HELP GAME SOURCE
-   Loads the catalog from games.json, with a games.js fallback.
-=================================================== */
-const NOAH_BASE = _cdn + '/gh/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor@master';
-
-function noahUrl(url) {
-  if (!url) return '#';
-  url = String(url).trim();
-  if (url.startsWith('http')) return url;
-  return NOAH_BASE + '/' + url.replace(/^\//, '');
-}
-
-async function loadNoah() {
-  if (DATA.noah.length) return DATA.noah;
-
-  try {
-    const r = await fetch(NOAH_BASE + '/games.json?t=' + Date.now(), {
-      cache: 'no-store',
-      credentials: 'omit'
-    });
-
-    if (r.ok) {
-      const d = await r.json();
-      DATA.noah = (Array.isArray(d) ? d : (d.games || []))
-        .map(g => {
-          const image = g.image || g.img || '';
-          const img = String(image).startsWith('http')
-            ? String(image)
-            : (image ? NOAH_BASE + '/images/' + String(image).replace(/^\/+/, '') : '');
-
-          return {
-            name: g.title || g.name,
-            icon: img,
-            file: noahUrl(g.url),
-            external: true,
-            source: "Noah's Amazing Tutoring Help",
-            noah: true
-          };
-        })
-        .filter(g => g.file && g.file !== '#')
-        .map(normalizeGame);
-
-      if (DATA.noah.length) {
-        console.info(`[Doomsday] Loaded ${DATA.noah.length} Noah games from games.json`);
-        return DATA.noah;
-      }
-    }
-  } catch (e) {
-    console.warn('[Doomsday] Noah JSON failed:', e);
-  }
-
-  // Fallback: load games.js as text and extract the simple game objects.
-  try {
-    const r2 = await fetch(NOAH_BASE + '/games.js?t=' + Date.now(), {
-      cache: 'no-store',
-      credentials: 'omit'
-    });
-    if (!r2.ok) throw new Error(`HTTP ${r2.status}`);
-
-    const text = await r2.text();
-    const gameObjects = [];
-    const objRegex = /\{([^}]+)\}/g;
-    let match;
-
-    while ((match = objRegex.exec(text)) !== null) {
-      const block = match[1];
-      const titleM = block.match(/title:\s*["'](.+?)["']/);
-      const urlM = block.match(/url:\s*["'](.+?)["']/);
-      const imageM = block.match(/image:\s*["'](.+?)["']/);
-
-      if (titleM && urlM) {
-        let img = imageM ? imageM[1] : '';
-        if (img && !img.startsWith('http')) {
-          img = NOAH_BASE + '/images/' + img.replace(/^\/+/, '');
-        }
-
-        gameObjects.push(normalizeGame({
-          name: titleM[1],
-          img,
-          url: noahUrl(urlM[1]),
-          external: true,
-          source: "Noah's Amazing Tutoring Help",
-          noah: true
-        }));
-      }
-    }
-
-    if (gameObjects.length) {
-      DATA.noah = gameObjects;
-      console.info(`[Doomsday] Loaded ${DATA.noah.length} Noah games from games.js`);
-    }
-  } catch (e) {
-    console.warn('[Doomsday] Noah JS parse failed:', e);
-  }
-
-  return DATA.noah;
-}
-
-function setGNCdn(cdn) {
-  _cdn = cdn;
-  GN_HTML_URL = _cdn + '/gh/freebuisness/html@main';
-  GN_COVER_URL = _cdn + '/gh/freebuisness/covers@main';
-  DATA.gnCdn = _cdn;
-}
-
-async function loadGN() {
-  if (DATA.gn.length) return DATA.gn;
-
-  const cdns = [
-    _cdn,
-    ...CDN_OPTIONS.filter(cdn => cdn !== _cdn)
-  ];
-
-  for (const cdn of cdns) {
-    try {
-      const zonesUrl = cdn + '/gh/freebuisness/assets/zones.json?t=' + Date.now();
-
-      const response = await fetch(zonesUrl, {
-        cache: 'no-store',
-        credentials: 'omit'
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (!Array.isArray(data)) {
-        throw new Error('zones.json did not return an array');
-      }
-
-      // Use the CDN that successfully returned the catalog for all game assets.
-      setGNCdn(cdn);
-
-      DATA.gn = data
-        .filter(g =>
-          g &&
-          g.id !== -1 &&
-          g.id !== undefined &&
-          !String(g.name || '').startsWith('[!]')
-        )
-        .map(g => {
-          const gu = String(g.url || '')
-            .replace(/\{HTML_URL\}/g, GN_HTML_URL)
-            .replace(/\{COVER_URL\}/g, GN_COVER_URL)
-            .trim();
-
-          const rawCover = String(g.cover || '')
-            .replace(/\{COVER_URL\}/g, GN_COVER_URL)
-            .trim();
-
-          const gameUrl = gu.startsWith('http')
-            ? gu
-            : (GN_HTML_URL + '/' + g.id + '.html');
-
-          const coverUrl = rawCover
-            ? (rawCover.startsWith('http')
-                ? rawCover
-                : (GN_COVER_URL + '/' + rawCover.replace(/^\/+/, '')))
-            : '';
-
-          return {
-            tag: g.category || g.tag || 'GN-Math',
-            name: g.name || `GN Game ${g.id}`,
-            file: gameUrl,
-            icon: coverUrl,
-            external: true,
-            source: 'GN-Math',
-            gnMath: true,
-            gnId: g.id
-          };
-        });
-
-      console.info(`[Doomsday] Loaded ${DATA.gn.length} GN-Math games from ${cdn}`);
-      return DATA.gn;
-    } catch (e) {
-      console.warn(`[Doomsday] GN-Math CDN failed: ${cdn}`, e);
-    }
-  }
-
-  console.warn('[Doomsday] All GN-Math CDN endpoints failed.');
-  DATA.gn = [];
-  return DATA.gn;
-}
+const GAMES = [...LOCAL_GAMES];
 
 /* ===================================================
    SETTINGS — persist to localStorage
@@ -1419,7 +1157,6 @@ function initSettingsUI() {
   if (cTitle) cTitle.value = S.cloakTitle;
   if (cFav) cFav.value = S.cloakFavicon;
 
-  // Theme swatches
   document.querySelectorAll('.theme-swatch').forEach(sw => {
     sw.addEventListener('click', () => {
       S.theme = sw.dataset.theme;
@@ -1461,8 +1198,6 @@ function initSettingsUI() {
 /* ===================================================
    GAME GRID
 =================================================== */
-let filteredGames = [...GAMES];
-
 function normalizeGame(g) {
   const path = g.file || g.path || '';
   const external = g.external === true || /^https?:\/\//i.test(path);
@@ -1474,8 +1209,6 @@ function normalizeGame(g) {
     thumb: g.icon || g.thumb || g.img || '',
     external,
     source: g.source || (external ? 'External' : 'Doomsday'),
-    gnMath: g.gnMath === true,
-    noah: g.noah === true
   };
 }
 
@@ -1509,7 +1242,7 @@ function renderGameCard(rawGame, index) {
   info.className = 'info';
   info.innerHTML = '<div class="title"></div><div class="meta"></div>';
   info.querySelector('.title').textContent = g.title;
-  info.querySelector('.meta').textContent = g.category + (g.external ? ` • ${g.source || 'External'}` : ' • Local');
+  info.querySelector('.meta').textContent = g.category + ' • Local';
 
   card.appendChild(thumb);
   card.appendChild(info);
@@ -1527,30 +1260,23 @@ function renderGameCard(rawGame, index) {
 
 function renderGrid(games) {
   const localGrid = document.getElementById('local-game-grid');
-  const externalGrid = document.getElementById('external-game-grid');
-  if (!localGrid || !externalGrid) return;
+  if (!localGrid) return;
 
   localGrid.innerHTML = '';
-  externalGrid.innerHTML = '';
 
-  const localGames = games.filter(g => !normalizeGame(g).external);
-  const externalGames = games.filter(g => normalizeGame(g).external);
+  document.getElementById('local-games-count').textContent = `${games.length} game${games.length === 1 ? '' : 's'}`;
 
-  document.getElementById('local-games-count').textContent = `${localGames.length} game${localGames.length === 1 ? '' : 's'}`;
-  document.getElementById('external-games-count').textContent = `${externalGames.length} game${externalGames.length === 1 ? '' : 's'}`;
+  if (games.length === 0) {
+    localGrid.innerHTML = '<div class="arc-empty">No games found.</div>';
+    return;
+  }
 
-  localGames.forEach((game, index) => localGrid.appendChild(renderGameCard(game, index)));
-  externalGames.forEach((game, index) => externalGrid.appendChild(renderGameCard(game, index)));
-
-  localGrid.querySelectorAll('.game-card').length === 0 &&
-    (localGrid.innerHTML = '<div class="arc-empty">No local games found.</div>');
-  externalGrid.querySelectorAll('.game-card').length === 0 &&
-    (externalGrid.innerHTML = '<div class="arc-empty">No external games found.</div>');
+  games.forEach((game, index) => localGrid.appendChild(renderGameCard(game, index)));
 }
 
 function filterGames(q) {
   q = q.trim().toLowerCase();
-  filteredGames = q
+  const filtered = q
     ? GAMES.filter(raw => {
         const g = normalizeGame(raw);
         return g.title.toLowerCase().includes(q) ||
@@ -1558,7 +1284,7 @@ function filterGames(q) {
       })
     : [...GAMES];
 
-  renderGrid(filteredGames);
+  renderGrid(filtered);
 }
 
 /* ===================================================
@@ -1566,46 +1292,9 @@ function filterGames(q) {
 =================================================== */
 let activeGame = null;
 
-async function fetchRemoteGameHTML(game) {
-  if (!game?.path) throw new Error('Remote game has no URL.');
-
-  const response = await fetch(game.path, {
-    cache: 'no-store',
-    credentials: 'omit'
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-  }
-
-  let html = await response.text();
-  if (!html.trim()) throw new Error('The game returned an empty document.');
-
-  // Remote HTML is moved into an about:blank/srcdoc document, so preserve
-  // the original document directory for relative scripts, styles and assets.
-  const baseHref = new URL('.', game.path).href;
-  const baseTag = `<base href="${baseHref.replace(/&/g, '&amp;').replace(/"/g, '&quot;')}">`;
-
-  if (/<base\s/i.test(html)) {
-    html = html.replace(/<base\b[^>]*>/i, baseTag);
-  } else if (/<head\b[^>]*>/i.test(html)) {
-    html = html.replace(/<head\b[^>]*>/i, match => `${match}${baseTag}`);
-  } else {
-    html = `<!doctype html><html><head>${baseTag}<meta charset="utf-8"></head><body>${html}</body></html>`;
-  }
-
-  return html;
-}
-
-// Backwards-compatible name used by the existing GN-Math launcher.
-const fetchGNGameHTML = fetchRemoteGameHTML;
-
-// Keep the modal loading state in one place. This is used by both catalog
-// games (GN-Math / Noah) and ordinary URL/local games.
 function setGameLoading(message = 'LOADING GAME…') {
   const loading = document.getElementById('game-loading');
   if (!loading) return;
-
   const label = loading.querySelector('span');
   if (label) label.textContent = message;
   loading.classList.remove('hidden');
@@ -1618,10 +1307,7 @@ async function openGame(g) {
   const loading = document.getElementById('game-loading');
   const error = document.getElementById('game-error');
 
-  if (!g || !g.path) {
-    console.error('Game has no playable URL:', g);
-    return;
-  }
+  if (!g || !g.path) return;
 
   activeGame = g;
   titleBar.textContent = g.title;
@@ -1629,37 +1315,11 @@ async function openGame(g) {
   frame.src = 'about:blank';
   frame.removeAttribute('srcdoc');
   error.classList.remove('open');
-  setGameLoading((g.gnMath || g.noah) ? 'FETCHING GAME…' : 'LOADING GAME…');
+  setGameLoading('LOADING GAME…');
   view.classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  try {
-    if (g.gnMath || g.noah) {
-      // Remote catalog games are fetched first, then their actual HTML is
-      // injected into the modal iframe instead of navigating away.
-      const html = await fetchRemoteGameHTML(g);
-      if (activeGame !== g) return;
-
-      frame.src = 'about:blank';
-      frame.srcdoc = html;
-      setGameLoading('STARTING GAME…');
-    } else {
-      // Normal external games remain URL-backed and are embedded directly in
-      // the modal. They are NOT automatically opened in a new tab.
-      frame.srcdoc = '';
-      frame.src = g.path;
-    }
-  } catch (e) {
-    console.error('[Doomsday] Game load failed:', e);
-    loading?.classList.add('hidden');
-    error.classList.add('open');
-    const message = error.querySelector('span');
-    if (message) {
-      message.textContent = (g.gnMath || g.noah)
-        ? `Could not fetch this remote game from its source. ${e?.message || 'Unknown error.'}`
-        : 'The game could not be embedded. Use “Open tab” to launch it in a separate about:blank tab.';
-    }
-  }
+  frame.src = g.path;
 
   if (S.fullscreen) {
     setTimeout(() => {
@@ -1710,25 +1370,12 @@ async function openActiveGameInNewTab() {
 
   try {
     popup.document.title = game.title || 'Doomsday Game';
-
-    if (game.gnMath || game.noah) {
-      // Fetch the remote HTML and write it directly into the about:blank tab.
-      const html = await fetchRemoteGameHTML(game);
-      popup.document.open();
-      popup.document.write(html);
-      popup.document.close();
-    } else {
-      // Keep the tab as about:blank and put the external URL inside an iframe.
-      const doc = popup.document;
-      doc.open();
-      doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>${String(game.title || 'Doomsday Game').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{display:block;width:100%;height:100%;border:0}</style></head><body><iframe src="${String(game.path).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe></body></html>`);
-      doc.close();
-    }
+    const doc = popup.document;
+    doc.open();
+    doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>${String(game.title || 'Doomsday Game').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{display:block;width:100%;height:100%;border:0}</style></head><body><iframe src="${String(game.path).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe></body></html>`);
+    doc.close();
   } catch (e) {
     console.error('[Doomsday] New-tab game launch failed:', e);
-    try {
-      popup.document.body.innerHTML = '<p style="font:14px sans-serif;color:#fff;background:#000;padding:24px">Unable to load this game.</p>';
-    } catch (_) {}
   }
 }
 
@@ -1854,7 +1501,6 @@ function startFX(type) {
     fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
     const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#e0e0e0';
 
-    // Draw constellation lines
     if (type === 'constellations') {
       fxCtx.globalAlpha = 0.08;
       fxCtx.strokeStyle = accentHex;
@@ -1890,12 +1536,10 @@ function unlockArchive() {
   if (archiveUnlocked) return;
   archiveUnlocked = true;
 
-  // Flash
   const flash = document.getElementById('flash');
   flash.classList.add('active');
   setTimeout(() => flash.classList.remove('active'), 180);
 
-  // Show loader
   document.getElementById('archive-root').classList.add('visible');
 
   setTimeout(() => {
@@ -1914,7 +1558,6 @@ function unlockArchive() {
 document.addEventListener('DOMContentLoaded', () => {
   initSettingsUI();
 
-  // Keyboard shortcuts
   document.addEventListener('keydown', e => {
     if (e.key === 'e' || e.key === 'E') unlockArchive();
     if (e.key === 'Escape') {
@@ -1930,7 +1573,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Nav triggers
   document.getElementById('request-btn-disguise')?.addEventListener('click', e => { e.preventDefault(); unlockArchive(); });
   document.getElementById('request-btn')?.addEventListener('click', e => { e.preventDefault(); openRequest(); });
   document.getElementById('settings-btn')?.addEventListener('click', e => { e.preventDefault(); showSettings(); });
@@ -1951,7 +1593,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(closeRequest, 1200);
   });
 
-  // Search
   const searchInput = document.getElementById('search-input');
   const searchBtn = document.getElementById('search-btn');
   if (searchInput) {
@@ -1960,14 +1601,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (searchBtn) searchBtn.addEventListener('click', () => filterGames(searchInput?.value || ''));
 
-  // Game controls
   const gameFrame = document.getElementById('game-frame');
   const gameLoading = document.getElementById('game-loading');
   const gameError = document.getElementById('game-error');
 
   gameFrame?.addEventListener('load', () => {
-    // Both normal URL games and fetched GN-Math HTML reach this handler when
-    // the modal iframe has loaded its document.
     setTimeout(() => gameLoading?.classList.add('hidden'), 180);
   });
 
@@ -1989,52 +1627,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Load GN-Math in the background. Existing games remain available
-  // even if the remote catalog cannot be reached.
-  loadGN().then(gnGames => {
-    if (!gnGames.length) return;
-
-    const existingPaths = new Set(
-      GAMES.map(game => normalizeGame(game).path).filter(Boolean)
-    );
-
-    for (const game of gnGames) {
-      const normalized = normalizeGame(game);
-      if (!existingPaths.has(normalized.path)) {
-        GAMES.push(game);
-        existingPaths.add(normalized.path);
-      }
-    }
-
-    // Refresh the grids if the archive is already visible.
-    if (document.getElementById('archive-site')?.classList.contains('visible')) {
-      filterGames(document.getElementById('search-input')?.value || '');
-    }
-  });
-
-  // Load Noah's games in the background alongside GN-Math. Existing games
-  // remain available even if either remote catalog is unavailable.
-  loadNoah().then(noahGames => {
-    if (!noahGames.length) return;
-
-    const existingPaths = new Set(
-      GAMES.map(game => normalizeGame(game).path).filter(Boolean)
-    );
-
-    for (const game of noahGames) {
-      const normalized = normalizeGame(game);
-      if (!existingPaths.has(normalized.path)) {
-        GAMES.push(game);
-        existingPaths.add(normalized.path);
-      }
-    }
-
-    if (document.getElementById('archive-site')?.classList.contains('visible')) {
-      filterGames(document.getElementById('search-input')?.value || '');
-    }
-  });
-
-  // Start the actual archive automatically. The E key still works as a shortcut.
   setTimeout(() => unlockArchive(), 250);
 });
 </script>
