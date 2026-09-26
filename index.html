@@ -1904,6 +1904,27 @@ function hideBlockScreen() {
   if (screen) screen.classList.add('hidden');
 }
 
+/* The block-page replicas have no controls of their own, so give the block
+   screen natural ways out: click anywhere on it, or press Escape. */
+function initBlockScreenDismiss() {
+  const screen = document.getElementById('block-screen');
+  if (!screen) return;
+
+  screen.addEventListener('click', e => {
+    // let the user click into the fake login fields first
+    if (e.target.closest('input, textarea, select')) return;
+    e.preventDefault();
+    unlockArchive();
+  });
+
+  screen.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      unlockArchive();
+    }
+  });
+}
+
 function setToggle(el, v) { el && el.classList.toggle('on', v); }
 
 function initSettingsUI() {
@@ -2442,10 +2463,16 @@ function unlockArchive() {
 document.addEventListener('DOMContentLoaded', () => {
   initSettingsUI();
   initSetupModal();
+  initBlockScreenDismiss();
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'e' || e.key === 'E') unlockArchive();
+    // The 'e' reveal hotkey must not fire while the user is typing,
+    // otherwise entering text like "student" dismisses the block screen.
+    const typing = /^(input|textarea|select)$/i.test(e.target?.tagName || '') || e.target?.isContentEditable;
+    if (!typing && (e.key === 'e' || e.key === 'E')) unlockArchive();
     if (e.key === 'Escape') {
+      const block = document.getElementById('block-screen');
+      if (block && !block.classList.contains('hidden')) { unlockArchive(); return; }
       closeRequest();
       if (document.getElementById('setup-scrim').classList.contains('open')) closeSetup();
       if (document.getElementById('game-view').classList.contains('open')) closeGame(false);
