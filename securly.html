@@ -1,0 +1,139 @@
+<!--This is NOT OFFICIAL. The orginal was made by Securly.-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Looks like this page isn’t allowed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+  --accent:#ff6600;
+  --accent-rgb:255,102,0;
+  --accent-glow:rgba(var(--accent-rgb),0.5);
+  --accent-glow-strong:rgba(var(--accent-rgb),0.8);
+  --accent-glow-soft:rgba(var(--accent-rgb),0.15);
+}
+#loading-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #363943; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 9999;
+      transition: opacity 0.5s ease;
+      font-family: 'Roboto', sans-serif;
+    }
+    #loading-screen.hidden { opacity: 0; pointer-events: none; }
+    #loading-screen svg { margin-bottom: 16px; }
+    .ls-content { width: 100%; text-align: center; }
+    .loading-school-name { color: white; font-size: 18px; margin-bottom: 32px; }
+    .loading-stripe {
+      background: var(--accent); color: #ffffff; width: 100%;
+      padding: 24px 16px; text-align: center; margin-bottom: 16px;
+    }
+    .loading-stripe .top-text { font-size: 14px; color: #ffffff; }
+    .loading-stripe .website { font-size: 30px; color: #ffffff; }
+    .loading-stripe .bottom-text { font-size: 14px; color: #ffffff; }
+    .loading-system-msg { color: var(--accent); margin-bottom: 8px; font-size: 14px; }
+
+    #loading-timer {
+      display: none;
+    }
+
+    
+
+/* Securly theme */
+    .sc-content { display: none; width: 100%; max-width: 960px; margin: 0 auto; }
+    .sc-content .businessbg { background: #fff; }
+    .sc-content .padding-wrapper { padding: 24px; }
+    .sc-content .newGrid_container { max-width: 100%; }
+    .sc-content .row.top-logo { display: block; text-align: left; margin-bottom: 16px; }
+    .sc-content .row.top-logo img { width: 100px; height: 70px; object-fit: contain; }
+    .sc-content .heading { font-family: 'Roboto', sans-serif; font-size: 28px; font-weight: 700; color: #333; text-align: center; margin: 0 0 4px; }
+    .sc-content .schlblockMessage { font-family: 'Roboto', sans-serif; font-size: 16px; color: #666; text-align: center; margin: 0 0 24px; }
+    .sc-content .row.content-row { display: flex; gap: 24px; flex-wrap: wrap; }
+    .sc-content .col-md-7 { flex: 0 0 calc(58.333% - 12px); min-width: 280px; }
+    .sc-content .col-md-5 { flex: 0 0 calc(41.667% - 12px); min-width: 240px; }
+    .sc-content .lhs-img-container { text-align: center; }
+    .sc-content .lhs-img-container img { max-width: 100%; border-radius: 8px; }
+    .sc-content .block-details { background: #f9f9f9; border-radius: 8px; padding: 20px 24px; font-family: 'Roboto', sans-serif; font-size: 14px; color: #555; }
+    .sc-content .details-heading { font-size: 18px; font-weight: 700; color: #333; margin: 0 0 12px; }
+    .sc-content .regularBody { padding: 5px 0; border-bottom: 1px solid #eee; }
+    .sc-content .details { padding: 5px 0; border-bottom: 1px solid #eee; }
+    .sc-content .details:last-child { border-bottom: none; }
+    .sc-content .details span:first-child, .sc-content .regularBody span:first-child { font-weight: 600; color: #333; }
+    #loading-screen.securly-theme { background: #fff; justify-content: flex-start; padding-top: 40px; }
+    #loading-screen.securly-theme .sc-content { display: block; }
+    #loading-screen.securly-theme #loading-timer { color: rgba(0,0,0,0.3); }
+    #loading-screen.securly-theme .ls-content { display: none; }
+    #loading-screen.securly-theme .gg-content { display: none; }
+
+    
+    html,body{margin:0;padding:0;height:100%;}
+  </style>
+</head>
+<body>
+  <div id="loading-screen" class="securly-theme">
+<div class="sc-content">
+      <div class="blocked-page businessbg">
+        <div class="padding-wrapper">
+          <div class="newGrid_container shadow-container">
+            <div class="row top-logo">
+              <img loading="lazy" decoding="async" src="https://quantil.jsdelivr.net/gh/matheveryday25/math@latest/idk/securly.png" alt="Logo">
+            </div>
+            <h1 class="text-center heading" id="sc-heading">Looks like this page isn't allowed</h1>
+            <div class="schlblockMessage mt-0 text-center" id="sc-message">This page has been blocked.</div>
+            <div class="row content-row">
+              <div class="col-md-7 text-center">
+                <div class="lhs-img-container">
+                  <img loading="lazy" decoding="async" src="https://www.securly.com/app/images/blocking-animation.gif" alt="Blocking animation">
+                </div>
+              </div>
+              <div class="col-md-5">
+                <section class="rhs-container">
+                  <div id="blockDetails" class="block-details">
+                    <h2 class="details-heading">Blocking details</h2>
+                    <div class="regularBody">
+                      <span>URL: </span>
+                      <span id="sc-url">ixl.com</span>
+                    </div>
+                    <div class="regularBody">
+                      <span>Reason: </span>
+                      <span id="sc-reason">Education Material</span>
+                    </div>
+                    <div id="additional-details" style="margin-top:20px;border-top:1px solid #eee;padding-top:10px;">
+                      <div class="details"><span>Policy: </span><span id="sc-policy">Base/Default Policy</span></div>
+                      <div class="details"><span>Date and time: </span><span id="sc-date">Wednesday 04/22/26</span></div>
+                      <div class="details"><span>External IP: </span><span id="sc-ip">24.112.155.87</span></div>
+                      <div class="details"><span>Filtering methods: </span><span>DNS</span></div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+  <script>
+      var map = {
+        'scHeading': '#sc-heading', 'scMessage': '#sc-message', 'scUrl': '#sc-url',
+        'scReason': '#sc-reason', 'scPolicy': '#sc-policy', 'scIp': '#sc-ip'
+      };
+      for (var k in map) {
+        try {
+          var v = localStorage.getItem(k);
+          if (v) { var el = document.querySelector(map[k]); if (el) el.textContent = v; }
+        } catch (e) {}
+      }
+      var d = new Date();
+      var wd = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d.getDay()];
+      var parts = String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getDate()).padStart(2,'0') + '/' + String(d.getFullYear()).slice(-2);
+      var sd = document.getElementById('sc-date');
+      if (sd) sd.textContent = wd + ' ' + parts;
+  </script>
+</body>
+</html>

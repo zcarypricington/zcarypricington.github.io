@@ -1,0 +1,86 @@
+<!--This is NOT OFFICIAL. The orginal was made by Lightspeed Systems. Here is the code for this was found from ext-remover.net/detail/tool/Extension%20IDs/archive/Lightspeed%20Filter%20Agent-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Access Blocked</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+  --accent:#ff6600;
+  --accent-rgb:255,102,0;
+  --accent-glow:rgba(var(--accent-rgb),0.5);
+  --accent-glow-strong:rgba(var(--accent-rgb),0.8);
+  --accent-glow-soft:rgba(var(--accent-rgb),0.15);
+}
+#loading-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #363943; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; z-index: 9999;
+      transition: opacity 0.5s ease;
+      font-family: 'Roboto', sans-serif;
+    }
+    #loading-screen.hidden { opacity: 0; pointer-events: none; }
+    #loading-screen svg { margin-bottom: 16px; }
+    .ls-content { width: 100%; text-align: center; }
+    .loading-school-name { color: white; font-size: 18px; margin-bottom: 32px; }
+    .loading-stripe {
+      background: var(--accent); color: #ffffff; width: 100%;
+      padding: 24px 16px; text-align: center; margin-bottom: 16px;
+    }
+    .loading-stripe .top-text { font-size: 14px; color: #ffffff; }
+    .loading-stripe .website { font-size: 30px; color: #ffffff; }
+    .loading-stripe .bottom-text { font-size: 14px; color: #ffffff; }
+    .loading-system-msg { color: var(--accent); margin-bottom: 8px; font-size: 14px; }
+
+    #loading-timer {
+      display: none;
+    }
+
+    
+    html,body{margin:0;padding:0;height:100%;}
+  </style>
+</head>
+<body>
+  <div id="loading-screen">
+<div class="ls-content">
+      <svg class="blockScreen-svg" height="66" viewBox="0 0 66 66" width="66" xmlns="http://www.w3.org/2000/svg">
+        <title>access blocked</title>
+        <g fill="none" fill-rule="evenodd" stroke="var(--accent)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+          <path d="M33 1C15.327 1 1 15.327 1 33c0 17.673 14.327 32 32 32 17.673 0 32-14.327 32-32"></path>
+          <path d="M21.288 21.387v-4.344c0-3.624 2.936-6.562 6.564-6.562h17v10.93c1.35.26 2.37 1.446 2.37 2.883v.822c0 1.44-1.037 2.638-2.4 2.887-.437 6.106-5.53 10.924-11.752 10.924-6.213 0-11.302-4.816-11.75-10.9-1.435-.19-2.542-1.414-2.542-2.91v-.823c0-1.48 1.093-2.702 2.51-2.906zM27.435 38.926l-2.772 5.656h-6.598c-3.385 0-6.398 2.85-6.398 6.196v6.06m42.666-.134v-6.06c0-3.34-2.74-6.062-6.118-6.062h-7.413l-2.77-5.656M53.148 10.48H65v8.297H53.148zM55.52 3.37h7.11v7.11h-7.11z"></path>
+        </g>
+      </svg>
+      <div class="loading-school-name">Restricted Independent School District</div>
+      <div class="loading-stripe">
+        <div class="top-text">Oops,</div>
+        <div class="website" id="loading-hostname">sitename.com</div>
+        <div class="bottom-text">is not available because it is blocked for █████.</div>
+      </div>
+      <div class="loading-system-msg">
+        You are logged in as student111@risd.edu (IP Address: 24.112.155.87).
+      </div>
+    </div>
+    
+  </div>
+  <script>
+      var sh = document.getElementById('loading-hostname');
+      if (sh) sh.textContent = window.location.hostname;
+      var map = {
+        'lightspeedSchoolName': '.loading-school-name',
+        'lightspeedTopText': '.top-text',
+        'lightspeedBottomText': '.bottom-text',
+        'lightspeedSystemMsg': '.loading-system-msg'
+      };
+      for (var k in map) {
+        try {
+          var v = localStorage.getItem(k);
+          if (v) { var el = document.querySelector(map[k]); if (el) el.textContent = v; }
+        } catch (e) {}
+      }
+  </script>
+</body>
+</html>

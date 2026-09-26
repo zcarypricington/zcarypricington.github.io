@@ -1,0 +1,459 @@
+<!--This is NOT OFFICIAL. The orginal was made GoGuardian. This is the url for the orginal, blocked.goguardian.com-->
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Page blocked by your school</title>
+
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Inter:400,500,600,700" rel="stylesheet" type="text/css">
+    <link href="https://blocked.goguardian.com/assets/password.svg" rel="icon" type="image/svg+xml">
+
+    <style>
+        @supports (font: -apple-system-body) {
+            html {
+                font: -apple-system-body;
+            }
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            background-color: #c7e5ff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 16px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        main.page-main {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .org-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 24px;
+            text-align: center;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .block-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        /* Keep bypass UI above the footnote for old extension versions that appendChild. */
+        .block-card.content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bypass-footnote {
+            order: 3;
+        }
+
+        .block-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #595959;
+            margin-bottom: 20px;
+        }
+
+        .lock-icon {
+            width: 54px;
+            height: 80px;
+            margin-bottom: 24px;
+            flex-shrink: 0;
+        }
+
+        .block-message {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333333;
+            line-height: 1.4;
+            margin: 0 0 24px;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .url-section {
+            margin-bottom: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 4px;
+            max-width: 100%;
+        }
+
+        .url-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #595959;
+            margin-right: 4px;
+        }
+
+        .url-value {
+            font-size: 14px;
+            color: #333333;
+            word-break: break-all;
+            overflow-wrap: anywhere;
+        }
+
+        @media (max-width: 360px) {
+            body {
+                padding: 12px;
+                justify-content: flex-start;
+            }
+
+            .block-card {
+                padding: 24px 16px;
+            }
+
+            .block-message {
+                font-size: 20px;
+            }
+
+            .org-name {
+                margin-bottom: 16px;
+            }
+        }
+
+        /* Extension-injected bypass elements */
+        .bypassCont {
+            order: 2;
+            width: 100%;
+            margin-top: 8px !important;
+        }
+
+        /* Older extension versions use visually hidden labels. */
+        .bypassCont .visuallyhidden,
+        .bypassCont label.visuallyhidden {
+            border: 0;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+
+        .bypassCont label.bypass-password-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333333;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+
+        .bypassCont i {
+            display: none;
+        }
+
+        /* Match the button by tag, not by .btn: custom block pages hide it with
+           `.bypassCont button.bypassfilter`, which a three-class selector outranks.
+           https://docs.goguardian.com/products/admin/customize-the-block-page#remove-the-bypass-button
+           https://goguardian.atlassian.net/browse/TEAM1-10556 */
+        .bypassCont button.bypassfilter {
+            background: #0A59A3;
+            background-image: none;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 200px;
+            max-width: 100%;
+            width: auto;
+            margin-top: 0;
+            position: static;
+            box-shadow: none;
+        }
+
+        /* Hide legacy decorative ">" pseudo-element (TEAM1-9980). */
+        .bypassCont button.bypassfilter::after,
+        .bypassCont button.bypassfilter::before {
+            content: none !important;
+            display: none !important;
+        }
+
+        .bypassCont button.bypassfilter:hover {
+            background: #084A8A;
+        }
+
+        .bypassCont button.bypassfilter:focus-visible {
+            outline: 2px solid #0A59A3;
+            outline-offset: 2px;
+        }
+
+        .bypassCont input.password {
+            width: 100%;
+            height: 32px;
+            padding: 4px 8px;
+            border: 1px solid #757575;
+            border-radius: 2px;
+            font-size: 14px;
+            color: #262626;
+            margin: 8px 0;
+            transition: border-color 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .bypassCont input.password:focus-visible {
+            outline: none;
+            border: 2px solid #0A59A3;
+            box-shadow: none;
+        }
+
+        .bypassCont input.password[aria-invalid="true"] {
+            border-color: #D5364A;
+        }
+
+        .bypassCont input.password[aria-invalid="true"]:focus-visible {
+            border: 2px solid #D5364A;
+            box-shadow: none;
+        }
+
+        .bypassCont input.password:hover {
+            border: 2px solid #737373;
+        }
+
+        .bypassCont input.password::placeholder {
+            color: #737373;
+        }
+
+        /* Older extension versions inject a read-only URL field. */
+        .bypassCont input.url {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid #757575;
+            border-radius: 2px;
+            font-size: 14px;
+            margin: 8px 0;
+            background-color: #F9FAFB;
+            color: #595959;
+            box-sizing: border-box;
+            cursor: not-allowed;
+            height: 32px;
+        }
+
+        .bypassCont .bypass-form-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .bypassCont > .btn.submitAll {
+            margin: 8px auto 0;
+        }
+
+        .bypassCont .btn.submitAll {
+            background: #0A59A3;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-block;
+            margin: 0;
+            width: fit-content;
+            min-width: 100px;
+            max-width: 100%;
+        }
+
+        .bypassCont .btn.cancelBypass {
+            background: #FFFFFF;
+            color: #0A59A3;
+            border: 1px solid #0A59A3;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-block;
+            margin: 0;
+            width: fit-content;
+            min-width: 100px;
+            max-width: 100%;
+        }
+
+        .bypassCont .btn.cancelBypass:hover {
+            background: #EEF7FF;
+        }
+
+        .bypassCont .btn.cancelBypass:focus-visible {
+            outline: 2px solid #0A59A3;
+            outline-offset: 2px;
+        }
+
+        .bypassCont .btn.submitAll:hover {
+            background: #1777D0;
+        }
+
+        .bypassCont .btn.submitAll:active {
+            background: #002F6C;
+        }
+
+        .bypassCont .btn.submitAll:focus-visible {
+            outline: 2px solid #0A59A3;
+            outline-offset: 2px;
+        }
+
+        .bypassCont .btn.submitAll:disabled {
+            background: #D1D5DB;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* Override legacy extension inline color:red on dark pages (TEAM1-9991). */
+        .bypassCont .incorrectPassword {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 8px 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            color: #D5364A !important;
+            text-align: left;
+            line-height: 1.4;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 2px;
+        }
+
+        /* Visible focus when Shield moves focus to the error (TEAM1-9990). */
+        .bypassCont .incorrectPassword:focus,
+        .bypassCont .incorrectPassword:focus-visible {
+            outline: 2px solid #D5364A;
+            outline-offset: 2px;
+        }
+
+        .bypassCont .incorrectPassword-icon {
+            flex-shrink: 0;
+            width: 16px;
+            height: 16px;
+            margin-top: 1px;
+            color: #D5364A;
+        }
+
+        .bypassCont .incorrectPassword-icon svg {
+            display: block;
+        }
+
+        /* Older extensions render errors as a plain <p> without an icon. */
+        .bypassCont p.incorrectPassword {
+            display: block;
+            padding: 0;
+        }
+
+        .bypass-footnote {
+            font-size: 12px;
+            color: #595959;
+            margin: 24px 0 0;
+            line-height: 1.4;
+        }
+
+        /* Older extension versions show "All attempts are logged" inside the form. */
+        .bypassCont:has(input.url) ~ .bypass-footnote {
+            display: none;
+        }
+
+        /* Legacy custom org markup (.content without the new card). Keep a
+           readable layout on the redesigned page and let Font Awesome icons show. */
+        .content:not(.block-card) {
+            max-width: 32em;
+            padding: 0 1.25em;
+            margin: 0 auto;
+            color: #333333;
+            text-align: center;
+            font-size: 1.25em;
+            font-weight: 400;
+            line-height: 1.5;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        .content:not(.block-card) h1 {
+            color: #0A59A3;
+            font-size: 2em;
+            font-weight: 600;
+            margin: 0 0 16px;
+            line-height: 1.3;
+        }
+
+        .content:not(.block-card) i.fa {
+            display: inline-block;
+            position: static;
+            width: auto;
+            height: auto;
+            max-width: none;
+            margin-right: 8px;
+            font-size: 0.9em;
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+
+<body>
+<main class="page-main">
+    
+    
+
+    <div class="block-card content">
+        <div class="block-title">Page Blocked by School Admin</div>
+
+        <img src="https://blocked.goguardian.com/assets/lock.svg" alt="" class="lock-icon">
+
+        <h1 class="block-message">This page has been blocked by your school.</h1>
+
+        
+
+        <p class="bypass-footnote">All attempts are logged.</p>
+    </div>
+    
+</main>
+
+
+
+</body></html>
