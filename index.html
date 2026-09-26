@@ -718,32 +718,15 @@ body {
 #browse-view { display: flex; flex-direction: column; flex: 1; }
 #browse-view.hidden { display: none; }
 
-/* EXTRA MOTION */
-.arc-header {
-  animation: headerDrop .55s cubic-bezier(.2,.8,.2,1) both;
-}
-.arc-hero h1 {
-  animation: heroUp .65s .08s cubic-bezier(.2,.8,.2,1) both;
-}
-.arc-search {
-  animation: heroUp .65s .16s cubic-bezier(.2,.8,.2,1) both;
-}
-.arc-request-cta {
-  animation: fadeUp .65s .2s both;
-}
-.edu-header, .edu-nav, .edu-hero, .edu-card, .edu-box {
-  transition: transform .25s ease, box-shadow .25s ease;
-}
-.edu-card:hover, .edu-box:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0,0,0,.08);
-}
-.request-modal {
-  animation: modalIn .28s cubic-bezier(.2,.8,.2,1) both;
-}
-.request-scrim.open {
-  animation: scrimIn .2s ease both;
-}
+/* ===========================
+   ANIMATIONS
+=========================== */
+.arc-header { animation: headerDrop .55s cubic-bezier(.2,.8,.2,1) both; }
+.arc-hero h1 { animation: heroUp .65s .08s cubic-bezier(.2,.8,.2,1) both; }
+.arc-search { animation: heroUp .65s .16s cubic-bezier(.2,.8,.2,1) both; }
+.arc-request-cta { animation: fadeUp .65s .2s both; }
+.request-modal { animation: modalIn .28s cubic-bezier(.2,.8,.2,1) both; }
+.request-scrim.open { animation: scrimIn .2s ease both; }
 @keyframes headerDrop {
   from { opacity: 0; transform: translateY(-12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -787,6 +770,267 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 ::-webkit-scrollbar-track { background: var(--bg2); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+/* ===========================
+   QUICK SETUP MODAL
+=========================== */
+#setup-scrim {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.82);
+  z-index: 9000;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+}
+#setup-scrim.open { display: flex; }
+
+.setup-modal {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  width: 480px;
+  max-width: 96vw;
+  box-shadow: 0 24px 80px rgba(0,0,0,.75), 0 0 0 1px rgba(255,255,255,.04);
+  animation: setupIn .3s cubic-bezier(.2,.8,.2,1) both;
+  overflow: hidden;
+}
+@keyframes setupIn {
+  from { opacity: 0; transform: translateY(20px) scale(.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* top bar with icon + title + dots */
+.setup-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.setup-icon {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.setup-icon svg { width: 18px; height: 18px; fill: var(--bg); }
+.setup-bar-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: .04em;
+  font-family: monospace;
+  flex: 1;
+}
+.setup-dots {
+  display: flex;
+  gap: 6px;
+}
+.setup-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background .2s;
+}
+.setup-dot.active { background: var(--accent); }
+
+/* body */
+.setup-body {
+  padding: 24px 22px 20px;
+  min-height: 220px;
+}
+.setup-step { display: none; }
+.setup-step.active { display: block; }
+
+.setup-step h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -.01em;
+}
+.setup-step p {
+  font-size: .84rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+
+/* disclaimer box */
+.setup-disclaimer {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: .78rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* select styled */
+.setup-select-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+.setup-select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 11px 36px 11px 14px;
+  font-size: .88rem;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color var(--transition);
+  font-family: 'Segoe UI', sans-serif;
+}
+.setup-select:focus { border-color: var(--accent); }
+.setup-select-wrap::after {
+  content: '▾';
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  pointer-events: none;
+  font-size: .85rem;
+}
+
+/* checkbox row */
+.setup-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 6px;
+}
+.setup-check-row input[type="checkbox"] {
+  width: 16px; height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.setup-check-row label {
+  font-size: .85rem;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* color swatches for appearance step */
+.setup-color-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.setup-color-swatch {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform .12s, border-color .12s;
+}
+.setup-color-swatch:hover { transform: scale(1.12); }
+.setup-color-swatch.active { border-color: var(--text) !important; }
+
+.setup-field-label {
+  font-size: .75rem;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  display: block;
+  font-weight: 600;
+  letter-spacing: .04em;
+}
+
+/* footer */
+.setup-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px 18px;
+  border-top: 1px solid var(--border);
+}
+.setup-skip {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: .78rem;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--transition);
+}
+.setup-skip:hover { color: var(--text); }
+.setup-footer-btns { display: flex; gap: 8px; }
+.setup-back {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 9px 18px;
+  border-radius: 5px;
+  font-size: .84rem;
+  font-weight: 600;
+  transition: color var(--transition), border-color var(--transition);
+}
+.setup-back:hover { color: var(--text); border-color: var(--accent); }
+.setup-next {
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 9px 22px;
+  border-radius: 5px;
+  font-size: .84rem;
+  font-weight: 800;
+  transition: opacity var(--transition);
+  letter-spacing: .02em;
+}
+.setup-next:hover { opacity: .85; }
+
+/* sidebar position visual */
+.setup-sidebar-preview {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.sidebar-option {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 8px;
+  cursor: pointer;
+  text-align: center;
+  font-size: .74rem;
+  color: var(--text-dim);
+  transition: border-color .15s, color .15s;
+  background: var(--bg3);
+}
+.sidebar-option:hover { border-color: var(--accent); color: var(--text); }
+.sidebar-option.active { border-color: var(--accent); color: var(--accent); background: var(--bg2); }
+.sidebar-icon {
+  display: block;
+  width: 100%;
+  height: 28px;
+  margin-bottom: 5px;
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg);
+}
+.sidebar-icon::after {
+  content: '';
+  position: absolute;
+  background: var(--accent);
+  border-radius: 2px;
+  opacity: .6;
+}
+.sidebar-option[data-pos="bottom"] .sidebar-icon::after { bottom: 2px; left: 2px; right: 2px; height: 5px; }
+.sidebar-option[data-pos="left"] .sidebar-icon::after   { left: 2px; top: 2px; bottom: 2px; width: 5px; }
+.sidebar-option[data-pos="right"] .sidebar-icon::after  { right: 2px; top: 2px; bottom: 2px; width: 5px; }
 </style>
 </head>
 <body>
@@ -1051,6 +1295,153 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
   </div>
 </div>
 
+<!-- =========== QUICK SETUP MODAL =========== -->
+<div id="setup-scrim">
+  <div class="setup-modal" role="dialog" aria-modal="true" aria-label="Quick Setup">
+
+    <!-- top bar -->
+    <div class="setup-bar">
+      <div class="setup-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="setup-bar-title">Quick Setup</div>
+      <div class="setup-dots" id="setup-dots">
+        <div class="setup-dot active"></div>
+        <div class="setup-dot"></div>
+        <div class="setup-dot"></div>
+        <div class="setup-dot"></div>
+        <div class="setup-dot"></div>
+      </div>
+    </div>
+
+    <!-- steps -->
+    <div class="setup-body">
+
+      <!-- Step 1: Welcome -->
+      <div class="setup-step active" data-step="1">
+        <h2>Welcome</h2>
+        <p>This is your personal portal. Take a minute to set it up your way — everything here can be changed anytime in Settings.</p>
+        <div class="setup-disclaimer">
+          Disclaimer: We are not responsible for any trouble/consequences that you might receive for using Doomsday.
+        </div>
+      </div>
+
+      <!-- Step 2: Tab Cloak -->
+      <div class="setup-step" data-step="2">
+        <h2>Tab Cloak</h2>
+        <p>Disguise the tab title and icon so it blends in while you're here.</p>
+        <span class="setup-field-label">Preset disguise</span>
+        <div class="setup-select-wrap">
+          <select class="setup-select" id="setup-cloak-preset">
+            <option value="">Home — Classroom</option>
+            <option value="Google Drive">Google Drive</option>
+            <option value="Untitled document — Google Docs">Untitled document — Google Docs</option>
+            <option value="Gmail">Gmail</option>
+            <option value="YouTube">YouTube</option>
+            <option value="Google">Google</option>
+            <option value="New Tab">New Tab</option>
+            <option value="Google Calendar">Google Calendar</option>
+            <option value="Google Sites">Google Sites</option>
+            <option value="Khan Academy | Free Online Courses, Lessons & Practice">Khan Academy</option>
+            <option value="Quizlet">Quizlet</option>
+            <option value="Duolingo">Duolingo</option>
+            <option value="Wikipedia">Wikipedia</option>
+          </select>
+        </div>
+        <span class="setup-field-label">Or type a custom title</span>
+        <div class="setup-select-wrap" style="margin-bottom:0">
+          <input type="text" class="setup-select" id="setup-cloak-custom" placeholder="Custom tab title..." style="padding-right:14px">
+        </div>
+      </div>
+
+      <!-- Step 3: Block Screen -->
+      <div class="setup-step" data-step="3">
+        <h2>Block Screen</h2>
+        <p>If you're on a school device, the startup block screen makes this site look like it's been blocked.</p>
+        <div class="setup-check-row">
+          <input type="checkbox" id="setup-block-check">
+          <label for="setup-block-check">Show block screen on startup</label>
+        </div>
+        <br>
+        <span class="setup-field-label">Theme</span>
+        <div class="setup-select-wrap" style="margin-bottom:0">
+          <select class="setup-select" id="setup-block-theme">
+            <option>Lightspeed</option>
+            <option>GoGuardian</option>
+            <option>Securly</option>
+            <option>ClassLink</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Step 4: Appearance -->
+      <div class="setup-step" data-step="4">
+        <h2>Appearance</h2>
+        <p>Pick an accent color and a background effect.</p>
+        <div class="setup-color-row" id="setup-color-row">
+          <div class="setup-color-swatch active" data-theme="default" style="background:#e0e0e0;" title="Default"></div>
+          <div class="setup-color-swatch" data-theme="amber"   style="background:#f5a623;" title="Amber"></div>
+          <div class="setup-color-swatch" data-theme="red"     style="background:#ef4444;" title="Red"></div>
+          <div class="setup-color-swatch" data-theme="teal"    style="background:#2fcf9e;" title="Teal"></div>
+          <div class="setup-color-swatch" data-theme="blue"    style="background:#3d7bff;" title="Blue"></div>
+          <div class="setup-color-swatch" data-theme="purple"  style="background:#6a5cff;" title="Purple"></div>
+          <div class="setup-color-swatch" data-theme="magenta" style="background:#d94fd9;" title="Magenta"></div>
+          <div class="setup-color-swatch" data-theme="mono"    style="background:#e8e8e8; border: 1px solid #555;" title="White"></div>
+        </div>
+        <span class="setup-field-label">Background</span>
+        <div class="setup-select-wrap" style="margin-bottom:0">
+          <select class="setup-select" id="setup-bg-fx">
+            <option value="off">Off</option>
+            <option value="stars" selected>Stars</option>
+            <option value="constellations">Constellations</option>
+            <option value="matrix">Matrix</option>
+            <option value="rain">Rain</option>
+            <option value="snow">Snow</option>
+            <option value="particles">Particles</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Step 5: Sidebar & Sound -->
+      <div class="setup-step" data-step="5">
+        <h2>Sidebar &amp; Sound</h2>
+        <p>Where should the navigation bar live, and do you want startup music?</p>
+        <div class="setup-sidebar-preview" id="setup-sidebar-row">
+          <div class="sidebar-option active" data-pos="bottom">
+            <span class="sidebar-icon"></span>
+            Bottom
+          </div>
+          <div class="sidebar-option" data-pos="left">
+            <span class="sidebar-icon"></span>
+            Left Side
+          </div>
+          <div class="sidebar-option" data-pos="right">
+            <span class="sidebar-icon"></span>
+            Right Side
+          </div>
+        </div>
+        <br>
+        <div class="setup-check-row">
+          <input type="checkbox" id="setup-music-check">
+          <label for="setup-music-check">Music on startup</label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- footer -->
+    <div class="setup-footer">
+      <button type="button" class="setup-skip" id="setup-skip">Skip setup</button>
+      <div class="setup-footer-btns">
+        <button type="button" class="setup-back" id="setup-back" style="display:none">Back</button>
+        <button type="button" class="setup-next" id="setup-next">Get Started</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- FX CANVAS -->
 <canvas id="fx"></canvas>
 
@@ -1094,6 +1485,7 @@ const S = {
   cloak:         LS.get('cloak')         ?? false,
   cloakTitle:    LS.get('cloakTitle')    ?? '',
   cloakFavicon:  LS.get('cloakFavicon') ?? '',
+  setupDone:     LS.get('setupDone')     ?? false,
 };
 
 function saveSettings() {
@@ -1106,6 +1498,7 @@ function saveSettings() {
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t === 'default' ? '' : t);
   document.querySelectorAll('.theme-swatch').forEach(sw => sw.classList.toggle('active', sw.dataset.theme === t));
+  document.querySelectorAll('.setup-color-swatch').forEach(sw => sw.classList.toggle('active', sw.dataset.theme === t));
 }
 
 function applyGridSize(sz) {
@@ -1196,12 +1589,123 @@ function initSettingsUI() {
 }
 
 /* ===================================================
+   QUICK SETUP MODAL
+=================================================== */
+const TOTAL_STEPS = 5;
+let currentStep = 1;
+let setupThemeChoice = S.theme;
+let setupFxChoice = 'stars';
+let setupSidebarChoice = 'bottom';
+
+function updateSetupDots() {
+  document.querySelectorAll('.setup-dot').forEach((d, i) => {
+    d.classList.toggle('active', i < currentStep);
+  });
+}
+
+function updateSetupButtons() {
+  const nextBtn = document.getElementById('setup-next');
+  const backBtn = document.getElementById('setup-back');
+  backBtn.style.display = currentStep > 1 ? '' : 'none';
+  nextBtn.textContent = currentStep === 1 ? 'Get Started' : currentStep === TOTAL_STEPS ? 'Finish' : 'Continue';
+}
+
+function goToStep(n) {
+  document.querySelectorAll('.setup-step').forEach(s => s.classList.remove('active'));
+  const target = document.querySelector(`.setup-step[data-step="${n}"]`);
+  if (target) target.classList.add('active');
+  currentStep = n;
+  updateSetupDots();
+  updateSetupButtons();
+}
+
+function applySetupChoices() {
+  // Theme
+  S.theme = setupThemeChoice;
+  applyTheme(S.theme);
+
+  // FX
+  S.fx = setupFxChoice;
+  startFX(S.fx);
+
+  // Cloak from setup
+  const preset = document.getElementById('setup-cloak-preset')?.value || '';
+  const custom = document.getElementById('setup-cloak-custom')?.value.trim() || '';
+  const cloakTitle = custom || preset;
+  if (cloakTitle) {
+    S.cloak = true;
+    S.cloakTitle = cloakTitle;
+    applyCloak(true, cloakTitle, '');
+  }
+
+  saveSettings();
+}
+
+function closeSetup() {
+  document.getElementById('setup-scrim').classList.remove('open');
+  S.setupDone = true;
+  saveSettings();
+}
+
+function initSetupModal() {
+  // Color swatches in setup
+  document.querySelectorAll('.setup-color-swatch').forEach(sw => {
+    sw.addEventListener('click', () => {
+      document.querySelectorAll('.setup-color-swatch').forEach(s => s.classList.remove('active'));
+      sw.classList.add('active');
+      setupThemeChoice = sw.dataset.theme;
+      // live preview
+      applyTheme(setupThemeChoice);
+    });
+  });
+
+  // BG fx select live preview
+  const bgFxSel = document.getElementById('setup-bg-fx');
+  if (bgFxSel) bgFxSel.addEventListener('change', () => {
+    setupFxChoice = bgFxSel.value;
+    startFX(setupFxChoice);
+  });
+
+  // Sidebar position
+  document.querySelectorAll('#setup-sidebar-row .sidebar-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('#setup-sidebar-row .sidebar-option').forEach(o => o.classList.remove('active'));
+      opt.classList.add('active');
+      setupSidebarChoice = opt.dataset.pos;
+    });
+  });
+
+  // Next / Back
+  document.getElementById('setup-next').addEventListener('click', () => {
+    if (currentStep < TOTAL_STEPS) {
+      goToStep(currentStep + 1);
+    } else {
+      applySetupChoices();
+      closeSetup();
+    }
+  });
+
+  document.getElementById('setup-back').addEventListener('click', () => {
+    if (currentStep > 1) goToStep(currentStep - 1);
+  });
+
+  document.getElementById('setup-skip').addEventListener('click', () => {
+    closeSetup();
+  });
+}
+
+function showSetupIfNeeded() {
+  if (!S.setupDone) {
+    document.getElementById('setup-scrim').classList.add('open');
+  }
+}
+
+/* ===================================================
    GAME GRID
 =================================================== */
 function normalizeGame(g) {
   const path = g.file || g.path || '';
   const external = g.external === true || /^https?:\/\//i.test(path);
-
   return {
     title: g.name || g.title || 'Untitled Game',
     category: g.tag || g.category || 'Game',
@@ -1249,10 +1753,7 @@ function renderGameCard(rawGame, index) {
 
   card.addEventListener('click', () => openGame(g));
   card.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      openGame(g);
-    }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openGame(g); }
   });
 
   return card;
@@ -1261,16 +1762,12 @@ function renderGameCard(rawGame, index) {
 function renderGrid(games) {
   const localGrid = document.getElementById('local-game-grid');
   if (!localGrid) return;
-
   localGrid.innerHTML = '';
-
   document.getElementById('local-games-count').textContent = `${games.length} game${games.length === 1 ? '' : 's'}`;
-
   if (games.length === 0) {
     localGrid.innerHTML = '<div class="arc-empty">No games found.</div>';
     return;
   }
-
   games.forEach((game, index) => localGrid.appendChild(renderGameCard(game, index)));
 }
 
@@ -1279,11 +1776,9 @@ function filterGames(q) {
   const filtered = q
     ? GAMES.filter(raw => {
         const g = normalizeGame(raw);
-        return g.title.toLowerCase().includes(q) ||
-               g.category.toLowerCase().includes(q);
+        return g.title.toLowerCase().includes(q) || g.category.toLowerCase().includes(q);
       })
     : [...GAMES];
-
   renderGrid(filtered);
 }
 
@@ -1292,21 +1787,12 @@ function filterGames(q) {
 =================================================== */
 let activeGame = null;
 
-function setGameLoading(message = 'LOADING GAME…') {
-  const loading = document.getElementById('game-loading');
-  if (!loading) return;
-  const label = loading.querySelector('span');
-  if (label) label.textContent = message;
-  loading.classList.remove('hidden');
-}
-
-async function openGame(g) {
+function openGame(g) {
   const view = document.getElementById('game-view');
   const frame = document.getElementById('game-frame');
   const titleBar = document.getElementById('game-title-bar');
   const loading = document.getElementById('game-loading');
   const error = document.getElementById('game-error');
-
   if (!g || !g.path) return;
 
   activeGame = g;
@@ -1315,78 +1801,53 @@ async function openGame(g) {
   frame.src = 'about:blank';
   frame.removeAttribute('srcdoc');
   error.classList.remove('open');
-  setGameLoading('LOADING GAME…');
+  loading.classList.remove('hidden');
   view.classList.add('open');
   document.body.style.overflow = 'hidden';
-
   frame.src = g.path;
 
   if (S.fullscreen) {
     setTimeout(() => {
-      try {
-        if (!document.fullscreenElement && view.requestFullscreen) {
-          view.requestFullscreen();
-        }
-      } catch (e) {}
+      try { if (!document.fullscreenElement && view.requestFullscreen) view.requestFullscreen(); } catch(e) {}
     }, 100);
   }
 }
 
 function closeGame(force = false) {
-  if (!force && S.confirmClose) {
-    if (!confirm('Close this game?')) return;
-  }
-
+  if (!force && S.confirmClose && !confirm('Close this game?')) return;
   const view = document.getElementById('game-view');
   const frame = document.getElementById('game-frame');
   const loading = document.getElementById('game-loading');
   const error = document.getElementById('game-error');
-
-  frame.srcdoc = '';
-  frame.src = 'about:blank';
-  frame.removeAttribute('srcdoc');
+  frame.srcdoc = ''; frame.src = 'about:blank'; frame.removeAttribute('srcdoc');
   loading.classList.add('hidden');
   error.classList.remove('open');
   view.classList.remove('open');
   document.body.style.overflow = '';
-
-  if (document.fullscreenElement) {
-    try { document.exitFullscreen(); } catch (e) {}
-  }
-
+  if (document.fullscreenElement) { try { document.exitFullscreen(); } catch(e) {} }
   activeGame = null;
 }
 
 async function openActiveGameInNewTab() {
   if (!activeGame?.path) return;
-
   const game = activeGame;
   const popup = window.open('about:blank', '_blank');
-
-  if (!popup) {
-    alert('Your browser blocked the new tab. Please allow popups for Doomsday and try again.');
-    return;
-  }
-
+  if (!popup) { alert('Popup blocked — allow popups for Doomsday.'); return; }
   try {
-    popup.document.title = game.title || 'Doomsday Game';
     const doc = popup.document;
     doc.open();
-    doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>${String(game.title || 'Doomsday Game').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{display:block;width:100%;height:100%;border:0}</style></head><body><iframe src="${String(game.path).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe></body></html>`);
+    doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>${String(game.title||'Doomsday').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</title><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}iframe{display:block;width:100%;height:100%;border:0}</style></head><body><iframe src="${String(game.path).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}" allow="autoplay; fullscreen; gamepad; pointer-lock" allowfullscreen></iframe></body></html>`);
     doc.close();
-  } catch (e) {
-    console.error('[Doomsday] New-tab game launch failed:', e);
-  }
+  } catch(e) {}
 }
 
 /* ===================================================
-   NAVIGATION / VIEW SWITCHING
+   NAVIGATION
 =================================================== */
 function showBrowse() {
   document.getElementById('browse-view').classList.remove('hidden');
   document.getElementById('settings-view').classList.remove('open');
 }
-
 function showSettings() {
   document.getElementById('browse-view').classList.add('hidden');
   document.getElementById('settings-view').classList.add('open');
@@ -1395,9 +1856,7 @@ function showSettings() {
 /* ===================================================
    REQUEST MODAL
 =================================================== */
-function openRequest() {
-  document.getElementById('request-scrim').classList.add('open');
-}
+function openRequest() { document.getElementById('request-scrim').classList.add('open'); }
 function closeRequest() {
   document.getElementById('request-scrim').classList.remove('open');
   document.getElementById('request-hint').textContent = '';
@@ -1410,10 +1869,7 @@ let fxRAF = null;
 const fxCanvas = document.getElementById('fx');
 const fxCtx = fxCanvas.getContext('2d');
 
-function resizeFX() {
-  fxCanvas.width = window.innerWidth;
-  fxCanvas.height = window.innerHeight;
-}
+function resizeFX() { fxCanvas.width = window.innerWidth; fxCanvas.height = window.innerHeight; }
 window.addEventListener('resize', resizeFX);
 resizeFX();
 
@@ -1449,25 +1905,15 @@ class Particle {
     ctx.fillStyle = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
     ctx.strokeStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},0.3)`;
     if (this.type === 'rain') {
-      ctx.beginPath();
-      ctx.moveTo(this.x, this.y);
-      ctx.lineTo(this.x - 1, this.y - 12);
-      ctx.lineWidth = 1; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x-1, this.y-12); ctx.lineWidth=1; ctx.stroke();
     } else if (this.type === 'snow') {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size + 1, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.size+1, 0, Math.PI*2); ctx.fill();
     } else if (this.type === 'matrix') {
-      ctx.font = `${Math.round(this.size * 8 + 8)}px monospace`;
-      ctx.fillText(this.char, this.x, this.y);
+      ctx.font = `${Math.round(this.size*8+8)}px monospace`; ctx.fillText(this.char, this.x, this.y);
     } else if (this.type === 'stars') {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
     } else {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size + 1, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.size+1, 0, Math.PI*2); ctx.fill();
     }
     ctx.globalAlpha = 1;
   }
@@ -1488,39 +1934,29 @@ function startFX(type) {
 
   const density = parseFloat(S.fxDensity) || 1;
   let count;
-  if (type === 'rain') count = Math.round(80 * density);
-  else if (type === 'snow') count = Math.round(60 * density);
-  else if (type === 'matrix') count = Math.round(40 * density);
-  else if (type === 'stars') count = Math.round(120 * density);
-  else if (type === 'constellations') count = Math.round(60 * density);
-  else count = Math.round(50 * density);
+  if (type === 'rain') count = Math.round(80*density);
+  else if (type === 'snow') count = Math.round(60*density);
+  else if (type === 'matrix') count = Math.round(40*density);
+  else if (type === 'stars') count = Math.round(120*density);
+  else if (type === 'constellations') count = Math.round(60*density);
+  else count = Math.round(50*density);
 
   for (let i = 0; i < count; i++) particles.push(new Particle(type));
 
   function loop() {
     fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
     const accentHex = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#e0e0e0';
-
     if (type === 'constellations') {
-      fxCtx.globalAlpha = 0.08;
-      fxCtx.strokeStyle = accentHex;
-      fxCtx.lineWidth = 0.6;
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i+1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const d = Math.sqrt(dx*dx + dy*dy);
-          if (d < 120) {
-            fxCtx.beginPath();
-            fxCtx.moveTo(particles[i].x, particles[i].y);
-            fxCtx.lineTo(particles[j].x, particles[j].y);
-            fxCtx.stroke();
-          }
+      fxCtx.globalAlpha = 0.08; fxCtx.strokeStyle = accentHex; fxCtx.lineWidth = 0.6;
+      for (let i=0; i<particles.length; i++) {
+        for (let j=i+1; j<particles.length; j++) {
+          const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+          const d=Math.sqrt(dx*dx+dy*dy);
+          if (d<120) { fxCtx.beginPath(); fxCtx.moveTo(particles[i].x,particles[i].y); fxCtx.lineTo(particles[j].x,particles[j].y); fxCtx.stroke(); }
         }
       }
       fxCtx.globalAlpha = 1;
     }
-
     particles.forEach(p => { p.update(); p.draw(fxCtx, accentHex); });
     fxRAF = requestAnimationFrame(loop);
   }
@@ -1539,7 +1975,6 @@ function unlockArchive() {
   const flash = document.getElementById('flash');
   flash.classList.add('active');
   setTimeout(() => flash.classList.remove('active'), 180);
-
   document.getElementById('archive-root').classList.add('visible');
 
   setTimeout(() => {
@@ -1549,6 +1984,7 @@ function unlockArchive() {
     renderGrid(GAMES);
     startFX(S.fx);
     window.scrollTo({ top: 0, behavior: S.reduceMotion ? 'auto' : 'smooth' });
+    setTimeout(showSetupIfNeeded, 400);
   }, 1400);
 }
 
@@ -1557,19 +1993,18 @@ function unlockArchive() {
 =================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   initSettingsUI();
+  initSetupModal();
 
   document.addEventListener('keydown', e => {
     if (e.key === 'e' || e.key === 'E') unlockArchive();
     if (e.key === 'Escape') {
       closeRequest();
+      if (document.getElementById('setup-scrim').classList.contains('open')) closeSetup();
       if (document.getElementById('game-view').classList.contains('open')) closeGame(false);
     }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'f') {
       const view = document.getElementById('game-view');
-      if (view.classList.contains('open')) {
-        e.preventDefault();
-        view.requestFullscreen?.().catch?.(() => {});
-      }
+      if (view.classList.contains('open')) { e.preventDefault(); view.requestFullscreen?.().catch?.(() => {}); }
     }
   });
 
@@ -1605,14 +2040,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameLoading = document.getElementById('game-loading');
   const gameError = document.getElementById('game-error');
 
-  gameFrame?.addEventListener('load', () => {
-    setTimeout(() => gameLoading?.classList.add('hidden'), 180);
-  });
-
-  gameFrame?.addEventListener('error', () => {
-    gameLoading?.classList.add('hidden');
-    gameError?.classList.add('open');
-  });
+  gameFrame?.addEventListener('load', () => { setTimeout(() => gameLoading?.classList.add('hidden'), 180); });
+  gameFrame?.addEventListener('error', () => { gameLoading?.classList.add('hidden'); gameError?.classList.add('open'); });
 
   document.getElementById('game-close')?.addEventListener('click', () => closeGame(false));
   document.getElementById('game-open-tab')?.addEventListener('click', openActiveGameInNewTab);
@@ -1620,11 +2049,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('game-fullscreen')?.addEventListener('click', () => {
     const view = document.getElementById('game-view');
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else if (view.requestFullscreen) {
-      view.requestFullscreen().catch(() => {});
-    }
+    if (document.fullscreenElement) { document.exitFullscreen(); }
+    else if (view.requestFullscreen) { view.requestFullscreen().catch(() => {}); }
   });
 
   setTimeout(() => unlockArchive(), 250);
