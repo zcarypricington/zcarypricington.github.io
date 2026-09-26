@@ -1165,6 +1165,446 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 .sidebar-option[data-pos="bottom"] .sidebar-icon::after { bottom: 2px; left: 2px; right: 2px; height: 5px; }
 .sidebar-option[data-pos="left"] .sidebar-icon::after   { left: 2px; top: 2px; bottom: 2px; width: 5px; }
 .sidebar-option[data-pos="right"] .sidebar-icon::after  { right: 2px; top: 2px; bottom: 2px; width: 5px; }
+/* =========================================================
+   FIRST-TIME SETUP MODAL
+========================================================= */
+
+#setup-scrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, .78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+#setup-scrim.open {
+  display: flex;
+  animation: setupScrimIn .2s ease both;
+}
+
+#setup-modal {
+  width: min(520px, 94vw);
+  max-height: min(720px, 92vh);
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow:
+    0 24px 80px rgba(0,0,0,.65),
+    0 0 0 1px rgba(255,255,255,.02);
+  overflow: hidden;
+  animation: setupModalIn .32s cubic-bezier(.2,.8,.2,1) both;
+  display: flex;
+  flex-direction: column;
+}
+
+.setup-header {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.setup-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.setup-brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+.setup-brand-text {
+  min-width: 0;
+}
+
+.setup-brand-text strong {
+  display: block;
+  color: var(--text);
+  font-size: 1rem;
+  letter-spacing: .04em;
+}
+
+.setup-brand-text span {
+  display: block;
+  color: var(--text-dim);
+  font-size: .72rem;
+  margin-top: 2px;
+}
+
+.setup-progress {
+  display: flex;
+  gap: 6px;
+  margin-top: 18px;
+}
+
+.setup-progress span {
+  height: 3px;
+  flex: 1;
+  background: var(--bg3);
+  border-radius: 3px;
+  transition: background .2s ease, box-shadow .2s ease;
+}
+
+.setup-progress span.active {
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.setup-body {
+  overflow-y: auto;
+  padding: 24px;
+  min-height: 330px;
+}
+
+.setup-step {
+  display: none;
+}
+
+.setup-step.active {
+  display: block;
+  animation: setupStepIn .22s ease both;
+}
+
+.setup-step h2 {
+  color: var(--text);
+  font-size: 1.25rem;
+  margin-bottom: 8px;
+}
+
+.setup-step > p {
+  color: var(--text-dim);
+  font-size: .82rem;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.setup-welcome {
+  text-align: center;
+  padding: 18px 4px 8px;
+}
+
+.setup-welcome-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 20px;
+  border-radius: 16px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 28px;
+  font-weight: 900;
+  font-family: monospace;
+  box-shadow: 0 0 30px rgba(0,0,0,.2);
+}
+
+.setup-welcome h2 {
+  font-size: 1.45rem;
+  margin-bottom: 10px;
+}
+
+.setup-welcome p {
+  max-width: 390px;
+  margin: 0 auto;
+}
+
+.setup-section-label {
+  color: var(--accent);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.setup-option-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  margin-bottom: 20px;
+}
+
+.setup-theme-option {
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  border-radius: 7px;
+  padding: 10px 6px;
+  color: var(--text-dim);
+  cursor: pointer;
+  text-align: center;
+  transition:
+    border-color .15s ease,
+    transform .15s ease,
+    color .15s ease;
+}
+
+.setup-theme-option:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-1px);
+}
+
+.setup-theme-option.active {
+  border-color: var(--accent);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.setup-theme-dot {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin: 0 auto 6px;
+  border: 1px solid rgba(255,255,255,.16);
+}
+
+.setup-theme-option span {
+  display: block;
+  font-size: .68rem;
+}
+
+.setup-control {
+  margin-bottom: 16px;
+}
+
+.setup-control label {
+  display: block;
+  color: var(--text-dim);
+  font-size: .75rem;
+  margin-bottom: 6px;
+}
+
+.setup-select,
+.setup-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  padding: 9px 11px;
+  font-size: .82rem;
+  outline: none;
+  transition: border-color .15s ease;
+}
+
+.setup-select:focus,
+.setup-input:focus {
+  border-color: var(--accent);
+}
+
+.setup-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+
+.setup-toggle-row:last-child {
+  border-bottom: none;
+}
+
+.setup-toggle-label {
+  flex: 1;
+}
+
+.setup-toggle-label strong {
+  display: block;
+  color: var(--text);
+  font-size: .82rem;
+  font-weight: 600;
+}
+
+.setup-toggle-label small {
+  display: block;
+  color: var(--text-dim);
+  font-size: .7rem;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.setup-toggle {
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  background: var(--border);
+  border-radius: 11px;
+  position: relative;
+  cursor: pointer;
+  transition: background .18s ease;
+}
+
+.setup-toggle.on {
+  background: var(--accent);
+}
+
+.setup-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left .18s ease;
+}
+
+.setup-toggle.on::after {
+  left: 21px;
+}
+
+.setup-cloak-preview {
+  margin-top: 14px;
+  padding: 11px 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text-dim);
+  font-size: .7rem;
+  line-height: 1.5;
+}
+
+.setup-cloak-preview strong {
+  color: var(--text);
+}
+
+.setup-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.setup-footer-left,
+.setup-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.setup-btn {
+  border: none;
+  border-radius: 5px;
+  padding: 9px 18px;
+  font-size: .8rem;
+  font-weight: 700;
+  transition:
+    opacity .15s ease,
+    border-color .15s ease,
+    color .15s ease;
+}
+
+.setup-btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.setup-btn-primary:hover {
+  opacity: .85;
+}
+
+.setup-btn-secondary {
+  background: var(--bg3);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+
+.setup-btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.setup-skip-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: .72rem;
+  padding: 7px 4px;
+}
+
+.setup-skip-btn:hover {
+  color: var(--text);
+}
+
+.setup-step-counter {
+  color: var(--text-dim);
+  font-size: .7rem;
+}
+
+@keyframes setupScrimIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes setupModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes setupStepIn {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 520px) {
+  #setup-scrim {
+    padding: 10px;
+  }
+
+  #setup-modal {
+    max-height: 95vh;
+    border-radius: 9px;
+  }
+
+  .setup-header {
+    padding: 18px;
+  }
+
+  .setup-body {
+    padding: 18px;
+  }
+
+  .setup-option-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .setup-footer {
+    padding: 12px 14px;
+  }
+}
 </style>
 </head>
 <body>
@@ -1742,11 +2182,297 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
     <div class="setup-footer">
       <button type="button" class="setup-skip" id="setup-skip">Skip setup</button>
       <div class="setup-footer-btns">
-        <button type="button" class="setup-back" id="setup-back" style="display:none">Back</button>
-        <button type="button" class="setup-next" id="setup-next">Get Started</button>
+        <!-- =========================================================
+     FIRST-TIME SETUP MODAL
+========================================================= -->
+<div class="request-scrim" id="setup-scrim">
+  <div id="setup-modal" role="dialog" aria-modal="true" aria-labelledby="setup-title">
+
+    <div class="setup-header">
+      <div class="setup-brand">
+        <div class="setup-brand-mark">D</div>
+        <div class="setup-brand-text">
+          <strong id="setup-title">Doomsday Setup</strong>
+          <span>Customize your archive before you begin</span>
+        </div>
+      </div>
+
+      <div class="setup-progress" id="setup-progress">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
+
+    <div class="setup-body">
+
+      <!-- STEP 1 -->
+      <div class="setup-step active" data-setup-step="1">
+        <div class="setup-welcome">
+
+          <div class="setup-welcome-icon">D</div>
+
+          <h2>Welcome to Doomsday</h2>
+
+          <p>
+            Before you enter the archive, take a few seconds to customize
+            how Doomsday looks and behaves. Everything here can be changed
+            later from Settings.
+          </p>
+
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="setup-step" data-setup-step="2">
+
+        <h2>Choose your theme</h2>
+
+        <p>
+          Pick the color theme you'd like Doomsday to use.
+        </p>
+
+        <div class="setup-section-label">Theme</div>
+
+        <div class="setup-option-grid" id="setup-theme-options">
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="default">
+            <div class="setup-theme-dot" style="background:#0a0a0a;"></div>
+            <span>Black</span>
+          </button>
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="mono">
+            <div class="setup-theme-dot" style="background:#e8e8e8;"></div>
+            <span>White</span>
+          </button>
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="blue">
+            <div class="setup-theme-dot" style="background:#3d7bff;"></div>
+            <span>Blue</span>
+          </button>
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="teal">
+            <div class="setup-theme-dot" style="background:#2fcf9e;"></div>
+            <span>Teal</span>
+          </button>
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="red">
+            <div class="setup-theme-dot" style="background:#ef4444;"></div>
+            <span>Red</span>
+          </button>
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="amber">
+            <div class="setup-theme-dot" style="background:#f5a623;"></div>
+            <span>Orange</span>
+          </button>
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="purple">
+            <div class="setup-theme-dot" style="background:#6a5cff;"></div>
+            <span>Purple</span>
+          </button>
+
+          <button type="button"
+                  class="setup-theme-option"
+                  data-setup-theme="magenta">
+            <div class="setup-theme-dot" style="background:#d94fd9;"></div>
+            <span>Magenta</span>
+          </button>
+
+        </div>
+
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="setup-step" data-setup-step="3">
+
+        <h2>Background & layout</h2>
+
+        <p>
+          Choose the ambient effect and how large you want game tiles to be.
+        </p>
+
+        <div class="setup-control">
+          <label for="setup-fx">Background effect</label>
+
+          <select id="setup-fx" class="setup-select">
+            <option value="off">Off</option>
+            <option value="rain">Rain</option>
+            <option value="snow">Snow</option>
+            <option value="matrix">Matrix</option>
+            <option value="stars">Stars</option>
+            <option value="constellations">Constellations</option>
+            <option value="particles">Particles</option>
+          </select>
+        </div>
+
+        <div class="setup-control">
+          <label for="setup-fx-density">Effect density</label>
+
+          <select id="setup-fx-density" class="setup-select">
+            <option value="0.5">Low</option>
+            <option value="1">Normal</option>
+            <option value="1.8">High</option>
+          </select>
+        </div>
+
+        <div class="setup-control">
+          <label for="setup-grid-size">Game tile size</label>
+
+          <select id="setup-grid-size" class="setup-select">
+            <option value="140">Compact</option>
+            <option value="180">Default</option>
+            <option value="220">Large</option>
+          </select>
+        </div>
+
+      </div>
+
+      <!-- STEP 4 -->
+      <div class="setup-step" data-setup-step="4">
+
+        <h2>Behavior</h2>
+
+        <p>
+          Decide how games and animations should behave.
+        </p>
+
+        <div class="setup-toggle-row">
+          <div class="setup-toggle-label">
+            <strong>Fullscreen on play</strong>
+            <small>Automatically enter fullscreen when opening a game.</small>
+          </div>
+
+          <div class="setup-toggle" id="setup-fullscreen-toggle"></div>
+        </div>
+
+        <div class="setup-toggle-row">
+          <div class="setup-toggle-label">
+            <strong>Confirm before closing</strong>
+            <small>Ask for confirmation before exiting an active game.</small>
+          </div>
+
+          <div class="setup-toggle" id="setup-confirm-toggle"></div>
+        </div>
+
+        <div class="setup-toggle-row">
+          <div class="setup-toggle-label">
+            <strong>Reduce motion</strong>
+            <small>Disable most transitions and animations.</small>
+          </div>
+
+          <div class="setup-toggle" id="setup-motion-toggle"></div>
+        </div>
+
+      </div>
+
+      <!-- STEP 5 -->
+      <div class="setup-step" data-setup-step="5">
+
+        <h2>Tab cloaking</h2>
+
+        <p>
+          Customize the title and favicon shown in your browser tab.
+        </p>
+
+        <div class="setup-toggle-row">
+          <div class="setup-toggle-label">
+            <strong>Enable tab cloaking</strong>
+            <small>Use your custom title and favicon instead of Doomsday.</small>
+          </div>
+
+          <div class="setup-toggle" id="setup-cloak-toggle"></div>
+        </div>
+
+        <div class="setup-control" style="margin-top:18px;">
+          <label for="setup-cloak-title">Tab title</label>
+
+          <input
+            id="setup-cloak-title"
+            class="setup-input"
+            type="text"
+            placeholder="Classes"
+            maxlength="80"
+          >
+        </div>
+
+        <div class="setup-control">
+          <label for="setup-cloak-favicon">Favicon URL</label>
+
+          <input
+            id="setup-cloak-favicon"
+            class="setup-input"
+            type="text"
+            placeholder="https://www.gstatic.com/classroom/logo_square_rounded.svg"
+          >
+        </div>
+
+        <div class="setup-cloak-preview">
+          <strong>Preview:</strong>
+          <span id="setup-cloak-preview">
+            Classes
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="setup-footer">
+
+      <div class="setup-footer-left">
+        <button
+          type="button"
+          class="setup-skip-btn"
+          id="setup-skip">
+          Skip
+        </button>
+
+        <span
+          class="setup-step-counter"
+          id="setup-step-counter">
+          1 / 5
+        </span>
+      </div>
+
+      <div class="setup-footer-right">
+
+        <button
+          type="button"
+          class="setup-btn setup-btn-secondary"
+          id="setup-back"
+          style="display:none;">
+          Back
+        </button>
+
+        <button
+          type="button"
+          class="setup-btn setup-btn-primary"
+          id="setup-next">
+          Get Started
+        </button>
+
+      </div>
+
+    </div>
+
   </div>
+</div>
 </div>
 
 <!-- FX CANVAS -->
@@ -2002,145 +2728,850 @@ function initSettingsUI() {
 /* ===================================================
    QUICK SETUP MODAL
 =================================================== */
+
 const TOTAL_STEPS = 5;
+
 let currentStep = 1;
 let setupThemeChoice = S.theme;
-let setupFxChoice = 'stars';
-let setupSidebarChoice = 'bottom';
+let setupFxChoice = S.fx || 'stars';
+let setupSidebarChoice = S.sidebarPosition || S.sidebar || 'bottom';
+
+
+/* ===================================================
+   SETUP DOTS
+=================================================== */
 
 function updateSetupDots() {
-  document.querySelectorAll('.setup-dot').forEach((d, i) => {
-    d.classList.toggle('active', i < currentStep);
+  document.querySelectorAll('.setup-dot').forEach((dot, index) => {
+    dot.classList.toggle('active', index < currentStep);
   });
 }
+
+
+/* ===================================================
+   SETUP BUTTONS
+=================================================== */
 
 function updateSetupButtons() {
   const nextBtn = document.getElementById('setup-next');
   const backBtn = document.getElementById('setup-back');
+
+  if (!nextBtn || !backBtn) return;
+
   backBtn.style.display = currentStep > 1 ? '' : 'none';
-  nextBtn.textContent = currentStep === 1 ? 'Get Started' : currentStep === TOTAL_STEPS ? 'Finish' : 'Continue';
+
+  if (currentStep === 1) {
+    nextBtn.textContent = 'Get Started';
+  } else if (currentStep === TOTAL_STEPS) {
+    nextBtn.textContent = 'Finish';
+  } else {
+    nextBtn.textContent = 'Continue';
+  }
 }
 
+
+/* ===================================================
+   GO TO SETUP STEP
+=================================================== */
+
 function goToStep(n) {
-  document.querySelectorAll('.setup-step').forEach(s => s.classList.remove('active'));
-  const target = document.querySelector(`.setup-step[data-step="${n}"]`);
-  if (target) target.classList.add('active');
+  if (n < 1) n = 1;
+  if (n > TOTAL_STEPS) n = TOTAL_STEPS;
+
+  document.querySelectorAll('.setup-step').forEach(step => {
+    step.classList.remove('active');
+  });
+
+  const target = document.querySelector(
+    `.setup-step[data-step="${n}"]`
+  );
+
+  if (target) {
+    target.classList.add('active');
+  }
+
   currentStep = n;
+
   updateSetupDots();
   updateSetupButtons();
 }
 
+
+/* ===================================================
+   SYNC SETUP UI FROM CURRENT SETTINGS
+=================================================== */
+
+function syncSetupModal() {
+
+  /* -----------------------------------------------
+     Theme
+  ----------------------------------------------- */
+
+  setupThemeChoice = S.theme || 'default';
+
+  document
+    .querySelectorAll('.setup-color-swatch')
+    .forEach(sw => {
+      sw.classList.toggle(
+        'active',
+        sw.dataset.theme === setupThemeChoice
+      );
+    });
+
+
+  /* -----------------------------------------------
+     Background FX
+  ----------------------------------------------- */
+
+  setupFxChoice = S.fx || 'stars';
+
+  const bgFxSel = document.getElementById('setup-bg-fx');
+
+  if (bgFxSel) {
+    bgFxSel.value = setupFxChoice;
+  }
+
+
+  /* -----------------------------------------------
+     Sidebar
+  ----------------------------------------------- */
+
+  setupSidebarChoice =
+    S.sidebarPosition ||
+    S.sidebar ||
+    'bottom';
+
+  document
+    .querySelectorAll('#setup-sidebar-row .sidebar-option')
+    .forEach(option => {
+      option.classList.toggle(
+        'active',
+        option.dataset.pos === setupSidebarChoice
+      );
+    });
+
+
+  /* -----------------------------------------------
+     Block Screen
+  ----------------------------------------------- */
+
+  const blockCheck =
+    document.getElementById('setup-block-check');
+
+  const blockThemeSel =
+    document.getElementById('setup-block-theme');
+
+  if (blockCheck) {
+    blockCheck.checked = !!S.blockScreen;
+  }
+
+  if (blockThemeSel) {
+    blockThemeSel.value =
+      (S.blockTheme || 'lightspeed').toLowerCase();
+  }
+
+
+  /* -----------------------------------------------
+     Cloak
+  ----------------------------------------------- */
+
+  const cloakPreset =
+    document.getElementById('setup-cloak-preset');
+
+  const cloakCustom =
+    document.getElementById('setup-cloak-custom');
+
+  if (cloakPreset) {
+    cloakPreset.value = '';
+
+    if (
+      typeof CLOAK_PRESETS !== 'undefined' &&
+      S.cloakTitle
+    ) {
+      const matchingPreset = Object.entries(CLOAK_PRESETS)
+        .find(([, data]) => {
+          return data?.title === S.cloakTitle;
+        });
+
+      if (matchingPreset) {
+        cloakPreset.value = matchingPreset[0];
+      }
+    }
+  }
+
+  if (cloakCustom) {
+    cloakCustom.value = '';
+  }
+}
+
+
+/* ===================================================
+   APPLY SETUP CHOICES
+=================================================== */
+
 function applySetupChoices() {
-  // Theme
+
+  /* -----------------------------------------------
+     Theme
+  ----------------------------------------------- */
+
   S.theme = setupThemeChoice;
+
   applyTheme(S.theme);
 
-  // FX
+
+  /* -----------------------------------------------
+     Background FX
+  ----------------------------------------------- */
+
   S.fx = setupFxChoice;
+
   startFX(S.fx);
 
-  // Cloak from setup
-  const preset = document.getElementById('setup-cloak-preset')?.value || '';
-  const custom = document.getElementById('setup-cloak-custom')?.value.trim() || '';
-  const presetData = CLOAK_PRESETS[preset];
-  const cloakTitle = custom || presetData?.title || '';
-  if (cloakTitle) {
-    S.cloak = true;
-    S.cloakTitle = cloakTitle;
-    S.cloakFavicon = custom ? (S.cloakFavicon || '') : (presetData?.icon || '');
-    applyCloak(true, cloakTitle, S.cloakFavicon);
+
+  /* -----------------------------------------------
+     Sidebar
+  ----------------------------------------------- */
+
+  /*
+   * Your existing code was collecting
+   * setupSidebarChoice but never saving it.
+   *
+   * We support either sidebarPosition or sidebar
+   * depending on which property your current S
+   * object uses.
+   */
+
+  if (
+    Object.prototype.hasOwnProperty.call(
+      S,
+      'sidebarPosition'
+    )
+  ) {
+    S.sidebarPosition = setupSidebarChoice;
+  } else {
+    S.sidebar = setupSidebarChoice;
   }
 
-  // Block Screen from setup
-  const blockCheck = document.getElementById('setup-block-check');
-  const blockThemeSel = document.getElementById('setup-block-theme');
-  if (blockCheck?.checked) {
-    S.blockScreen = true;
-    S.blockTheme = (blockThemeSel?.value || 'lightspeed').toLowerCase();
-    applyBlockScreen(true, S.blockTheme);
-  } else {
-    S.blockScreen = false;
-    applyBlockScreen(false, '');
+  /*
+   * Apply the sidebar immediately if your project
+   * already has a sidebar positioning function.
+   */
+
+  if (typeof applySidebarPosition === 'function') {
+    applySidebarPosition(setupSidebarChoice);
   }
+
+  if (typeof applySidebar === 'function') {
+    applySidebar(setupSidebarChoice);
+  }
+
+
+  /* -----------------------------------------------
+     Tab Cloaking
+  ----------------------------------------------- */
+
+  const cloakPreset =
+    document.getElementById('setup-cloak-preset');
+
+  const cloakCustom =
+    document.getElementById('setup-cloak-custom');
+
+  const preset =
+    cloakPreset?.value || '';
+
+  const custom =
+    cloakCustom?.value.trim() || '';
+
+  const presetData =
+    typeof CLOAK_PRESETS !== 'undefined'
+      ? CLOAK_PRESETS[preset]
+      : null;
+
+  const cloakTitle =
+    custom ||
+    presetData?.title ||
+    '';
+
+  if (cloakTitle) {
+
+    S.cloak = true;
+
+    S.cloakTitle = cloakTitle;
+
+    S.cloakFavicon = custom
+      ? (S.cloakFavicon || '')
+      : (presetData?.icon || '');
+
+    applyCloak(
+      true,
+      S.cloakTitle,
+      S.cloakFavicon
+    );
+
+  } else {
+
+    /*
+     * No cloak preset selected.
+     * Preserve an existing cloak only if it
+     * already existed.
+     */
+
+    if (!S.cloakTitle) {
+      S.cloak = false;
+
+      applyCloak(
+        false,
+        '',
+        ''
+      );
+    }
+
+  }
+
+
+  /* -----------------------------------------------
+     Block Screen
+  ----------------------------------------------- */
+
+  const blockCheck =
+    document.getElementById('setup-block-check');
+
+  const blockThemeSel =
+    document.getElementById('setup-block-theme');
+
+  if (blockCheck?.checked) {
+
+    S.blockScreen = true;
+
+    S.blockTheme =
+      (
+        blockThemeSel?.value ||
+        'lightspeed'
+      ).toLowerCase();
+
+    applyBlockScreen(
+      true,
+      S.blockTheme
+    );
+
+  } else {
+
+    S.blockScreen = false;
+
+    S.blockTheme = '';
+
+    applyBlockScreen(
+      false,
+      ''
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Setup Complete
+  ----------------------------------------------- */
+
+  S.setupDone = true;
 
   saveSettings();
 }
+
+
+/* ===================================================
+   CLOSE SETUP
+=================================================== */
 
 function closeSetup() {
-  document.getElementById('setup-scrim').classList.remove('open');
+
+  const scrim =
+    document.getElementById('setup-scrim');
+
+  if (scrim) {
+    scrim.classList.remove('open');
+  }
+
   S.setupDone = true;
+
   saveSettings();
+
+  /*
+   * Restore scrolling in case the setup modal
+   * disables it elsewhere.
+   */
+
+  document.body.classList.remove('setup-open');
+  document.body.style.overflow = '';
 }
+
+
+/* ===================================================
+   OPEN SETUP
+=================================================== */
+
+function openSetup() {
+
+  const scrim =
+    document.getElementById('setup-scrim');
+
+  if (!scrim) return;
+
+  /*
+   * Start at the first step every time the
+   * wizard is opened.
+   */
+
+  currentStep = 1;
+
+  syncSetupModal();
+  updateSetupDots();
+  updateSetupButtons();
+
+  document
+    .querySelectorAll('.setup-step')
+    .forEach(step => {
+      step.classList.remove('active');
+    });
+
+  const firstStep =
+    document.querySelector(
+      '.setup-step[data-step="1"]'
+    );
+
+  if (firstStep) {
+    firstStep.classList.add('active');
+  }
+
+  scrim.classList.add('open');
+
+  document.body.classList.add('setup-open');
+}
+
+
+/* ===================================================
+   INITIALIZE SETUP MODAL
+=================================================== */
 
 function initSetupModal() {
-  // Color swatches in setup
-  document.querySelectorAll('.setup-color-swatch').forEach(sw => {
-    sw.addEventListener('click', () => {
-      document.querySelectorAll('.setup-color-swatch').forEach(s => s.classList.remove('active'));
-      sw.classList.add('active');
-      setupThemeChoice = sw.dataset.theme;
-      // live preview
-      applyTheme(setupThemeChoice);
+
+  /* -----------------------------------------------
+     Color swatches
+  ----------------------------------------------- */
+
+  document
+    .querySelectorAll('.setup-color-swatch')
+    .forEach(sw => {
+
+      sw.addEventListener('click', () => {
+
+        document
+          .querySelectorAll('.setup-color-swatch')
+          .forEach(s => {
+            s.classList.remove('active');
+          });
+
+        sw.classList.add('active');
+
+        setupThemeChoice =
+          sw.dataset.theme ||
+          'default';
+
+        /*
+         * Live preview
+         */
+
+        applyTheme(setupThemeChoice);
+      });
+
     });
-  });
 
-  // BG fx select live preview
-  const bgFxSel = document.getElementById('setup-bg-fx');
-  if (bgFxSel) bgFxSel.addEventListener('change', () => {
-    setupFxChoice = bgFxSel.value;
-    startFX(setupFxChoice);
-  });
 
-  // Sidebar position
-  document.querySelectorAll('#setup-sidebar-row .sidebar-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      document.querySelectorAll('#setup-sidebar-row .sidebar-option').forEach(o => o.classList.remove('active'));
-      opt.classList.add('active');
-      setupSidebarChoice = opt.dataset.pos;
+  /* -----------------------------------------------
+     Background FX
+  ----------------------------------------------- */
+
+  const bgFxSel =
+    document.getElementById('setup-bg-fx');
+
+  if (bgFxSel) {
+
+    bgFxSel.addEventListener(
+      'change',
+      () => {
+
+        setupFxChoice =
+          bgFxSel.value ||
+          'off';
+
+        /*
+         * Live preview
+         */
+
+        startFX(setupFxChoice);
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Sidebar
+  ----------------------------------------------- */
+
+  document
+    .querySelectorAll(
+      '#setup-sidebar-row .sidebar-option'
+    )
+    .forEach(option => {
+
+      option.addEventListener(
+        'click',
+        () => {
+
+          document
+            .querySelectorAll(
+              '#setup-sidebar-row .sidebar-option'
+            )
+            .forEach(other => {
+              other.classList.remove('active');
+            });
+
+          option.classList.add('active');
+
+          setupSidebarChoice =
+            option.dataset.pos ||
+            'bottom';
+
+        }
+      );
+
     });
-  });
 
-  // Block screen checkbox live preview
-  const blockCheck = document.getElementById('setup-block-check');
-  const blockThemeSel = document.getElementById('setup-block-theme');
-  if (blockCheck) blockCheck.addEventListener('change', () => {
-    if (blockCheck.checked) {
-      const theme = (blockThemeSel?.value || 'lightspeed').toLowerCase();
-      applyBlockScreen(true, theme);
-    } else {
-      applyBlockScreen(false, '');
+
+  /* -----------------------------------------------
+     Block Screen checkbox
+  ----------------------------------------------- */
+
+  const blockCheck =
+    document.getElementById(
+      'setup-block-check'
+    );
+
+  const blockThemeSel =
+    document.getElementById(
+      'setup-block-theme'
+    );
+
+
+  if (blockCheck) {
+
+    blockCheck.addEventListener(
+      'change',
+      () => {
+
+        if (blockCheck.checked) {
+
+          const theme =
+            (
+              blockThemeSel?.value ||
+              'lightspeed'
+            ).toLowerCase();
+
+          applyBlockScreen(
+            true,
+            theme
+          );
+
+        } else {
+
+          applyBlockScreen(
+            false,
+            ''
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Block Screen theme
+  ----------------------------------------------- */
+
+  if (blockThemeSel) {
+
+    blockThemeSel.addEventListener(
+      'change',
+      () => {
+
+        if (blockCheck?.checked) {
+
+          const theme =
+            blockThemeSel.value.toLowerCase();
+
+          applyBlockScreen(
+            true,
+            theme
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Cloak preset
+  ----------------------------------------------- */
+
+  const cloakPreset =
+    document.getElementById(
+      'setup-cloak-preset'
+    );
+
+  if (cloakPreset) {
+
+    cloakPreset.addEventListener(
+      'change',
+      () => {
+
+        const preset =
+          cloakPreset.value;
+
+        const data =
+          typeof CLOAK_PRESETS !== 'undefined'
+            ? CLOAK_PRESETS[preset]
+            : null;
+
+        if (!data) return;
+
+        /*
+         * Preview the selected cloak immediately.
+         */
+
+        S.cloak = true;
+        S.cloakTitle = data.title || '';
+        S.cloakFavicon = data.icon || '';
+
+        applyCloak(
+          true,
+          S.cloakTitle,
+          S.cloakFavicon
+        );
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Custom cloak title
+  ----------------------------------------------- */
+
+  const cloakCustom =
+    document.getElementById(
+      'setup-cloak-custom'
+    );
+
+  if (cloakCustom) {
+
+    cloakCustom.addEventListener(
+      'input',
+      () => {
+
+        const value =
+          cloakCustom.value.trim();
+
+        if (!value) return;
+
+        S.cloak = true;
+        S.cloakTitle = value;
+
+        applyCloak(
+          true,
+          S.cloakTitle,
+          S.cloakFavicon || ''
+        );
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Next
+  ----------------------------------------------- */
+
+  const nextBtn =
+    document.getElementById(
+      'setup-next'
+    );
+
+  if (nextBtn) {
+
+    nextBtn.addEventListener(
+      'click',
+      () => {
+
+        if (currentStep < TOTAL_STEPS) {
+
+          goToStep(
+            currentStep + 1
+          );
+
+          return;
+        }
+
+        /*
+         * Last step:
+         * permanently apply everything.
+         */
+
+        applySetupChoices();
+        closeSetup();
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Back
+  ----------------------------------------------- */
+
+  const backBtn =
+    document.getElementById(
+      'setup-back'
+    );
+
+  if (backBtn) {
+
+    backBtn.addEventListener(
+      'click',
+      () => {
+
+        if (currentStep > 1) {
+
+          goToStep(
+            currentStep - 1
+          );
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Skip
+  ----------------------------------------------- */
+
+  const skipBtn =
+    document.getElementById(
+      'setup-skip'
+    );
+
+  if (skipBtn) {
+
+    skipBtn.addEventListener(
+      'click',
+      () => {
+
+        /*
+         * Restore whatever settings were active
+         * before opening the wizard.
+         */
+
+        applyTheme(S.theme);
+        startFX(S.fx);
+
+        if (S.blockScreen) {
+          applyBlockScreen(
+            true,
+            S.blockTheme
+          );
+        } else {
+          applyBlockScreen(
+            false,
+            ''
+          );
+        }
+
+        closeSetup();
+
+      }
+    );
+
+  }
+
+
+  /* -----------------------------------------------
+     Escape key
+  ----------------------------------------------- */
+
+  document.addEventListener(
+    'keydown',
+    event => {
+
+      const scrim =
+        document.getElementById(
+          'setup-scrim'
+        );
+
+      if (
+        event.key === 'Escape' &&
+        scrim?.classList.contains('open')
+      ) {
+
+        event.preventDefault();
+
+        closeSetup();
+
+      }
+
     }
-  });
-  if (blockThemeSel) blockThemeSel.addEventListener('change', () => {
-    if (blockCheck?.checked) {
-      const theme = blockThemeSel.value.toLowerCase();
-      applyBlockScreen(true, theme);
-    }
-  });
+  );
 
-  // Next / Back
-  document.getElementById('setup-next').addEventListener('click', () => {
-    if (currentStep < TOTAL_STEPS) {
-      goToStep(currentStep + 1);
-    } else {
-      applySetupChoices();
-      closeSetup();
-    }
-  });
 
-  document.getElementById('setup-back').addEventListener('click', () => {
-    if (currentStep > 1) goToStep(currentStep - 1);
-  });
+  /*
+   * Initialize UI immediately.
+   */
 
-  document.getElementById('setup-skip').addEventListener('click', () => {
-    closeSetup();
-  });
+  updateSetupDots();
+  updateSetupButtons();
 }
 
+
+/* ===================================================
+   SHOW SETUP IF NEEDED
+=================================================== */
+
 function showSetupIfNeeded() {
-  if (!S.setupDone) {
-    document.getElementById('setup-scrim').classList.add('open');
+
+  if (S.setupDone) {
+    return;
   }
+
+  /*
+   * Wait until the archive UI has finished loading
+   * before showing the modal.
+   */
+
+  setTimeout(() => {
+    openSetup();
+  }, 250);
 }
 
 /* ===================================================
